@@ -22,17 +22,16 @@ import jakarta.ws.rs.ApplicationPath;
                   url = "https://restapi.local"
         		),
         license = @License(
-		          name = "MIT",
-		          url = "http://localhost:8080/rentexpressweb-rest-api/swagger-ui/index.html")
+                          name = "MIT",
+                          url = "http://localhost:8080/rentexpress-rest-api/swagger-ui/index.html")
 ),
-		servers = {
-				@Server(url = "http://localhost:8080/rentexpressweb-rest-api") })
+                servers = {
+                                @Server(url = "http://localhost:8080/rentexpress-rest-api") })
 @ApplicationPath("/api")
 public class RestApiApplication extends ResourceConfig {
 
 	public RestApiApplication() {
-		packages(RestApiApplication.class.getPackage().getName());
-		packages("com.pinguela.rentexpressweb-rest-api");
+                packages(RestApiApplication.class.getPackage().getName());
 		register(JaxrsProviders.class); // Registra quien es el que esta serializando a JSON
 
 		// Swagger annotations to document the API
