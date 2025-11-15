@@ -1,5 +1,7 @@
 package com.pinguela.rentexpress.rest.api;
 
+import java.util.Collections;
+
 import org.glassfish.jersey.internal.JaxrsProviders;
 import org.glassfish.jersey.server.ResourceConfig;
 
@@ -8,6 +10,8 @@ import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.servers.Server;
+import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
+import io.swagger.v3.oas.integration.SwaggerConfiguration;
 import jakarta.ws.rs.ApplicationPath;
 
 @OpenAPIDefinition(
@@ -33,8 +37,17 @@ import jakarta.ws.rs.ApplicationPath;
 public class RestApiApplication extends ResourceConfig {
 
     public RestApiApplication() {
-        packages(RestApiApplication.class.getPackage().getName());
+        String resourcePackage = RestApiApplication.class.getPackage().getName();
+
+        packages(resourcePackage);
         register(JaxrsProviders.class);
-        register(io.swagger.v3.jaxrs2.integration.resources.OpenApiResource.class);
+
+        SwaggerConfiguration swaggerConfiguration = new SwaggerConfiguration()
+                .prettyPrint(true)
+                .resourcePackages(Collections.singleton(resourcePackage));
+
+        OpenApiResource openApiResource = new OpenApiResource();
+        openApiResource.setOpenApiConfiguration(swaggerConfiguration);
+        register(openApiResource);
     }
 }
