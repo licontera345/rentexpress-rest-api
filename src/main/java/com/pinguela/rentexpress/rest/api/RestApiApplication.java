@@ -14,7 +14,6 @@ import io.swagger.v3.jaxrs2.SwaggerSerializers;
 import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import io.swagger.v3.oas.integration.SwaggerConfiguration;
-import jakarta.ws.rs.ApplicationPath;
 
 @OpenAPIDefinition(
     info = @Info(
@@ -35,7 +34,6 @@ import jakarta.ws.rs.ApplicationPath;
         @Server(url = "http://localhost:8080/rentexpress-rest-api")
     }
 )
-@ApplicationPath("/api")
 public class RestApiApplication extends ResourceConfig {
 
     public RestApiApplication() {
