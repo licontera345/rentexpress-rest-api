@@ -14,7 +14,9 @@ import io.swagger.v3.jaxrs2.SwaggerSerializers;
 import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import io.swagger.v3.oas.integration.SwaggerConfiguration;
+import jakarta.ws.rs.ApplicationPath;
 
+@ApplicationPath("/api")
 @OpenAPIDefinition(
     info = @Info(
         title = "Rest API",
@@ -39,7 +41,7 @@ public class RestApiApplication extends ResourceConfig {
     public RestApiApplication() {
         String resourcePackage = RestApiApplication.class.getPackage().getName();
 
-        packages(resourcePackage, OpenApiResource.class.getPackage().getName());
+        packages(resourcePackage);
         register(JaxrsProviders.class);
         register(SwaggerSerializers.class);
 
