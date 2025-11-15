@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.servers.Server;
+import io.swagger.v3.jaxrs2.SwaggerSerializers;
+import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import io.swagger.v3.oas.integration.SwaggerConfiguration;
 import jakarta.ws.rs.ApplicationPath;
@@ -39,15 +41,19 @@ public class RestApiApplication extends ResourceConfig {
     public RestApiApplication() {
         String resourcePackage = RestApiApplication.class.getPackage().getName();
 
-        packages(resourcePackage);
+        packages(resourcePackage, OpenApiResource.class.getPackage().getName());
         register(JaxrsProviders.class);
+        register(SwaggerSerializers.class);
 
         SwaggerConfiguration swaggerConfiguration = new SwaggerConfiguration()
                 .prettyPrint(true)
                 .resourcePackages(Collections.singleton(resourcePackage));
 
-        OpenApiResource openApiResource = new OpenApiResource();
-        openApiResource.setOpenApiConfiguration(swaggerConfiguration);
+        OpenApiResource openApiResource = new OpenApiResource().openApiConfiguration(swaggerConfiguration);
+        AcceptHeaderOpenApiResource acceptHeaderOpenApiResource = new AcceptHeaderOpenApiResource()
+                .openApiConfiguration(swaggerConfiguration);
+
         register(openApiResource);
+        register(acceptHeaderOpenApiResource);
     }
 }
