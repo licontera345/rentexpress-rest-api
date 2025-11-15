@@ -49,11 +49,7 @@ public class RestApiApplication extends ResourceConfig {
                 .prettyPrint(true)
                 .resourcePackages(Collections.singleton(resourcePackage));
 
-        OpenApiResource openApiResource = new OpenApiResource().openApiConfiguration(swaggerConfiguration);
-        AcceptHeaderOpenApiResource acceptHeaderOpenApiResource = new AcceptHeaderOpenApiResource()
-                .openApiConfiguration(swaggerConfiguration);
-
-        register(openApiResource);
-        register(acceptHeaderOpenApiResource);
+        register(new OpenApiResource().openApiConfiguration(swaggerConfiguration));
+        register(new AcceptHeaderOpenApiResource().openApiConfiguration(swaggerConfiguration));
     }
 }
