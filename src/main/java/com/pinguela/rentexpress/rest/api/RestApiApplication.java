@@ -1,6 +1,7 @@
 package com.pinguela.rentexpress.rest.api;
 
 import org.glassfish.jersey.internal.JaxrsProviders;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import com.pinguela.rentexpress.rest.api.param.DateTimeJsonbProvider;
@@ -38,6 +39,7 @@ public class RestApiApplication extends ResourceConfig {
         packages(RestApiApplication.class.getPackage().getName());
         packages("com.pinguela.rentexpress.rest.api");
         register(JaxrsProviders.class);
+        register(MultiPartFeature.class);
         register(DateTimeJsonbProvider.class);
         register(io.swagger.v3.jaxrs2.integration.resources.OpenApiResource.class);
     }
