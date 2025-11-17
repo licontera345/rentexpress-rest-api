@@ -10,6 +10,7 @@ import jakarta.ws.rs.ext.Provider;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.regex.Pattern;
 
 /*
  * TimeDateUtil actúa como proveedor global (@Provider) para JSON-B.
@@ -82,21 +83,24 @@ public class DateTimeJsonbProvider implements ContextResolver<Jsonb> {
          * - "2025-11-17T10:20:30+01:00"
          * - "2025-11-17T10:20:30.123+01:00"
          */
+        private static final Pattern OFFSET_PATTERN = Pattern.compile(".*T.*[+-]\\d{2}:?\\d{2}$");
+
         @Override
         public LocalDateTime adaptFromJson(String value) {
 
             // Si la cadena está vacía o es nula, devolvemos null directamente
             if (value == null || value.isEmpty()) return null;
 
+            String trimmedValue = value.trim();
+
             /*
              * Si la fecha contiene:
              * - "Z" (UTC)
-             * - "+" (offset positivo)
-             * - "-" (offset negativo, evitando confusión con la fecha misma)
+             * - "±HH:mm" o "±HHmm" DESPUÉS de la 'T' (offset)
              * entonces utilizamos OffsetDateTime.
              */
-            if (value.endsWith("Z") || value.contains("+") || value.contains("-")) {
-                OffsetDateTime odt = OffsetDateTime.parse(value, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+            if (trimmedValue.endsWith("Z") || OFFSET_PATTERN.matcher(trimmedValue).matches()) {
+                OffsetDateTime odt = OffsetDateTime.parse(trimmedValue, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
                 return odt.toLocalDateTime();
             }
 
@@ -104,7 +108,7 @@ public class DateTimeJsonbProvider implements ContextResolver<Jsonb> {
              * Si no trae zona horaria ni offset, es LocalDateTime puro.
              * Se parsea con el formato ISO_LOCAL_DATE_TIME.
              */
-            return LocalDateTime.parse(value, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            return LocalDateTime.parse(trimmedValue, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         }
     }
 }
