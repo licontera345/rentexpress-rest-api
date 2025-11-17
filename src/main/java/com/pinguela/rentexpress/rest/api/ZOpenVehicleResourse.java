@@ -21,6 +21,7 @@ import com.pinguela.rentexpres.service.impl.VehicleServiceImpl;
 import com.pinguela.rentexpres.service.impl.VehicleStatusServiceImpl;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -79,11 +80,32 @@ public class ZOpenVehicleResourse {
             )
         }
     )
-    public Response findAll() {
+    public Response findAll(
+        @Parameter(description = "Page number starting at 1") @QueryParam("page") Integer page,
+        @Parameter(description = "Number of elements per page") @QueryParam("pageSize") Integer pageSize) {
+        if ((page != null && page <= 0) || (pageSize != null && pageSize <= 0)) {
+            return Response.status(Status.BAD_REQUEST)
+                .entity("page and pageSize must be greater than zero")
+                .build();
+        }
+        if ((page == null) != (pageSize == null)) {
+            return Response.status(Status.BAD_REQUEST)
+                .entity("page and pageSize must be provided together")
+                .build();
+        }
         try {
             List<VehicleDTO> vehicles = vehicleService.findAll();
             if (vehicles == null || vehicles.isEmpty()) {
                 return Response.status(Status.NO_CONTENT).build();
+            }
+            if (page != null) {
+                int fromIndex = (page - 1) * pageSize;
+                if (fromIndex >= vehicles.size()) {
+                    return Response.status(Status.NO_CONTENT).build();
+                }
+                int toIndex = Math.min(fromIndex + pageSize, vehicles.size());
+                List<VehicleDTO> pagedVehicles = vehicles.subList(fromIndex, toIndex);
+                return Response.ok(pagedVehicles).build();
             }
             return Response.ok(vehicles).build();
         } catch (RentexpresException e) {
