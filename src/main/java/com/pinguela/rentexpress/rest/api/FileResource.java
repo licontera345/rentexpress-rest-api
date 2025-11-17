@@ -98,7 +98,7 @@ public class FileResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while uploading images")
         }
     )
-    public Response uploadVehicleImages(@PathParam("vehicleId") Integer vehicleId, FormDataMultiPart multiPart) {
+    public Response uploadVehicleImages(@PathParam("vehicleId") Integer vehicleId, FormDataMultiPart multiPart) throws IOException {
         if (vehicleId == null) {
             closeQuietly(multiPart);
             return Response.status(Status.BAD_REQUEST).entity("Vehicle ID is required").build();
