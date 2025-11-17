@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -308,7 +307,7 @@ public class FileResource {
             throw new IOException("Input stream is null");
         }
         String suffix = extractExtension(originalFileName);
-        Path tempFile = Files.createTempFile("upload-", suffix);
+        java.nio.file.Path tempFile = Files.createTempFile("upload-", suffix);
         try (OutputStream outputStream = Files.newOutputStream(tempFile)) {
             IOUtils.copy(inputStream, outputStream);
         }
