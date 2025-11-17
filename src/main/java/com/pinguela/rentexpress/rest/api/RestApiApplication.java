@@ -34,6 +34,7 @@ public class RestApiApplication extends ResourceConfig {
 
     public RestApiApplication() {
         packages(RestApiApplication.class.getPackage().getName());
+        packages("com.pinguela.rentexpress.rest.api");
         register(JaxrsProviders.class);
         register(io.swagger.v3.jaxrs2.integration.resources.OpenApiResource.class);
     }
