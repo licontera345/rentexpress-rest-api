@@ -324,11 +324,23 @@ public class ZOpenVehicleResourse {
         summary = "Find all vehicle categories",
         description = "Retrieves all vehicle categories for the provided locale",
         responses = {
-            @ApiResponse(responseCode = "200", description = "Categories retrieved successfully", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = VehicleCategoryDTO[].class))),
-            @ApiResponse(responseCode = "204", description = "No categories found"),
-            @ApiResponse(responseCode = "400", description = "isoCode is required"),
-            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving categories")
-        }
+            @ApiResponse(responseCode = "200", description = "Categories retrieved successfully", 
+            	content = @Content(mediaType = MediaType.APPLICATION_JSON,
+            	schema = @Schema(implementation = VehicleCategoryDTO[].class)
+            	)
+            ),
+            @ApiResponse(
+            	responseCode = "204",
+                description = "No categories found"),
+            
+            @ApiResponse(
+            	responseCode = "400",
+                description = "isoCode is required"),
+            
+            @ApiResponse(
+            	responseCode = "500",
+                description = "Unexpected error while retrieving categories")
+        } 
     )
     public Response findAllCategories(@QueryParam("isoCode") String isoCode) {
         if (isoCode == null || isoCode.trim().isEmpty()) {
@@ -354,10 +366,23 @@ public class ZOpenVehicleResourse {
         summary = "Find vehicle category by ID",
         description = "Retrieves a specific vehicle category for the provided locale",
         responses = {
-            @ApiResponse(responseCode = "200", description = "Category retrieved successfully", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = VehicleCategoryDTO.class))),
-            @ApiResponse(responseCode = "404", description = "Category not found"),
-            @ApiResponse(responseCode = "400", description = "Invalid parameters supplied"),
-            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving the category")
+            @ApiResponse(responseCode = "200", description = "Category retrieved successfully",
+            		content = @Content(mediaType = MediaType.APPLICATION_JSON,
+            		schema = @Schema(implementation = VehicleCategoryDTO.class)
+            		)
+            ),
+            @ApiResponse(
+            	responseCode = "404", 
+            	description = "Category not found"),
+            
+            @ApiResponse(
+            	responseCode = "400",
+            	
+            	description = "Invalid parameters supplied"),
+            
+            @ApiResponse(
+            	responseCode = "500",
+            	description = "Unexpected error while retrieving the category")
         }
     )
     public Response findCategoryById(@PathParam("id") Integer id, @QueryParam("isoCode") String isoCode) {
@@ -384,10 +409,22 @@ public class ZOpenVehicleResourse {
         summary = "Find all vehicle statuses",
         description = "Retrieves all vehicle statuses for the provided locale",
         responses = {
-            @ApiResponse(responseCode = "200", description = "Statuses retrieved successfully", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = VehicleStatusDTO[].class))),
-            @ApiResponse(responseCode = "204", description = "No statuses found"),
-            @ApiResponse(responseCode = "400", description = "isoCode is required"),
-            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving statuses")
+            @ApiResponse(responseCode = "200", description = "Statuses retrieved successfully",
+            		content = @Content(mediaType = MediaType.APPLICATION_JSON,
+            		schema = @Schema(implementation = VehicleStatusDTO[].class)
+            		)
+            ),          
+            @ApiResponse(
+            	responseCode = "204", 
+            	description = "No statuses found"),
+            
+            @ApiResponse(
+            	responseCode = "400",
+            	description = "isoCode is required"),
+            
+            @ApiResponse(
+            	responseCode = "500",
+                description = "Unexpected error while retrieving statuses")
         }
     )
     public Response findAllStatuses(@QueryParam("isoCode") String isoCode) {
@@ -414,10 +451,23 @@ public class ZOpenVehicleResourse {
         summary = "Find vehicle status by ID",
         description = "Retrieves a specific vehicle status for the provided locale",
         responses = {
-            @ApiResponse(responseCode = "200", description = "Status retrieved successfully", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = VehicleStatusDTO.class))),
-            @ApiResponse(responseCode = "404", description = "Status not found"),
-            @ApiResponse(responseCode = "400", description = "Invalid parameters supplied"),
-            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving the status")
+            @ApiResponse(responseCode = "200",
+            	description = "Status retrieved successfully",
+            	content = @Content(mediaType = MediaType.APPLICATION_JSON,
+            	schema = @Schema(implementation = VehicleStatusDTO.class)
+            	)
+            ),
+            @ApiResponse(
+            	responseCode = "404",
+                description = "Status not found"),
+            
+            @ApiResponse(
+            	responseCode = "400",
+            	description = "Invalid parameters supplied"),
+            
+            @ApiResponse(
+            	responseCode = "500", 
+            	description = "Unexpected error while retrieving the status")
         }
     )
     public Response findStatusById(@PathParam("id") Integer id, @QueryParam("isoCode") String isoCode) {
@@ -436,59 +486,4 @@ public class ZOpenVehicleResourse {
         }
     }
 
-    @GET
-    @Path("/headquarters")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(
-        operationId = "findAllHeadquarters",
-        summary = "Find all headquarters",
-        description = "Retrieves every headquarters in the system",
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Headquarters retrieved successfully", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = HeadquartersDTO[].class))),
-            @ApiResponse(responseCode = "204", description = "No headquarters found"),
-            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving headquarters")
-        }
-    )
-    public Response findAllHeadquarters() {
-        try {
-            List<HeadquartersDTO> headquarters = headquartersService.findAll();
-            if (headquarters == null || headquarters.isEmpty()) {
-                return Response.status(Status.NO_CONTENT).build();
-            }
-            return Response.ok(headquarters).build();
-        } catch (DataException e) {
-            logger.warning(e.getMessage());
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-    }
-
-    @GET
-    @Path("/headquarters/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(
-        operationId = "findHeadquartersById",
-        summary = "Find headquarters by ID",
-        description = "Retrieves a specific headquarters in the system",
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Headquarters retrieved successfully", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = HeadquartersDTO.class))),
-            @ApiResponse(responseCode = "404", description = "Headquarters not found"),
-            @ApiResponse(responseCode = "400", description = "Invalid headquarters identifier supplied"),
-            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving headquarters")
-        }
-    )
-    public Response findHeadquartersById(@PathParam("id") Integer id) {
-        if (id == null) {
-            return Response.status(Status.BAD_REQUEST).entity("Headquarters id is required").build();
-        }
-        try {
-            HeadquartersDTO dto = headquartersService.findById(id);
-            if (dto == null) {
-                return Response.status(Status.NOT_FOUND).build();
-            }
-            return Response.ok(dto).build();
-        } catch (DataException e) {
-            logger.warning(e.getMessage());
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-    }
-}
+  }
