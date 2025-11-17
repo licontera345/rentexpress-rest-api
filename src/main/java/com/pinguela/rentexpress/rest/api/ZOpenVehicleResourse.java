@@ -3,19 +3,15 @@ package com.pinguela.rentexpress.rest.api;
 import java.util.List;
 import java.util.logging.Logger;
 
-import com.pinguela.rentexpres.exception.DataException;
 import com.pinguela.rentexpres.exception.RentexpresException;
-import com.pinguela.rentexpres.model.HeadquartersDTO;
 import com.pinguela.rentexpres.model.Results;
 import com.pinguela.rentexpres.model.VehicleCategoryDTO;
 import com.pinguela.rentexpres.model.VehicleCriteria;
 import com.pinguela.rentexpres.model.VehicleDTO;
 import com.pinguela.rentexpres.model.VehicleStatusDTO;
-import com.pinguela.rentexpres.service.HeadquartersService;
 import com.pinguela.rentexpres.service.VehicleCategoryService;
 import com.pinguela.rentexpres.service.VehicleService;
 import com.pinguela.rentexpres.service.VehicleStatusService;
-import com.pinguela.rentexpres.service.impl.HeadquartersServiceImpl;
 import com.pinguela.rentexpres.service.impl.VehicleCategoryServiceImpl;
 import com.pinguela.rentexpres.service.impl.VehicleServiceImpl;
 import com.pinguela.rentexpres.service.impl.VehicleStatusServiceImpl;
@@ -45,13 +41,10 @@ public class ZOpenVehicleResourse {
     private final VehicleService vehicleService;
     private final VehicleCategoryService vehicleCategoryService;
     private final VehicleStatusService vehicleStatusService;
-    private final HeadquartersService headquartersService;
-
     public ZOpenVehicleResourse() {
         this.vehicleService = new VehicleServiceImpl();
         this.vehicleCategoryService = new VehicleCategoryServiceImpl();
         this.vehicleStatusService = new VehicleStatusServiceImpl();
-        this.headquartersService = new HeadquartersServiceImpl();
     }
 
     @GET
