@@ -36,6 +36,7 @@ import jakarta.ws.rs.ApplicationPath;
         @Server(url = "http://localhost:8080/rentexpress-rest-api")
     }
 )
+@ApplicationPath("/api")
 public class RestApiApplication extends ResourceConfig {
 
     public RestApiApplication() {
