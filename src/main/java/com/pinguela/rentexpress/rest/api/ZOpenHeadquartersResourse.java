@@ -9,6 +9,9 @@ import com.pinguela.rentexpres.service.HeadquartersService;
 import com.pinguela.rentexpres.service.impl.HeadquartersServiceImpl;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -53,7 +56,21 @@ public class ZOpenHeadquartersResourse {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Find headquarters by ID")
+    @Operation(
+        operationId = "findHeadquartersById",
+        summary = "Find headquarters by ID",
+        description = "Retrieves a headquarters using its unique identifier",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Headquarters retrieved successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = HeadquartersDTO.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "Headquarters not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid headquarters identifier supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving the headquarters")
+        }
+    )
     public Response findById(@PathParam("id") Integer id) {
         if (id == null) {
             return Response.status(Status.BAD_REQUEST).entity("Headquarters ID is required").build();

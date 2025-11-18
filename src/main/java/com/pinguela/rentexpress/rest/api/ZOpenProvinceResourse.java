@@ -9,6 +9,9 @@ import com.pinguela.rentexpres.service.ProvinceService;
 import com.pinguela.rentexpres.service.impl.ProvinceServiceImpl;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -53,7 +56,21 @@ public class ZOpenProvinceResourse {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Find province by ID")
+    @Operation(
+        operationId = "findProvinceById",
+        summary = "Find province by ID",
+        description = "Retrieves a province using its unique identifier",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Province retrieved successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = ProvinceDTO.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "Province not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid province identifier supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving the province")
+        }
+    )
     public Response findById(@PathParam("id") Integer id) {
         if (id == null) {
             return Response.status(Status.BAD_REQUEST).entity("Province ID is required").build();

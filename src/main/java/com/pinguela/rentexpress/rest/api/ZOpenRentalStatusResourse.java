@@ -9,6 +9,9 @@ import com.pinguela.rentexpres.service.RentalStatusService;
 import com.pinguela.rentexpres.service.impl.RentalStatusServiceImpl;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -53,7 +56,21 @@ public class ZOpenRentalStatusResourse {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Find rental status by ID")
+    @Operation(
+        operationId = "findRentalStatusById",
+        summary = "Find rental status by ID",
+        description = "Retrieves a rental status using its unique identifier and language code",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Rental status retrieved successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RentalStatusDTO.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "Rental status not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid rental status identifier or isoCode supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving the rental status")
+        }
+    )
     public Response findById(@PathParam("id") Integer id, @QueryParam("isoCode") String isoCode) {
         if (id == null || isoCode == null || isoCode.isEmpty()) {
             return Response.status(Status.BAD_REQUEST).entity("Rental status ID and isoCode are required").build();

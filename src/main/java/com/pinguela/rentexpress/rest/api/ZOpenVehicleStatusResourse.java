@@ -9,6 +9,9 @@ import com.pinguela.rentexpres.service.VehicleStatusService;
 import com.pinguela.rentexpres.service.impl.VehicleStatusServiceImpl;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -53,7 +56,21 @@ public class ZOpenVehicleStatusResourse {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Find vehicle status by ID")
+    @Operation(
+        operationId = "findVehicleStatusById",
+        summary = "Find vehicle status by ID",
+        description = "Retrieves a vehicle status using its unique identifier and language code",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Vehicle status retrieved successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = VehicleStatusDTO.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "Vehicle status not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid vehicle status identifier or isoCode supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving the vehicle status")
+        }
+    )
     public Response findById(@PathParam("id") Integer id, @QueryParam("isoCode") String isoCode) {
         if (id == null || isoCode == null || isoCode.isEmpty()) {
             return Response.status(Status.BAD_REQUEST).entity("Vehicle status ID and isoCode are required").build();
