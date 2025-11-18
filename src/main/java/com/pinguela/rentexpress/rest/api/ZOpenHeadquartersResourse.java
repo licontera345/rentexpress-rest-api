@@ -1,0 +1,135 @@
+package com.pinguela.rentexpress.rest.api;
+
+import java.util.List;
+import java.util.logging.Logger;
+
+import com.pinguela.rentexpres.exception.DataException;
+import com.pinguela.rentexpres.model.HeadquartersDTO;
+import com.pinguela.rentexpres.service.HeadquartersService;
+import com.pinguela.rentexpres.service.impl.HeadquartersServiceImpl;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
+
+@Path("/headquarters")
+@Tag(name = "Headquarters", description = "Operations for headquarters management")
+public class ZOpenHeadquartersResourse {
+
+    private static final Logger logger = Logger.getLogger(ZOpenHeadquartersResourse.class.getName());
+
+    private final HeadquartersService headquartersService;
+
+    public ZOpenHeadquartersResourse() {
+        this.headquartersService = new HeadquartersServiceImpl();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Find all headquarters")
+    public Response findAll() {
+        try {
+            List<HeadquartersDTO> headquarters = headquartersService.findAll();
+            if (headquarters == null || headquarters.isEmpty()) {
+                return Response.status(Status.NO_CONTENT).build();
+            }
+            return Response.ok(headquarters).build();
+        } catch (DataException e) {
+            logger.warning(e.getMessage());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
+    }
+
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Find headquarters by ID")
+    public Response findById(@PathParam("id") Integer id) {
+        if (id == null) {
+            return Response.status(Status.BAD_REQUEST).entity("Headquarters ID is required").build();
+        }
+        try {
+            HeadquartersDTO headquarters = headquartersService.findById(id);
+            if (headquarters == null) {
+                return Response.status(Status.NOT_FOUND).build();
+            }
+            return Response.ok(headquarters).build();
+        } catch (DataException e) {
+            logger.warning(e.getMessage());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Create headquarters")
+    public Response create(HeadquartersDTO headquarters) {
+        if (headquarters == null) {
+            return Response.status(Status.BAD_REQUEST).entity("Headquarters data is required").build();
+        }
+        try {
+            boolean created = headquartersService.create(headquarters);
+            if (!created) {
+                return Response.status(Status.BAD_REQUEST).entity("Headquarters could not be created").build();
+            }
+            HeadquartersDTO createdHeadquarters = headquarters.getId() != null
+                    ? headquartersService.findById(headquarters.getId())
+                    : headquarters;
+            return Response.status(Status.CREATED).entity(createdHeadquarters).build();
+        } catch (DataException e) {
+            logger.warning(e.getMessage());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
+    }
+
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Update headquarters")
+    public Response update(HeadquartersDTO headquarters) {
+        if (headquarters == null || headquarters.getId() == null) {
+            return Response.status(Status.BAD_REQUEST).entity("Headquarters ID and data are required").build();
+        }
+        try {
+            boolean updated = headquartersService.update(headquarters);
+            if (!updated) {
+                return Response.status(Status.NOT_FOUND).entity("Headquarters not found or not updated").build();
+            }
+            HeadquartersDTO updatedHeadquarters = headquartersService.findById(headquarters.getId());
+            return Response.ok(updatedHeadquarters).build();
+        } catch (DataException e) {
+            logger.warning(e.getMessage());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
+    }
+
+    @DELETE
+    @Path("/{id}")
+    @Operation(summary = "Delete headquarters")
+    public Response delete(@PathParam("id") Integer id) {
+        if (id == null) {
+            return Response.status(Status.BAD_REQUEST).entity("Headquarters ID is required").build();
+        }
+        try {
+            boolean deleted = headquartersService.delete(id);
+            if (!deleted) {
+                return Response.status(Status.NOT_FOUND).entity("Headquarters not found").build();
+            }
+            return Response.ok().entity("Headquarters deleted successfully").build();
+        } catch (DataException e) {
+            logger.warning(e.getMessage());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
+    }
+}
