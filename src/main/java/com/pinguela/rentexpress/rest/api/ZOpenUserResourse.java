@@ -12,6 +12,9 @@ import com.pinguela.rentexpres.service.UserService;
 import com.pinguela.rentexpres.service.impl.UserServiceImpl;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -56,7 +59,21 @@ public class ZOpenUserResourse {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Find user by ID")
+    @Operation(
+        operationId = "findUserById",
+        summary = "Find user by ID",
+        description = "Retrieves a user using its unique identifier",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "User retrieved successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = UserDTO.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "User not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid user identifier supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving the user")
+        }
+    )
     public Response findById(@PathParam("id") Integer id) {
         if (id == null) {
             return Response.status(Status.BAD_REQUEST).entity("User ID is required").build();

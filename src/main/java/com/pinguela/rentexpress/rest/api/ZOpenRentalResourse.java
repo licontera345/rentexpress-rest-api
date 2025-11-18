@@ -12,6 +12,9 @@ import com.pinguela.rentexpres.service.RentalService;
 import com.pinguela.rentexpres.service.impl.RentalServiceImpl;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
@@ -56,7 +59,21 @@ public class ZOpenRentalResourse {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Find rental by ID")
+    @Operation(
+        operationId = "findRentalById",
+        summary = "Find rental by ID",
+        description = "Retrieves a rental using its unique identifier",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Rental retrieved successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RentalDTO.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "Rental not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid rental identifier supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving the rental")
+        }
+    )
     public Response findById(@PathParam("id") Integer id) {
         if (id == null) {
             return Response.status(Status.BAD_REQUEST).entity("Rental ID is required").build();

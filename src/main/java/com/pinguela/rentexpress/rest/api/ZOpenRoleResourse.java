@@ -9,6 +9,9 @@ import com.pinguela.rentexpres.service.RoleService;
 import com.pinguela.rentexpres.service.impl.RoleServiceImpl;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -49,7 +52,21 @@ public class ZOpenRoleResourse {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Find role by ID")
+    @Operation(
+        operationId = "findRoleById",
+        summary = "Find role by ID",
+        description = "Retrieves a role using its unique identifier",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Role retrieved successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RoleDTO.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "Role not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid role identifier supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving the role")
+        }
+    )
     public Response findById(@PathParam("id") Integer id) {
         if (id == null) {
             return Response.status(Status.BAD_REQUEST).entity("Role ID is required").build();

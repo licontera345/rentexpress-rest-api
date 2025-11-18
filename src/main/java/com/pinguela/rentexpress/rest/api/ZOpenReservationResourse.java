@@ -11,6 +11,9 @@ import com.pinguela.rentexpres.service.ReservationService;
 import com.pinguela.rentexpres.service.impl.ReservationServiceImpl;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -55,7 +58,21 @@ public class ZOpenReservationResourse {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Find reservation by ID")
+    @Operation(
+        operationId = "findReservationById",
+        summary = "Find reservation by ID",
+        description = "Retrieves a reservation using its unique identifier",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Reservation retrieved successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = ReservationDTO.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "Reservation not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid reservation identifier supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving the reservation")
+        }
+    )
     public Response findById(@PathParam("id") Integer id) {
         if (id == null) {
             return Response.status(Status.BAD_REQUEST).entity("Reservation ID is required").build();

@@ -9,6 +9,9 @@ import com.pinguela.rentexpres.service.CityService;
 import com.pinguela.rentexpres.service.impl.CityServiceImpl;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -36,7 +39,20 @@ public class ZOpenCityResourse {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Find all cities")
+    @Operation(
+        operationId = "findAllCities",
+        summary = "Find all cities",
+        description = "Retrieves every city available in the system",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Cities retrieved successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = CityDTO[].class))
+            ),
+            @ApiResponse(responseCode = "204", description = "No cities found"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving cities")
+        }
+    )
     public Response findAll() {
         try {
             List<CityDTO> cities = cityService.findAll();
@@ -53,7 +69,21 @@ public class ZOpenCityResourse {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Find city by ID")
+    @Operation(
+        operationId = "findCityById",
+        summary = "Find city by ID",
+        description = "Retrieves a city using its unique identifier",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "City retrieved successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = CityDTO.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "City not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid city identifier supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving the city")
+        }
+    )
     public Response findById(@PathParam("id") Integer id) {
         if (id == null) {
             return Response.status(Status.BAD_REQUEST).entity("City ID is required").build();
@@ -73,7 +103,21 @@ public class ZOpenCityResourse {
     @GET
     @Path("/province/{provinceId}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Find cities by province")
+    @Operation(
+        operationId = "findCitiesByProvince",
+        summary = "Find cities by province",
+        description = "Retrieves all cities that belong to the provided province",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Cities retrieved successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = CityDTO[].class))
+            ),
+            @ApiResponse(responseCode = "204", description = "No cities found for the provided province"),
+            @ApiResponse(responseCode = "400", description = "Invalid province identifier supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving cities")
+        }
+    )
     public Response findByProvince(@PathParam("provinceId") Integer provinceId) {
         if (provinceId == null) {
             return Response.status(Status.BAD_REQUEST).entity("Province ID is required").build();
@@ -93,7 +137,20 @@ public class ZOpenCityResourse {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Create city")
+    @Operation(
+        operationId = "createCity",
+        summary = "Create city",
+        description = "Creates a new city and returns the created entity",
+        responses = {
+            @ApiResponse(
+                responseCode = "201",
+                description = "City created successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = CityDTO.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "Invalid or incomplete city data supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while creating the city")
+        }
+    )
     public Response create(CityDTO city) {
         if (city == null) {
             return Response.status(Status.BAD_REQUEST).entity("City data is required").build();
@@ -114,7 +171,21 @@ public class ZOpenCityResourse {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Update city")
+    @Operation(
+        operationId = "updateCity",
+        summary = "Update city",
+        description = "Updates an existing city and returns the updated entity",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "City updated successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = CityDTO.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "Invalid city data supplied"),
+            @ApiResponse(responseCode = "404", description = "City not found"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while updating the city")
+        }
+    )
     public Response update(CityDTO city) {
         if (city == null || city.getId() == null) {
             return Response.status(Status.BAD_REQUEST).entity("City ID and data are required").build();
@@ -134,7 +205,21 @@ public class ZOpenCityResourse {
 
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Delete city")
+    @Operation(
+        operationId = "deleteCity",
+        summary = "Delete city",
+        description = "Deletes a city using its unique identifier",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "City deleted successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = String.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "City not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid city identifier supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while deleting the city")
+        }
+    )
     public Response delete(CityDTO city) {
         if (city == null || city.getId() == null) {
             return Response.status(Status.BAD_REQUEST).entity("City ID and data are required").build();

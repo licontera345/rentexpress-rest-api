@@ -8,6 +8,9 @@ import com.pinguela.rentexpres.service.AddressService;
 import com.pinguela.rentexpres.service.impl.AddressServiceImpl;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -36,7 +39,21 @@ public class ZOpenAddressResourse {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Find address by ID")
+    @Operation(
+        operationId = "findAddressById",
+        summary = "Find address by ID",
+        description = "Retrieves an address using its unique identifier",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Address retrieved successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = AddressDTO.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "Address not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid address identifier supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving the address")
+        }
+    )
     public Response findById(@PathParam("id") Integer id) {
         if (id == null) {
             return Response.status(Status.BAD_REQUEST).entity("Address ID is required").build();
@@ -56,7 +73,20 @@ public class ZOpenAddressResourse {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Create address")
+    @Operation(
+        operationId = "createAddress",
+        summary = "Create address",
+        description = "Creates a new address and returns the created entity",
+        responses = {
+            @ApiResponse(
+                responseCode = "201",
+                description = "Address created successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = AddressDTO.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "Invalid or incomplete address data supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while creating the address")
+        }
+    )
     public Response create(AddressDTO address) {
         if (address == null) {
             return Response.status(Status.BAD_REQUEST).entity("Address data is required").build();
@@ -77,7 +107,21 @@ public class ZOpenAddressResourse {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Update address")
+    @Operation(
+        operationId = "updateAddress",
+        summary = "Update address",
+        description = "Updates an existing address and returns the updated entity",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Address updated successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = AddressDTO.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "Invalid address data supplied"),
+            @ApiResponse(responseCode = "404", description = "Address not found"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while updating the address")
+        }
+    )
     public Response update(AddressDTO address) {
         if (address == null || address.getId() == null) {
             return Response.status(Status.BAD_REQUEST).entity("Address ID and data are required").build();
@@ -97,7 +141,21 @@ public class ZOpenAddressResourse {
 
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Delete address")
+    @Operation(
+        operationId = "deleteAddress",
+        summary = "Delete address",
+        description = "Deletes an address using its unique identifier",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Address deleted successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = String.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "Address not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid address identifier supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while deleting the address")
+        }
+    )
     public Response delete(AddressDTO address) {
         if (address == null || address.getId() == null) {
             return Response.status(Status.BAD_REQUEST).entity("Address ID and data are required").build();
