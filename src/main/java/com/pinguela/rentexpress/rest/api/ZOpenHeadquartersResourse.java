@@ -146,7 +146,21 @@ public class ZOpenHeadquartersResourse {
 
     @DELETE
     @Path("/{id}")
-    @Operation(summary = "Delete headquarters")
+    @Operation(
+        operationId = "deleteHeadquarters",
+        summary = "Delete headquarters",
+        description = "Deletes a headquarters using its unique identifier",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Headquarters deleted successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = String.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "Headquarters not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid headquarters identifier supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while deleting the headquarters")
+        }
+    )
     public Response delete(@PathParam("id") Integer id) {
         if (id == null) {
             return Response.status(Status.BAD_REQUEST).entity("Headquarters ID is required").build();

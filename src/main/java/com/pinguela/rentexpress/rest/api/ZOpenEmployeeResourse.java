@@ -148,7 +148,21 @@ public class ZOpenEmployeeResourse {
     @DELETE
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Delete employee")
+    @Operation(
+        operationId = "deleteEmployee",
+        summary = "Delete employee",
+        description = "Deletes an employee using its unique identifier",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Employee deleted successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = String.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "Employee not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid employee identifier supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while deleting the employee")
+        }
+    )
     public Response delete(@PathParam("id") Integer id, EmployeeDTO employee) {
         if (id == null || employee == null || employee.getId() == null) {
             return Response.status(Status.BAD_REQUEST).entity("Employee ID and data are required").build();

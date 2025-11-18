@@ -148,7 +148,21 @@ public class ZOpenReservationResourse {
 
     @DELETE
     @Path("/{id}")
-    @Operation(summary = "Delete reservation")
+    @Operation(
+        operationId = "deleteReservation",
+        summary = "Delete reservation",
+        description = "Deletes a reservation using its unique identifier",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Reservation deleted successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = String.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "Reservation not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid reservation identifier supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while deleting the reservation")
+        }
+    )
     public Response delete(@PathParam("id") Integer id) {
         if (id == null) {
             return Response.status(Status.BAD_REQUEST).entity("Reservation ID is required").build();

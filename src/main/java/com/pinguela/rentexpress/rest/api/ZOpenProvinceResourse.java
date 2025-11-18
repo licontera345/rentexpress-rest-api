@@ -146,7 +146,21 @@ public class ZOpenProvinceResourse {
 
     @DELETE
     @Path("/{id}")
-    @Operation(summary = "Delete province")
+    @Operation(
+        operationId = "deleteProvince",
+        summary = "Delete province",
+        description = "Deletes a province using its unique identifier",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Province deleted successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = String.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "Province not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid province identifier supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while deleting the province")
+        }
+    )
     public Response delete(@PathParam("id") Integer id) {
         if (id == null) {
             return Response.status(Status.BAD_REQUEST).entity("Province ID is required").build();
