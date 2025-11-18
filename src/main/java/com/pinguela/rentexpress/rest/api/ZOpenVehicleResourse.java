@@ -340,7 +340,7 @@ public class ZOpenVehicleResourse {
             return Response.status(Status.BAD_REQUEST).entity("isoCode is required").build();
         }
         try {
-            List<VehicleCategoryDTO> categories = vehicleCategoryService.findAll(isoCode);
+            List<VehicleCategoryDTO> categories = vehicleCategoryService.findAll(normalizeIsoCode(isoCode));
             if (categories == null || categories.isEmpty()) {
                 return Response.status(Status.NO_CONTENT).build();
             }
@@ -383,7 +383,7 @@ public class ZOpenVehicleResourse {
             return Response.status(Status.BAD_REQUEST).entity("Category id and isoCode are required").build();
         }
         try {
-            VehicleCategoryDTO dto = vehicleCategoryService.findById(id, isoCode);
+            VehicleCategoryDTO dto = vehicleCategoryService.findById(id, normalizeIsoCode(isoCode));
             if (dto == null) {
                 return Response.status(Status.NOT_FOUND).build();
             }
@@ -425,7 +425,7 @@ public class ZOpenVehicleResourse {
             return Response.status(Status.BAD_REQUEST).entity("isoCode is required").build();
         }
         try {
-            List<VehicleStatusDTO> statuses = vehicleStatusService.findAll(isoCode);
+            List<VehicleStatusDTO> statuses = vehicleStatusService.findAll(normalizeIsoCode(isoCode));
             if (statuses == null || statuses.isEmpty()) {
                 return Response.status(Status.NO_CONTENT).build();
             }
@@ -468,7 +468,7 @@ public class ZOpenVehicleResourse {
             return Response.status(Status.BAD_REQUEST).entity("Status id and isoCode are required").build();
         }
         try {
-            VehicleStatusDTO dto = vehicleStatusService.findById(id, isoCode);
+            VehicleStatusDTO dto = vehicleStatusService.findById(id, normalizeIsoCode(isoCode));
             if (dto == null) {
                 return Response.status(Status.NOT_FOUND).build();
             }
@@ -477,6 +477,10 @@ public class ZOpenVehicleResourse {
             logger.warning(e.getMessage());
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
+    }
+
+    private String normalizeIsoCode(String isoCode) {
+        return isoCode == null ? null : isoCode.trim().toUpperCase();
     }
 
   }
