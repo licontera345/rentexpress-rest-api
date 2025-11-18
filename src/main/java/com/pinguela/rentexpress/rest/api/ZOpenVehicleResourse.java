@@ -5,16 +5,10 @@ import java.util.logging.Logger;
 
 import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.Results;
-import com.pinguela.rentexpres.model.VehicleCategoryDTO;
 import com.pinguela.rentexpres.model.VehicleCriteria;
 import com.pinguela.rentexpres.model.VehicleDTO;
-import com.pinguela.rentexpres.model.VehicleStatusDTO;
-import com.pinguela.rentexpres.service.VehicleCategoryService;
 import com.pinguela.rentexpres.service.VehicleService;
-import com.pinguela.rentexpres.service.VehicleStatusService;
-import com.pinguela.rentexpres.service.impl.VehicleCategoryServiceImpl;
 import com.pinguela.rentexpres.service.impl.VehicleServiceImpl;
-import com.pinguela.rentexpres.service.impl.VehicleStatusServiceImpl;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -29,7 +23,6 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
@@ -41,12 +34,8 @@ public class ZOpenVehicleResourse {
     private static final Logger logger = Logger.getLogger(ZOpenVehicleResourse.class.getName());
 
     private final VehicleService vehicleService;
-    private final VehicleCategoryService vehicleCategoryService;
-    private final VehicleStatusService vehicleStatusService;
     public ZOpenVehicleResourse() {
         this.vehicleService = new VehicleServiceImpl();
-        this.vehicleCategoryService = new VehicleCategoryServiceImpl();
-        this.vehicleStatusService = new VehicleStatusServiceImpl();
     }
 
     @GET
@@ -309,184 +298,6 @@ public class ZOpenVehicleResourse {
             logger.warning(e.getMessage());
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
-    }
-
-    @GET
-    @Path("/categories")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Tag(name = "Vehicle Categories", description = "Operations for vehicle category management")
-    @Operation(
-        operationId = "findAllVehicleCategories",
-        summary = "Find all vehicle categories",
-        description = "Retrieves all vehicle categories for the provided locale",
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Categories retrieved successfully", 
-            	content = @Content(mediaType = MediaType.APPLICATION_JSON,
-            	schema = @Schema(implementation = VehicleCategoryDTO[].class)
-            	)
-            ),
-            @ApiResponse(
-            	responseCode = "204",
-                description = "No categories found"),
-            
-            @ApiResponse(
-            	responseCode = "400",
-                description = "isoCode is required"),
-            
-            @ApiResponse(
-            	responseCode = "500",
-                description = "Unexpected error while retrieving categories")
-        } 
-    )
-    public Response findAllCategories(@QueryParam("isoCode") String isoCode) {
-        if (isoCode == null || isoCode.trim().isEmpty()) {
-            return Response.status(Status.BAD_REQUEST).entity("isoCode is required").build();
-        }
-        try {
-            List<VehicleCategoryDTO> categories = vehicleCategoryService.findAll(normalizeIsoCode(isoCode));
-            if (categories == null || categories.isEmpty()) {
-                return Response.status(Status.NO_CONTENT).build();
-            }
-            return Response.ok(categories).build();
-        } catch (RentexpresException e) {
-            logger.warning(e.getMessage());
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-    }
-
-    @GET
-    @Path("/categories/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Tag(name = "Vehicle Categories", description = "Operations for vehicle category management")
-    @Operation(
-        operationId = "findVehicleCategoryById",
-        summary = "Find vehicle category by ID",
-        description = "Retrieves a specific vehicle category for the provided locale",
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Category retrieved successfully",
-            		content = @Content(mediaType = MediaType.APPLICATION_JSON,
-            		schema = @Schema(implementation = VehicleCategoryDTO.class)
-            		)
-            ),
-            @ApiResponse(
-            	responseCode = "404", 
-            	description = "Category not found"),
-            
-            @ApiResponse(
-            	responseCode = "400",
-            	
-            	description = "Invalid parameters supplied"),
-            
-            @ApiResponse(
-            	responseCode = "500",
-            	description = "Unexpected error while retrieving the category")
-        }
-    )
-    public Response findCategoryById(@PathParam("id") Integer id, @QueryParam("isoCode") String isoCode) {
-        if (id == null || isoCode == null || isoCode.trim().isEmpty()) {
-            return Response.status(Status.BAD_REQUEST).entity("Category id and isoCode are required").build();
-        }
-        try {
-            VehicleCategoryDTO dto = vehicleCategoryService.findById(id, normalizeIsoCode(isoCode));
-            if (dto == null) {
-                return Response.status(Status.NOT_FOUND).build();
-            }
-            return Response.ok(dto).build();
-        } catch (RentexpresException e) {
-            logger.warning(e.getMessage());
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-    }
-
-    @GET
-    @Path("/statuses")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Tag(name = "Vehicle Statuses", description = "Operations for vehicle status management")
-    @Operation(
-        operationId = "findAllVehicleStatuses",
-        summary = "Find all vehicle statuses",
-        description = "Retrieves all vehicle statuses for the provided locale",
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Statuses retrieved successfully",
-            		content = @Content(mediaType = MediaType.APPLICATION_JSON,
-            		schema = @Schema(implementation = VehicleStatusDTO[].class)
-            		)
-            ),          
-            @ApiResponse(
-            	responseCode = "204", 
-            	description = "No statuses found"),
-            
-            @ApiResponse(
-            	responseCode = "400",
-            	description = "isoCode is required"),
-            
-            @ApiResponse(
-            	responseCode = "500",
-                description = "Unexpected error while retrieving statuses")
-        }
-    )
-    public Response findAllStatuses(@QueryParam("isoCode") String isoCode) {
-        if (isoCode == null || isoCode.trim().isEmpty()) {
-            return Response.status(Status.BAD_REQUEST).entity("isoCode is required").build();
-        }
-        try {
-            List<VehicleStatusDTO> statuses = vehicleStatusService.findAll(normalizeIsoCode(isoCode));
-            if (statuses == null || statuses.isEmpty()) {
-                return Response.status(Status.NO_CONTENT).build();
-            }
-            return Response.ok(statuses).build();
-        } catch (RentexpresException e) {
-            logger.warning(e.getMessage());
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-    }
-
-    @GET
-    @Path("/statuses/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Tag(name = "Vehicle Statuses", description = "Operations for vehicle status management")
-    @Operation(
-        operationId = "findVehicleStatusById",
-        summary = "Find vehicle status by ID",
-        description = "Retrieves a specific vehicle status for the provided locale",
-        responses = {
-            @ApiResponse(responseCode = "200",
-            	description = "Status retrieved successfully",
-            	content = @Content(mediaType = MediaType.APPLICATION_JSON,
-            	schema = @Schema(implementation = VehicleStatusDTO.class)
-            	)
-            ),
-            @ApiResponse(
-            	responseCode = "404",
-                description = "Status not found"),
-            
-            @ApiResponse(
-            	responseCode = "400",
-            	description = "Invalid parameters supplied"),
-            
-            @ApiResponse(
-            	responseCode = "500", 
-            	description = "Unexpected error while retrieving the status")
-        }
-    )
-    public Response findStatusById(@PathParam("id") Integer id, @QueryParam("isoCode") String isoCode) {
-        if (id == null || isoCode == null || isoCode.trim().isEmpty()) {
-            return Response.status(Status.BAD_REQUEST).entity("Status id and isoCode are required").build();
-        }
-        try {
-            VehicleStatusDTO dto = vehicleStatusService.findById(id, normalizeIsoCode(isoCode));
-            if (dto == null) {
-                return Response.status(Status.NOT_FOUND).build();
-            }
-            return Response.ok(dto).build();
-        } catch (RentexpresException e) {
-            logger.warning(e.getMessage());
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-    }
-
-    private String normalizeIsoCode(String isoCode) {
-        return isoCode == null ? null : isoCode.trim().toUpperCase();
     }
 
   }
