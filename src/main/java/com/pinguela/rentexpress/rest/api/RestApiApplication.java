@@ -1,7 +1,6 @@
 package com.pinguela.rentexpress.rest.api;
 
 import org.glassfish.jersey.internal.JaxrsProviders;
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import com.pinguela.rentexpress.rest.api.param.DateTimeJsonbProvider;
