@@ -42,7 +42,20 @@ public class ZOpenRentalResourse {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Find all rentals")
+    @Operation(
+        operationId = "findAllRentals",
+        summary = "Find all rentals",
+        description = "Retrieves every rental available in the system",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Rentals retrieved successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RentalDTO[].class))
+            ),
+            @ApiResponse(responseCode = "204", description = "No rentals found"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving rentals")
+        }
+    )
     public Response findAll() {
         try {
             List<RentalDTO> rentals = rentalService.findAll();

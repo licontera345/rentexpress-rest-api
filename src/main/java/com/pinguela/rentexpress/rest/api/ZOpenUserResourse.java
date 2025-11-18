@@ -42,7 +42,20 @@ public class ZOpenUserResourse {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Find all users")
+    @Operation(
+        operationId = "findAllUsers",
+        summary = "Find all users",
+        description = "Retrieves every user available in the system",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Users retrieved successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = UserDTO[].class))
+            ),
+            @ApiResponse(responseCode = "204", description = "No users found"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving users")
+        }
+    )
     public Response findAll() {
         try {
             List<UserDTO> users = userService.findAll();

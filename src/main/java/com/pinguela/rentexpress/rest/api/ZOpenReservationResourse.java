@@ -41,7 +41,20 @@ public class ZOpenReservationResourse {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Find all reservations")
+    @Operation(
+        operationId = "findAllReservations",
+        summary = "Find all reservations",
+        description = "Retrieves every reservation available in the system",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Reservations retrieved successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = ReservationDTO[].class))
+            ),
+            @ApiResponse(responseCode = "204", description = "No reservations found"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving reservations")
+        }
+    )
     public Response findAll() {
         try {
             List<ReservationDTO> reservations = reservationService.findAll();
