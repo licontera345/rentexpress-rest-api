@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -34,6 +35,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
 @Path("/vehicles")
+@Tag(name = "Vehicles", description = "Operations for vehicle management")
 public class ZOpenVehicleResourse {
 
     private static final Logger logger = Logger.getLogger(ZOpenVehicleResourse.class.getName());
@@ -312,6 +314,7 @@ public class ZOpenVehicleResourse {
     @GET
     @Path("/categories")
     @Produces(MediaType.APPLICATION_JSON)
+    @Tag(name = "Vehicle Categories", description = "Operations for vehicle category management")
     @Operation(
         operationId = "findAllVehicleCategories",
         summary = "Find all vehicle categories",
@@ -354,6 +357,7 @@ public class ZOpenVehicleResourse {
     @GET
     @Path("/categories/{id}")
     @Produces(MediaType.APPLICATION_JSON)
+    @Tag(name = "Vehicle Categories", description = "Operations for vehicle category management")
     @Operation(
         operationId = "findVehicleCategoryById",
         summary = "Find vehicle category by ID",
@@ -397,6 +401,7 @@ public class ZOpenVehicleResourse {
     @GET
     @Path("/statuses")
     @Produces(MediaType.APPLICATION_JSON)
+    @Tag(name = "Vehicle Statuses", description = "Operations for vehicle status management")
     @Operation(
         operationId = "findAllVehicleStatuses",
         summary = "Find all vehicle statuses",
@@ -439,6 +444,7 @@ public class ZOpenVehicleResourse {
     @GET
     @Path("/statuses/{id}")
     @Produces(MediaType.APPLICATION_JSON)
+    @Tag(name = "Vehicle Statuses", description = "Operations for vehicle status management")
     @Operation(
         operationId = "findVehicleStatusById",
         summary = "Find vehicle status by ID",
