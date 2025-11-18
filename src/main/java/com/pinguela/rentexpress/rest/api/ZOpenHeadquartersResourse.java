@@ -39,7 +39,20 @@ public class ZOpenHeadquartersResourse {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Find all headquarters")
+    @Operation(
+        operationId = "findAllHeadquarters",
+        summary = "Find all headquarters",
+        description = "Retrieves every headquarters available in the system",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Headquarters retrieved successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = HeadquartersDTO[].class))
+            ),
+            @ApiResponse(responseCode = "204", description = "No headquarters found"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving headquarters")
+        }
+    )
     public Response findAll() {
         try {
             List<HeadquartersDTO> headquarters = headquartersService.findAll();

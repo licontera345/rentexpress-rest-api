@@ -42,7 +42,20 @@ public class ZOpenEmployeeResourse {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Find all employees")
+    @Operation(
+        operationId = "findAllEmployees",
+        summary = "Find all employees",
+        description = "Retrieves every employee registered in the system",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Employees retrieved successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = EmployeeDTO[].class))
+            ),
+            @ApiResponse(responseCode = "204", description = "No employees found"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving employees")
+        }
+    )
     public Response findAll() {
         try {
             List<EmployeeDTO> employees = employeeService.findAll();

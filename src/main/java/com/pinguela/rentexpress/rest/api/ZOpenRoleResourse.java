@@ -35,7 +35,20 @@ public class ZOpenRoleResourse {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Find all roles")
+    @Operation(
+        operationId = "findAllRoles",
+        summary = "Find all roles",
+        description = "Retrieves every role available in the system",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Roles retrieved successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RoleDTO[].class))
+            ),
+            @ApiResponse(responseCode = "204", description = "No roles found"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving roles")
+        }
+    )
     public Response findAll() {
         try {
             List<RoleDTO> roles = roleService.findAll();

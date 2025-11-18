@@ -39,7 +39,20 @@ public class ZOpenProvinceResourse {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Find all provinces")
+    @Operation(
+        operationId = "findAllProvinces",
+        summary = "Find all provinces",
+        description = "Retrieves every province available in the system",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Provinces retrieved successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = ProvinceDTO[].class))
+            ),
+            @ApiResponse(responseCode = "204", description = "No provinces found"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving provinces")
+        }
+    )
     public Response findAll() {
         try {
             List<ProvinceDTO> provinces = provinceService.findAll();

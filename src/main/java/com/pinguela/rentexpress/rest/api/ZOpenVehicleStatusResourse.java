@@ -36,7 +36,21 @@ public class ZOpenVehicleStatusResourse {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Find all vehicle statuses")
+    @Operation(
+        operationId = "findAllVehicleStatuses",
+        summary = "Find all vehicle statuses",
+        description = "Retrieves every vehicle status translated with the provided isoCode",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Vehicle statuses retrieved successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = VehicleStatusDTO[].class))
+            ),
+            @ApiResponse(responseCode = "204", description = "No vehicle statuses found"),
+            @ApiResponse(responseCode = "400", description = "Missing or invalid isoCode supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving vehicle statuses")
+        }
+    )
     public Response findAll(@QueryParam("isoCode") String isoCode) {
         if (isoCode == null || isoCode.isEmpty()) {
             return Response.status(Status.BAD_REQUEST).entity("isoCode is required").build();
