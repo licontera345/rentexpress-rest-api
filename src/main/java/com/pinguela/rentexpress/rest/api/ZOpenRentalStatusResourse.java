@@ -35,7 +35,7 @@ public class ZOpenRentalStatusResourse {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Find all rental statuses")
     public Response findAll(@QueryParam("isoCode") String isoCode) {
-        if (isoCode == null || isoCode.isBlank()) {
+        if (isoCode == null || isoCode.isEmpty()) {
             return Response.status(Status.BAD_REQUEST).entity("isoCode is required").build();
         }
         try {
@@ -55,7 +55,7 @@ public class ZOpenRentalStatusResourse {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Find rental status by ID")
     public Response findById(@PathParam("id") Integer id, @QueryParam("isoCode") String isoCode) {
-        if (id == null || isoCode == null || isoCode.isBlank()) {
+        if (id == null || isoCode == null || isoCode.isEmpty()) {
             return Response.status(Status.BAD_REQUEST).entity("Rental status ID and isoCode are required").build();
         }
         try {
