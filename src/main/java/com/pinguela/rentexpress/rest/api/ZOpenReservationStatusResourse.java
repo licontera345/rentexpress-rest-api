@@ -1,0 +1,72 @@
+package com.pinguela.rentexpress.rest.api;
+
+import java.util.List;
+import java.util.logging.Logger;
+
+import com.pinguela.rentexpres.exception.RentexpresException;
+import com.pinguela.rentexpres.model.ReservationStatusDTO;
+import com.pinguela.rentexpres.service.ReservationStatusService;
+import com.pinguela.rentexpres.service.impl.ReservationStatusServiceImpl;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
+
+@Path("/reservation-statuses")
+@Tag(name = "Reservation Statuses", description = "Operations for reservation status reference data")
+public class ZOpenReservationStatusResourse {
+
+    private static final Logger logger = Logger.getLogger(ZOpenReservationStatusResourse.class.getName());
+
+    private final ReservationStatusService reservationStatusService;
+
+    public ZOpenReservationStatusResourse() {
+        this.reservationStatusService = new ReservationStatusServiceImpl();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Find all reservation statuses")
+    public Response findAll(@QueryParam("isoCode") String isoCode) {
+        if (isoCode == null || isoCode.isBlank()) {
+            return Response.status(Status.BAD_REQUEST).entity("isoCode is required").build();
+        }
+        try {
+            List<ReservationStatusDTO> statuses = reservationStatusService.findAll(isoCode);
+            if (statuses == null || statuses.isEmpty()) {
+                return Response.status(Status.NO_CONTENT).build();
+            }
+            return Response.ok(statuses).build();
+        } catch (RentexpresException e) {
+            logger.warning(e.getMessage());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
+    }
+
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Find reservation status by ID")
+    public Response findById(@PathParam("id") Integer id, @QueryParam("isoCode") String isoCode) {
+        if (id == null || isoCode == null || isoCode.isBlank()) {
+            return Response.status(Status.BAD_REQUEST).entity("Reservation status ID and isoCode are required").build();
+        }
+        try {
+            ReservationStatusDTO status = reservationStatusService.findById(id, isoCode);
+            if (status == null) {
+                return Response.status(Status.NOT_FOUND).build();
+            }
+            return Response.ok(status).build();
+        } catch (RentexpresException e) {
+            logger.warning(e.getMessage());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
+    }
+}
