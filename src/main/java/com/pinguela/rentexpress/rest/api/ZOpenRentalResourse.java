@@ -149,7 +149,21 @@ public class ZOpenRentalResourse {
 
     @DELETE
     @Path("/{id}")
-    @Operation(summary = "Delete rental")
+    @Operation(
+        operationId = "deleteRental",
+        summary = "Delete rental",
+        description = "Deletes a rental using its unique identifier",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Rental deleted successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = String.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "Rental not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid rental identifier supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while deleting the rental")
+        }
+    )
     public Response delete(@PathParam("id") Integer id) {
         if (id == null) {
             return Response.status(Status.BAD_REQUEST).entity("Rental ID is required").build();
