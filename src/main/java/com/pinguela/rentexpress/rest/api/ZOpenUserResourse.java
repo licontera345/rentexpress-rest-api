@@ -106,7 +106,20 @@ public class ZOpenUserResourse {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Create user")
+    @Operation(
+        operationId = "createUser",
+        summary = "Create user",
+        description = "Creates a new user in the system",
+        responses = {
+            @ApiResponse(
+                responseCode = "201",
+                description = "User created successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = UserDTO.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "Invalid user data supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while creating the user")
+        }
+    )
     public Response create(UserDTO user) {
         if (user == null) {
             return Response.status(Status.BAD_REQUEST).entity("User data is required").build();
@@ -127,7 +140,21 @@ public class ZOpenUserResourse {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Update user")
+    @Operation(
+        operationId = "updateUser",
+        summary = "Update user",
+        description = "Updates an existing user using its unique identifier",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "User updated successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = UserDTO.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "User not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid user data supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while updating the user")
+        }
+    )
     public Response update(UserDTO user) {
         if (user == null || user.getUserId() == null) {
             return Response.status(Status.BAD_REQUEST).entity("User ID and data are required").build();
@@ -183,7 +210,21 @@ public class ZOpenUserResourse {
     @Path("/search")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Search users by criteria")
+    @Operation(
+        operationId = "searchUsers",
+        summary = "Search users by criteria",
+        description = "Retrieves users that match the provided search criteria",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Users retrieved successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Results.class))
+            ),
+            @ApiResponse(responseCode = "204", description = "No users found"),
+            @ApiResponse(responseCode = "400", description = "Invalid search criteria supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while searching users")
+        }
+    )
     public Response findByCriteria(UserCriteria criteria) {
         if (criteria == null) {
             return Response.status(Status.BAD_REQUEST).entity("Search criteria is required").build();
@@ -204,7 +245,21 @@ public class ZOpenUserResourse {
     @Path("/authenticate")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Authenticate user")
+    @Operation(
+        operationId = "authenticateUser",
+        summary = "Authenticate user",
+        description = "Authenticates a user using login credentials",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "User authenticated successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = UserDTO.class))
+            ),
+            @ApiResponse(responseCode = "401", description = "Invalid credentials"),
+            @ApiResponse(responseCode = "400", description = "Login and password are required"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while authenticating the user")
+        }
+    )
     public Response authenticate(Map<String, String> credentials) {
         if (credentials == null || !credentials.containsKey("login") || !credentials.containsKey("password")) {
             return Response.status(Status.BAD_REQUEST).entity("Login and password are required").build();
@@ -223,7 +278,21 @@ public class ZOpenUserResourse {
 
     @POST
     @Path("/{id}/activate")
-    @Operation(summary = "Activate user")
+    @Operation(
+        operationId = "activateUser",
+        summary = "Activate user",
+        description = "Activates a user using its unique identifier",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "User activated successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = String.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "User not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid user identifier supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while activating the user")
+        }
+    )
     public Response activate(@PathParam("id") Integer id) {
         if (id == null) {
             return Response.status(Status.BAD_REQUEST).entity("User ID is required").build();
