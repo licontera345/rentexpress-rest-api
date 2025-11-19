@@ -1,5 +1,6 @@
 package com.pinguela.rentexpress.rest.api;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -10,6 +11,7 @@ import com.pinguela.rentexpres.model.EmployeeDTO;
 import com.pinguela.rentexpres.model.Results;
 import com.pinguela.rentexpres.service.EmployeeService;
 import com.pinguela.rentexpres.service.impl.EmployeeServiceImpl;
+import com.pinguela.rentexpress.rest.api.param.QueryParamUtils;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -24,6 +26,7 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
@@ -207,9 +210,8 @@ public class ZOpenEmployeeResourse {
         }
     }
 
-    @POST
+    @GET
     @Path("/search")
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(
         operationId = "searchEmployees",
@@ -226,20 +228,126 @@ public class ZOpenEmployeeResourse {
             @ApiResponse(responseCode = "500", description = "Unexpected error while searching for employees")
         }
     )
-    public Response findByCriteria(EmployeeCriteria criteria) {
-        if (criteria == null) {
-            return Response.status(Status.BAD_REQUEST).entity("Search criteria is required").build();
-        }
+    public Response findByCriteria(
+            @QueryParam("employeeId") Integer employeeId,
+            @QueryParam("employeeName") String employeeName,
+            @QueryParam("roleId") Integer roleId,
+            @QueryParam("headquartersId") Integer headquartersId,
+            @QueryParam("firstName") String firstName,
+            @QueryParam("lastName1") String lastName1,
+            @QueryParam("lastName2") String lastName2,
+            @QueryParam("email") String email,
+            @QueryParam("phone") String phone,
+            @QueryParam("activeStatus") Boolean activeStatus,
+            @QueryParam("pageNumber") Integer pageNumber,
+            @QueryParam("pageSize") Integer pageSize,
+            @QueryParam("createdAtFrom") String createdAtFrom,
+            @QueryParam("createdAtTo") String createdAtTo,
+            @QueryParam("updatedAtFrom") String updatedAtFrom,
+            @QueryParam("updatedAtTo") String updatedAtTo) {
         try {
+            EmployeeCriteria criteria = buildEmployeeCriteria(
+                    employeeId,
+                    employeeName,
+                    roleId,
+                    headquartersId,
+                    firstName,
+                    lastName1,
+                    lastName2,
+                    email,
+                    phone,
+                    activeStatus,
+                    pageNumber,
+                    pageSize,
+                    createdAtFrom,
+                    createdAtTo,
+                    updatedAtFrom,
+                    updatedAtTo);
             Results<EmployeeDTO> results = employeeService.findByCriteria(criteria);
             if (results == null || results.getResults() == null || results.getResults().isEmpty()) {
                 return Response.status(Status.NO_CONTENT).build();
             }
             return Response.ok(results).build();
+        } catch (IllegalArgumentException e) {
+            logger.warning(e.getMessage());
+            return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
         } catch (RentexpresException e) {
             logger.warning(e.getMessage());
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
+    }
+
+    private EmployeeCriteria buildEmployeeCriteria(
+            Integer employeeId,
+            String employeeName,
+            Integer roleId,
+            Integer headquartersId,
+            String firstName,
+            String lastName1,
+            String lastName2,
+            String email,
+            String phone,
+            Boolean activeStatus,
+            Integer pageNumber,
+            Integer pageSize,
+            String createdAtFrom,
+            String createdAtTo,
+            String updatedAtFrom,
+            String updatedAtTo) {
+        EmployeeCriteria criteria = new EmployeeCriteria();
+        if (employeeId != null) {
+            criteria.setEmployeeId(employeeId);
+        }
+        if (employeeName != null) {
+            criteria.setEmployeeName(employeeName);
+        }
+        if (roleId != null) {
+            criteria.setRoleId(roleId);
+        }
+        if (headquartersId != null) {
+            criteria.setHeadquartersId(headquartersId);
+        }
+        if (firstName != null) {
+            criteria.setFirstName(firstName);
+        }
+        if (lastName1 != null) {
+            criteria.setLastName1(lastName1);
+        }
+        if (lastName2 != null) {
+            criteria.setLastName2(lastName2);
+        }
+        if (email != null) {
+            criteria.setEmail(email);
+        }
+        if (phone != null) {
+            criteria.setPhone(phone);
+        }
+        if (activeStatus != null) {
+            criteria.setActiveStatus(activeStatus);
+        }
+        if (pageNumber != null) {
+            criteria.setPageNumber(pageNumber);
+        }
+        if (pageSize != null) {
+            criteria.setPageSize(pageSize);
+        }
+        LocalDateTime createdFrom = QueryParamUtils.parseDateTime(createdAtFrom, "createdAtFrom");
+        LocalDateTime createdTo = QueryParamUtils.parseDateTime(createdAtTo, "createdAtTo");
+        LocalDateTime updatedFrom = QueryParamUtils.parseDateTime(updatedAtFrom, "updatedAtFrom");
+        LocalDateTime updatedTo = QueryParamUtils.parseDateTime(updatedAtTo, "updatedAtTo");
+        if (createdFrom != null) {
+            criteria.setCreatedAtFrom(createdFrom);
+        }
+        if (createdTo != null) {
+            criteria.setCreatedAtTo(createdTo);
+        }
+        if (updatedFrom != null) {
+            criteria.setUpdatedAtFrom(updatedFrom);
+        }
+        if (updatedTo != null) {
+            criteria.setUpdatedAtTo(updatedTo);
+        }
+        return criteria;
     }
 
     @POST

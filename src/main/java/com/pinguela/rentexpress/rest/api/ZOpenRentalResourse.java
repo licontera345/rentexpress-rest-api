@@ -1,5 +1,6 @@
 package com.pinguela.rentexpress.rest.api;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -10,6 +11,7 @@ import com.pinguela.rentexpres.model.ReservationDTO;
 import com.pinguela.rentexpres.model.Results;
 import com.pinguela.rentexpres.service.RentalService;
 import com.pinguela.rentexpres.service.impl.RentalServiceImpl;
+import com.pinguela.rentexpress.rest.api.param.QueryParamUtils;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -24,6 +26,7 @@ import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
@@ -208,9 +211,8 @@ public class ZOpenRentalResourse {
         }
     }
 
-    @POST
+    @GET
     @Path("/search")
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(
         operationId = "searchRentals",
@@ -227,20 +229,246 @@ public class ZOpenRentalResourse {
             @ApiResponse(responseCode = "500", description = "Unexpected error while searching for rentals")
         }
     )
-    public Response findByCriteria(RentalCriteria criteria) {
-        if (criteria == null) {
-            return Response.status(Status.BAD_REQUEST).entity("Search criteria is required").build();
-        }
+    public Response findByCriteria(
+            @QueryParam("rentalId") Integer rentalId,
+            @QueryParam("rentalStatusId") Integer rentalStatusId,
+            @QueryParam("reservationId") Integer reservationId,
+            @QueryParam("userId") Integer userId,
+            @QueryParam("employeeId") Integer employeeId,
+            @QueryParam("vehicleId") Integer vehicleId,
+            @QueryParam("pickupHeadquartersId") Integer pickupHeadquartersId,
+            @QueryParam("returnHeadquartersId") Integer returnHeadquartersId,
+            @QueryParam("startDateEffectiveFrom") String startDateEffectiveFrom,
+            @QueryParam("startDateEffectiveTo") String startDateEffectiveTo,
+            @QueryParam("endDateEffectiveFrom") String endDateEffectiveFrom,
+            @QueryParam("endDateEffectiveTo") String endDateEffectiveTo,
+            @QueryParam("createdAtFrom") String createdAtFrom,
+            @QueryParam("createdAtTo") String createdAtTo,
+            @QueryParam("updatedAtFrom") String updatedAtFrom,
+            @QueryParam("updatedAtTo") String updatedAtTo,
+            @QueryParam("initialKmMin") Integer initialKmMin,
+            @QueryParam("initialKmMax") Integer initialKmMax,
+            @QueryParam("finalKmMin") Integer finalKmMin,
+            @QueryParam("finalKmMax") Integer finalKmMax,
+            @QueryParam("totalCostMin") Double totalCostMin,
+            @QueryParam("totalCostMax") Double totalCostMax,
+            @QueryParam("startDateEffective") String startDateEffective,
+            @QueryParam("endDateEffective") String endDateEffective,
+            @QueryParam("initialKm") Integer initialKm,
+            @QueryParam("finalKm") Integer finalKm,
+            @QueryParam("totalCost") Double totalCost,
+            @QueryParam("userFirstName") String userFirstName,
+            @QueryParam("userLastName1") String userLastName1,
+            @QueryParam("phone") String phone,
+            @QueryParam("licensePlate") String licensePlate,
+            @QueryParam("brand") String brand,
+            @QueryParam("model") String model,
+            @QueryParam("pageNumber") Integer pageNumber,
+            @QueryParam("pageSize") Integer pageSize) {
         try {
+            RentalCriteria criteria = buildRentalCriteria(
+                    rentalId,
+                    rentalStatusId,
+                    reservationId,
+                    userId,
+                    employeeId,
+                    vehicleId,
+                    pickupHeadquartersId,
+                    returnHeadquartersId,
+                    startDateEffectiveFrom,
+                    startDateEffectiveTo,
+                    endDateEffectiveFrom,
+                    endDateEffectiveTo,
+                    createdAtFrom,
+                    createdAtTo,
+                    updatedAtFrom,
+                    updatedAtTo,
+                    initialKmMin,
+                    initialKmMax,
+                    finalKmMin,
+                    finalKmMax,
+                    totalCostMin,
+                    totalCostMax,
+                    startDateEffective,
+                    endDateEffective,
+                    initialKm,
+                    finalKm,
+                    totalCost,
+                    userFirstName,
+                    userLastName1,
+                    phone,
+                    licensePlate,
+                    brand,
+                    model,
+                    pageNumber,
+                    pageSize);
             Results<RentalDTO> results = rentalService.findByCriteria(criteria);
             if (results == null || results.getResults() == null || results.getResults().isEmpty()) {
                 return Response.status(Status.NO_CONTENT).build();
             }
             return Response.ok(results).build();
+        } catch (IllegalArgumentException e) {
+            logger.warning(e.getMessage());
+            return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
         } catch (RentexpresException e) {
             logger.warning(e.getMessage());
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
+    }
+
+    private RentalCriteria buildRentalCriteria(
+            Integer rentalId,
+            Integer rentalStatusId,
+            Integer reservationId,
+            Integer userId,
+            Integer employeeId,
+            Integer vehicleId,
+            Integer pickupHeadquartersId,
+            Integer returnHeadquartersId,
+            String startDateEffectiveFrom,
+            String startDateEffectiveTo,
+            String endDateEffectiveFrom,
+            String endDateEffectiveTo,
+            String createdAtFrom,
+            String createdAtTo,
+            String updatedAtFrom,
+            String updatedAtTo,
+            Integer initialKmMin,
+            Integer initialKmMax,
+            Integer finalKmMin,
+            Integer finalKmMax,
+            Double totalCostMin,
+            Double totalCostMax,
+            String startDateEffective,
+            String endDateEffective,
+            Integer initialKm,
+            Integer finalKm,
+            Double totalCost,
+            String userFirstName,
+            String userLastName1,
+            String phone,
+            String licensePlate,
+            String brand,
+            String model,
+            Integer pageNumber,
+            Integer pageSize) {
+        RentalCriteria criteria = new RentalCriteria();
+        if (rentalId != null) {
+            criteria.setRentalId(rentalId);
+        }
+        if (rentalStatusId != null) {
+            criteria.setRentalStatusId(rentalStatusId);
+        }
+        if (reservationId != null) {
+            criteria.setReservationId(reservationId);
+        }
+        if (userId != null) {
+            criteria.setUserId(userId);
+        }
+        if (employeeId != null) {
+            criteria.setEmployeeId(employeeId);
+        }
+        if (vehicleId != null) {
+            criteria.setVehicleId(vehicleId);
+        }
+        if (pickupHeadquartersId != null) {
+            criteria.setPickupHeadquartersId(pickupHeadquartersId);
+        }
+        if (returnHeadquartersId != null) {
+            criteria.setReturnHeadquartersId(returnHeadquartersId);
+        }
+        LocalDateTime startFrom = QueryParamUtils.parseDateTime(startDateEffectiveFrom, "startDateEffectiveFrom");
+        LocalDateTime startTo = QueryParamUtils.parseDateTime(startDateEffectiveTo, "startDateEffectiveTo");
+        LocalDateTime endFrom = QueryParamUtils.parseDateTime(endDateEffectiveFrom, "endDateEffectiveFrom");
+        LocalDateTime endTo = QueryParamUtils.parseDateTime(endDateEffectiveTo, "endDateEffectiveTo");
+        LocalDateTime createdFrom = QueryParamUtils.parseDateTime(createdAtFrom, "createdAtFrom");
+        LocalDateTime createdTo = QueryParamUtils.parseDateTime(createdAtTo, "createdAtTo");
+        LocalDateTime updatedFrom = QueryParamUtils.parseDateTime(updatedAtFrom, "updatedAtFrom");
+        LocalDateTime updatedTo = QueryParamUtils.parseDateTime(updatedAtTo, "updatedAtTo");
+        LocalDateTime startExact = QueryParamUtils.parseDateTime(startDateEffective, "startDateEffective");
+        LocalDateTime endExact = QueryParamUtils.parseDateTime(endDateEffective, "endDateEffective");
+        if (startFrom != null) {
+            criteria.setStartDateEffectiveFrom(startFrom);
+        }
+        if (startTo != null) {
+            criteria.setStartDateEffectiveTo(startTo);
+        }
+        if (endFrom != null) {
+            criteria.setEndDateEffectiveFrom(endFrom);
+        }
+        if (endTo != null) {
+            criteria.setEndDateEffectiveTo(endTo);
+        }
+        if (createdFrom != null) {
+            criteria.setCreatedAtFrom(createdFrom);
+        }
+        if (createdTo != null) {
+            criteria.setCreatedAtTo(createdTo);
+        }
+        if (updatedFrom != null) {
+            criteria.setUpdatedAtFrom(updatedFrom);
+        }
+        if (updatedTo != null) {
+            criteria.setUpdatedAtTo(updatedTo);
+        }
+        if (startExact != null) {
+            criteria.setStartDateEffective(startExact);
+        }
+        if (endExact != null) {
+            criteria.setEndDateEffective(endExact);
+        }
+        if (initialKmMin != null) {
+            criteria.setInitialKmMin(initialKmMin);
+        }
+        if (initialKmMax != null) {
+            criteria.setInitialKmMax(initialKmMax);
+        }
+        if (finalKmMin != null) {
+            criteria.setFinalKmMin(finalKmMin);
+        }
+        if (finalKmMax != null) {
+            criteria.setFinalKmMax(finalKmMax);
+        }
+        if (totalCostMin != null) {
+            criteria.setTotalCostMin(totalCostMin);
+        }
+        if (totalCostMax != null) {
+            criteria.setTotalCostMax(totalCostMax);
+        }
+        if (initialKm != null) {
+            criteria.setInitialKm(initialKm);
+        }
+        if (finalKm != null) {
+            criteria.setFinalKm(finalKm);
+        }
+        if (totalCost != null) {
+            criteria.setTotalCost(totalCost);
+        }
+        if (userFirstName != null) {
+            criteria.setUserFirstName(userFirstName);
+        }
+        if (userLastName1 != null) {
+            criteria.setUserLastName1(userLastName1);
+        }
+        if (phone != null) {
+            criteria.setPhone(phone);
+        }
+        if (licensePlate != null) {
+            criteria.setLicensePlate(licensePlate);
+        }
+        if (brand != null) {
+            criteria.setBrand(brand);
+        }
+        if (model != null) {
+            criteria.setModel(model);
+        }
+        if (pageNumber != null) {
+            criteria.setPageNumber(pageNumber);
+        }
+        if (pageSize != null) {
+            criteria.setPageSize(pageSize);
+        }
+        return criteria;
     }
 
     @GET
