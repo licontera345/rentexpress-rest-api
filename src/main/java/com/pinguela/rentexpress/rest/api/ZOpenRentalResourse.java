@@ -106,7 +106,20 @@ public class ZOpenRentalResourse {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Create rental")
+    @Operation(
+        operationId = "createRental",
+        summary = "Create rental",
+        description = "Creates a new rental record in the system",
+        responses = {
+            @ApiResponse(
+                responseCode = "201",
+                description = "Rental created successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RentalDTO.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "Invalid rental data supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while creating the rental")
+        }
+    )
     public Response create(RentalDTO rental) {
         if (rental == null) {
             return Response.status(Status.BAD_REQUEST).entity("Rental data is required").build();
@@ -129,7 +142,21 @@ public class ZOpenRentalResourse {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Update rental")
+    @Operation(
+        operationId = "updateRental",
+        summary = "Update rental",
+        description = "Updates an existing rental with the provided data",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Rental updated successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RentalDTO.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "Invalid rental data supplied"),
+            @ApiResponse(responseCode = "404", description = "Rental not found"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while updating the rental")
+        }
+    )
     public Response update(RentalDTO rental) {
         if (rental == null || rental.getRentalId() == null) {
             return Response.status(Status.BAD_REQUEST).entity("Rental ID and data are required").build();
@@ -185,7 +212,21 @@ public class ZOpenRentalResourse {
     @Path("/search")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Search rentals by criteria")
+    @Operation(
+        operationId = "searchRentals",
+        summary = "Search rentals by criteria",
+        description = "Retrieves rentals that match the provided search criteria",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Search executed successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Results.class))
+            ),
+            @ApiResponse(responseCode = "204", description = "No rentals found for the provided criteria"),
+            @ApiResponse(responseCode = "400", description = "Invalid search criteria supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while searching for rentals")
+        }
+    )
     public Response findByCriteria(RentalCriteria criteria) {
         if (criteria == null) {
             return Response.status(Status.BAD_REQUEST).entity("Search criteria is required").build();
@@ -205,7 +246,20 @@ public class ZOpenRentalResourse {
     @GET
     @Path("/reservations/{reservationId}/exists")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Check rental existence by reservation")
+    @Operation(
+        operationId = "existsRentalByReservation",
+        summary = "Check rental existence by reservation",
+        description = "Determines whether a rental exists for the specified reservation",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Existence check completed",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Boolean.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "Invalid reservation identifier supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while checking rental existence")
+        }
+    )
     public Response existsByReservation(@PathParam("reservationId") Integer reservationId) {
         if (reservationId == null) {
             return Response.status(Status.BAD_REQUEST).entity("Reservation ID is required").build();
@@ -222,7 +276,16 @@ public class ZOpenRentalResourse {
     @POST
     @Path("/from-reservation")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Create rental from reservation")
+    @Operation(
+        operationId = "createRentalFromReservation",
+        summary = "Create rental from reservation",
+        description = "Creates a rental entity using data from an existing reservation",
+        responses = {
+            @ApiResponse(responseCode = "201", description = "Rental created successfully from reservation"),
+            @ApiResponse(responseCode = "400", description = "Invalid reservation data supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while creating the rental")
+        }
+    )
     public Response createFromReservation(ReservationDTO reservation) {
         if (reservation == null || reservation.getReservationId() == null) {
             return Response.status(Status.BAD_REQUEST).entity("Reservation data is required").build();
@@ -239,7 +302,19 @@ public class ZOpenRentalResourse {
     @POST
     @Path("/auto-convert")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Auto convert reservations into rentals")
+    @Operation(
+        operationId = "autoConvertReservations",
+        summary = "Auto convert reservations into rentals",
+        description = "Converts eligible reservations into rentals automatically",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Reservations converted successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Integer.class))
+            ),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while converting reservations")
+        }
+    )
     public Response autoConvertReservations() {
         try {
             int converted = rentalService.autoConvertReservations();
