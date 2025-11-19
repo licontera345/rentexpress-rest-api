@@ -105,7 +105,20 @@ public class ZOpenReservationResourse {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Create reservation")
+    @Operation(
+        operationId = "createReservation",
+        summary = "Create reservation",
+        description = "Creates a new reservation with the provided information",
+        responses = {
+            @ApiResponse(
+                responseCode = "201",
+                description = "Reservation created successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = ReservationDTO.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "Invalid reservation data supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while creating the reservation")
+        }
+    )
     public Response create(ReservationDTO reservation) {
         if (reservation == null) {
             return Response.status(Status.BAD_REQUEST).entity("Reservation data is required").build();
@@ -128,7 +141,21 @@ public class ZOpenReservationResourse {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Update reservation")
+    @Operation(
+        operationId = "updateReservation",
+        summary = "Update reservation",
+        description = "Updates an existing reservation with the provided data",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Reservation updated successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = ReservationDTO.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "Reservation ID or data is invalid"),
+            @ApiResponse(responseCode = "404", description = "Reservation not found"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while updating the reservation")
+        }
+    )
     public Response update(ReservationDTO reservation) {
         if (reservation == null || reservation.getReservationId() == null) {
             return Response.status(Status.BAD_REQUEST).entity("Reservation ID and data are required").build();
@@ -184,7 +211,21 @@ public class ZOpenReservationResourse {
     @Path("/search")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Search reservations by criteria")
+    @Operation(
+        operationId = "searchReservations",
+        summary = "Search reservations by criteria",
+        description = "Retrieves reservations that match the provided search criteria",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Reservations matching the criteria were found",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Results.class))
+            ),
+            @ApiResponse(responseCode = "204", description = "No reservations matched the criteria"),
+            @ApiResponse(responseCode = "400", description = "Search criteria is required"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while searching reservations")
+        }
+    )
     public Response findByCriteria(ReservationCriteria criteria) {
         if (criteria == null) {
             return Response.status(Status.BAD_REQUEST).entity("Search criteria is required").build();
