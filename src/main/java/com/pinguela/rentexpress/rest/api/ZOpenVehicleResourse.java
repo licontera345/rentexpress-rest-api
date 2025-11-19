@@ -1,5 +1,6 @@
 package com.pinguela.rentexpress.rest.api;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -9,6 +10,7 @@ import com.pinguela.rentexpres.model.VehicleCriteria;
 import com.pinguela.rentexpres.model.VehicleDTO;
 import com.pinguela.rentexpres.service.VehicleService;
 import com.pinguela.rentexpres.service.impl.VehicleServiceImpl;
+import com.pinguela.rentexpress.rest.api.param.QueryParamUtils;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -23,6 +25,7 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
@@ -253,9 +256,8 @@ public class ZOpenVehicleResourse {
         }
     }
 
-    @POST
+    @GET
     @Path("/search")
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(
         operationId = "findVehiclesByCriteria",
@@ -284,20 +286,155 @@ public class ZOpenVehicleResourse {
             )
         }
     )
-    public Response findByCriteria(VehicleCriteria criteria) {
-        if (criteria == null) {
-            return Response.status(Status.BAD_REQUEST).entity("Search criteria is required").build();
-        }
+    public Response findByCriteria(
+            @QueryParam("vehicleId") Integer vehicleId,
+            @QueryParam("vehicleStatusId") Integer vehicleStatusId,
+            @QueryParam("categoryId") Integer categoryId,
+            @QueryParam("currentHeadquartersId") Integer currentHeadquartersId,
+            @QueryParam("brand") String brand,
+            @QueryParam("model") String model,
+            @QueryParam("licensePlate") String licensePlate,
+            @QueryParam("vinNumber") String vinNumber,
+            @QueryParam("manufactureYearFrom") Integer manufactureYearFrom,
+            @QueryParam("manufactureYearTo") Integer manufactureYearTo,
+            @QueryParam("dailyPriceMin") Double dailyPriceMin,
+            @QueryParam("dailyPriceMax") Double dailyPriceMax,
+            @QueryParam("currentMileageMin") Integer currentMileageMin,
+            @QueryParam("currentMileageMax") Integer currentMileageMax,
+            @QueryParam("activeStatus") Boolean activeStatus,
+            @QueryParam("pageNumber") Integer pageNumber,
+            @QueryParam("pageSize") Integer pageSize,
+            @QueryParam("createdAtFrom") String createdAtFrom,
+            @QueryParam("createdAtTo") String createdAtTo,
+            @QueryParam("updatedAtFrom") String updatedAtFrom,
+            @QueryParam("updatedAtTo") String updatedAtTo) {
         try {
+            VehicleCriteria criteria = buildVehicleCriteria(
+                    vehicleId,
+                    vehicleStatusId,
+                    categoryId,
+                    currentHeadquartersId,
+                    brand,
+                    model,
+                    licensePlate,
+                    vinNumber,
+                    manufactureYearFrom,
+                    manufactureYearTo,
+                    dailyPriceMin,
+                    dailyPriceMax,
+                    currentMileageMin,
+                    currentMileageMax,
+                    activeStatus,
+                    pageNumber,
+                    pageSize,
+                    createdAtFrom,
+                    createdAtTo,
+                    updatedAtFrom,
+                    updatedAtTo);
             Results<VehicleDTO> results = vehicleService.findByCriteria(criteria);
             if (results == null || results.getResults() == null || results.getResults().isEmpty()) {
                 return Response.status(Status.NO_CONTENT).build();
             }
             return Response.ok(results).build();
+        } catch (IllegalArgumentException e) {
+            logger.warning(e.getMessage());
+            return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
         } catch (RentexpresException e) {
             logger.warning(e.getMessage());
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
 
-  }
+    private VehicleCriteria buildVehicleCriteria(
+            Integer vehicleId,
+            Integer vehicleStatusId,
+            Integer categoryId,
+            Integer currentHeadquartersId,
+            String brand,
+            String model,
+            String licensePlate,
+            String vinNumber,
+            Integer manufactureYearFrom,
+            Integer manufactureYearTo,
+            Double dailyPriceMin,
+            Double dailyPriceMax,
+            Integer currentMileageMin,
+            Integer currentMileageMax,
+            Boolean activeStatus,
+            Integer pageNumber,
+            Integer pageSize,
+            String createdAtFrom,
+            String createdAtTo,
+            String updatedAtFrom,
+            String updatedAtTo) {
+        VehicleCriteria criteria = new VehicleCriteria();
+        if (vehicleId != null) {
+            criteria.setVehicleId(vehicleId);
+        }
+        if (vehicleStatusId != null) {
+            criteria.setVehicleStatusId(vehicleStatusId);
+        }
+        if (categoryId != null) {
+            criteria.setCategoryId(categoryId);
+        }
+        if (currentHeadquartersId != null) {
+            criteria.setCurrentHeadquartersId(currentHeadquartersId);
+        }
+        if (brand != null) {
+            criteria.setBrand(brand);
+        }
+        if (model != null) {
+            criteria.setModel(model);
+        }
+        if (licensePlate != null) {
+            criteria.setLicensePlate(licensePlate);
+        }
+        if (vinNumber != null) {
+            criteria.setVinNumber(vinNumber);
+        }
+        if (manufactureYearFrom != null) {
+            criteria.setManufactureYearFrom(manufactureYearFrom);
+        }
+        if (manufactureYearTo != null) {
+            criteria.setManufactureYearTo(manufactureYearTo);
+        }
+        if (dailyPriceMin != null) {
+            criteria.setDailyPriceMin(dailyPriceMin);
+        }
+        if (dailyPriceMax != null) {
+            criteria.setDailyPriceMax(dailyPriceMax);
+        }
+        if (currentMileageMin != null) {
+            criteria.setCurrentMileageMin(currentMileageMin);
+        }
+        if (currentMileageMax != null) {
+            criteria.setCurrentMileageMax(currentMileageMax);
+        }
+        if (activeStatus != null) {
+            criteria.setActiveStatus(activeStatus);
+        }
+        if (pageNumber != null) {
+            criteria.setPageNumber(pageNumber);
+        }
+        if (pageSize != null) {
+            criteria.setPageSize(pageSize);
+        }
+        LocalDateTime createdFromValue = QueryParamUtils.parseDateTime(createdAtFrom, "createdAtFrom");
+        LocalDateTime createdToValue = QueryParamUtils.parseDateTime(createdAtTo, "createdAtTo");
+        LocalDateTime updatedFromValue = QueryParamUtils.parseDateTime(updatedAtFrom, "updatedAtFrom");
+        LocalDateTime updatedToValue = QueryParamUtils.parseDateTime(updatedAtTo, "updatedAtTo");
+        if (createdFromValue != null) {
+            criteria.setCreatedAtFrom(createdFromValue);
+        }
+        if (createdToValue != null) {
+            criteria.setCreatedAtTo(createdToValue);
+        }
+        if (updatedFromValue != null) {
+            criteria.setUpdatedAtFrom(updatedFromValue);
+        }
+        if (updatedToValue != null) {
+            criteria.setUpdatedAtTo(updatedToValue);
+        }
+        return criteria;
+    }
+}
