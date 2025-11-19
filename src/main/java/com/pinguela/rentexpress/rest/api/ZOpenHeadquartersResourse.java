@@ -146,6 +146,7 @@ public class ZOpenHeadquartersResourse {
 
     @DELETE
     @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
     @Operation(
         operationId = "deleteHeadquarters",
         summary = "Delete headquarters",
