@@ -103,7 +103,20 @@ public class ZOpenProvinceResourse {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Create province")
+    @Operation(
+        operationId = "createProvince",
+        summary = "Create province",
+        description = "Creates a new province in the system",
+        responses = {
+            @ApiResponse(
+                responseCode = "201",
+                description = "Province created successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = ProvinceDTO.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "Invalid province data supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while creating the province")
+        }
+    )
     public Response create(ProvinceDTO province) {
         if (province == null) {
             return Response.status(Status.BAD_REQUEST).entity("Province data is required").build();
@@ -126,7 +139,21 @@ public class ZOpenProvinceResourse {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Update province")
+    @Operation(
+        operationId = "updateProvince",
+        summary = "Update province",
+        description = "Updates an existing province in the system",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Province updated successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = ProvinceDTO.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "Invalid province data supplied"),
+            @ApiResponse(responseCode = "404", description = "Province not found"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while updating the province")
+        }
+    )
     public Response update(ProvinceDTO province) {
         if (province == null || province.getProvinceId() == null) {
             return Response.status(Status.BAD_REQUEST).entity("Province ID and data are required").build();
