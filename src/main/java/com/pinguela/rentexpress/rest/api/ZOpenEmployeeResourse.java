@@ -106,7 +106,20 @@ public class ZOpenEmployeeResourse {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Create employee")
+    @Operation(
+        operationId = "createEmployee",
+        summary = "Create employee",
+        description = "Creates a new employee with the provided information",
+        responses = {
+            @ApiResponse(
+                responseCode = "201",
+                description = "Employee created successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = EmployeeDTO.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "Invalid employee data supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while creating the employee")
+        }
+    )
     public Response create(EmployeeDTO employee) {
         if (employee == null) {
             return Response.status(Status.BAD_REQUEST).entity("Employee data is required").build();
@@ -127,7 +140,21 @@ public class ZOpenEmployeeResourse {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Update employee")
+    @Operation(
+        operationId = "updateEmployee",
+        summary = "Update employee",
+        description = "Updates an existing employee using the provided information",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Employee updated successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = EmployeeDTO.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "Employee not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid employee data supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while updating the employee")
+        }
+    )
     public Response update(EmployeeDTO employee) {
         if (employee == null || employee.getId() == null) {
             return Response.status(Status.BAD_REQUEST).entity("Employee ID and data are required").build();
@@ -184,7 +211,21 @@ public class ZOpenEmployeeResourse {
     @Path("/search")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Search employees by criteria")
+    @Operation(
+        operationId = "searchEmployees",
+        summary = "Search employees by criteria",
+        description = "Retrieves employees that match the provided search criteria",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Employees retrieved successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Results.class))
+            ),
+            @ApiResponse(responseCode = "204", description = "No employees found for the provided criteria"),
+            @ApiResponse(responseCode = "400", description = "Invalid search criteria supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while searching for employees")
+        }
+    )
     public Response findByCriteria(EmployeeCriteria criteria) {
         if (criteria == null) {
             return Response.status(Status.BAD_REQUEST).entity("Search criteria is required").build();
@@ -205,7 +246,21 @@ public class ZOpenEmployeeResourse {
     @Path("/authenticate")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Authenticate employee")
+    @Operation(
+        operationId = "authenticateEmployee",
+        summary = "Authenticate employee",
+        description = "Authenticates an employee using username and password",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Employee authenticated successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = EmployeeDTO.class))
+            ),
+            @ApiResponse(responseCode = "401", description = "Invalid credentials supplied"),
+            @ApiResponse(responseCode = "400", description = "Username or password missing"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while authenticating the employee")
+        }
+    )
     public Response authenticate(Map<String, String> credentials) {
         if (credentials == null || !credentials.containsKey("username") || !credentials.containsKey("password")) {
             return Response.status(Status.BAD_REQUEST).entity("Username and password are required").build();
@@ -224,7 +279,17 @@ public class ZOpenEmployeeResourse {
 
     @POST
     @Path("/{id}/activate")
-    @Operation(summary = "Activate employee")
+    @Operation(
+        operationId = "activateEmployee",
+        summary = "Activate employee",
+        description = "Activates an employee using its unique identifier",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Employee activated successfully"),
+            @ApiResponse(responseCode = "404", description = "Employee not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid employee identifier supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while activating the employee")
+        }
+    )
     public Response activate(@PathParam("id") Integer id) {
         if (id == null) {
             return Response.status(Status.BAD_REQUEST).entity("Employee ID is required").build();
