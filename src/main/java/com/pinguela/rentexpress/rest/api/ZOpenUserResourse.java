@@ -147,6 +147,7 @@ public class ZOpenUserResourse {
 
     @DELETE
     @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
     @Operation(
         operationId = "deleteUser",
         summary = "Delete user",

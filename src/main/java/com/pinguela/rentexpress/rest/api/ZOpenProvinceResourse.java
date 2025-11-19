@@ -146,6 +146,7 @@ public class ZOpenProvinceResourse {
 
     @DELETE
     @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
     @Operation(
         operationId = "deleteProvince",
         summary = "Delete province",

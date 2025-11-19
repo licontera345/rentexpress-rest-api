@@ -148,6 +148,7 @@ public class ZOpenReservationResourse {
 
     @DELETE
     @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
     @Operation(
         operationId = "deleteReservation",
         summary = "Delete reservation",

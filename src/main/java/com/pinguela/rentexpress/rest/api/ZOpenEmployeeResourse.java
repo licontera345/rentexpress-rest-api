@@ -148,6 +148,7 @@ public class ZOpenEmployeeResourse {
     @DELETE
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Operation(
         operationId = "deleteEmployee",
         summary = "Delete employee",
