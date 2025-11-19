@@ -38,35 +38,7 @@ public class ZOpenReservationResourse {
     public ZOpenReservationResourse() {
         this.reservationService = new ReservationServiceImpl();
     }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(
-        operationId = "findAllReservations",
-        summary = "Find all reservations",
-        description = "Retrieves every reservation available in the system",
-        responses = {
-            @ApiResponse(
-                responseCode = "200",
-                description = "Reservations retrieved successfully",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = ReservationDTO[].class))
-            ),
-            @ApiResponse(responseCode = "204", description = "No reservations found"),
-            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving reservations")
-        }
-    )
-    public Response findAll() {
-        try {
-            List<ReservationDTO> reservations = reservationService.findAll();
-            if (reservations == null || reservations.isEmpty()) {
-                return Response.status(Status.NO_CONTENT).build();
-            }
-            return Response.ok(reservations).build();
-        } catch (RentexpresException e) {
-            logger.warning(e.getMessage());
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-    }
+    
 
     @GET
     @Path("/{id}")

@@ -40,34 +40,6 @@ public class ZOpenRentalResourse {
         this.rentalService = new RentalServiceImpl();
     }
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(
-        operationId = "findAllRentals",
-        summary = "Find all rentals",
-        description = "Retrieves every rental available in the system",
-        responses = {
-            @ApiResponse(
-                responseCode = "200",
-                description = "Rentals retrieved successfully",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RentalDTO[].class))
-            ),
-            @ApiResponse(responseCode = "204", description = "No rentals found"),
-            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving rentals")
-        }
-    )
-    public Response findAll() {
-        try {
-            List<RentalDTO> rentals = rentalService.findAll();
-            if (rentals == null || rentals.isEmpty()) {
-                return Response.status(Status.NO_CONTENT).build();
-            }
-            return Response.ok(rentals).build();
-        } catch (RentexpresException e) {
-            logger.warning(e.getMessage());
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-    }
 
     @GET
     @Path("/{id}")

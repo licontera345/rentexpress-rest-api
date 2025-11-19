@@ -40,34 +40,6 @@ public class ZOpenUserResourse {
         this.userService = new UserServiceImpl();
     }
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(
-        operationId = "findAllUsers",
-        summary = "Find all users",
-        description = "Retrieves every user available in the system",
-        responses = {
-            @ApiResponse(
-                responseCode = "200",
-                description = "Users retrieved successfully",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = UserDTO[].class))
-            ),
-            @ApiResponse(responseCode = "204", description = "No users found"),
-            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving users")
-        }
-    )
-    public Response findAll() {
-        try {
-            List<UserDTO> users = userService.findAll();
-            if (users == null || users.isEmpty()) {
-                return Response.status(Status.NO_CONTENT).build();
-            }
-            return Response.ok(users).build();
-        } catch (RentexpresException e) {
-            logger.warning(e.getMessage());
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-    }
 
     @GET
     @Path("/{id}")

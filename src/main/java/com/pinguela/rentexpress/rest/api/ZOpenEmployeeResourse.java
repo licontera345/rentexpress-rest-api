@@ -41,35 +41,6 @@ public class ZOpenEmployeeResourse {
     }
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(
-        operationId = "findAllEmployees",
-        summary = "Find all employees",
-        description = "Retrieves every employee registered in the system",
-        responses = {
-            @ApiResponse(
-                responseCode = "200",
-                description = "Employees retrieved successfully",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = EmployeeDTO[].class))
-            ),
-            @ApiResponse(responseCode = "204", description = "No employees found"),
-            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving employees")
-        }
-    )
-    public Response findAll() {
-        try {
-            List<EmployeeDTO> employees = employeeService.findAll();
-            if (employees == null || employees.isEmpty()) {
-                return Response.status(Status.NO_CONTENT).build();
-            }
-            return Response.ok(employees).build();
-        } catch (RentexpresException e) {
-            logger.warning(e.getMessage());
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-    }
-
-    @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(
