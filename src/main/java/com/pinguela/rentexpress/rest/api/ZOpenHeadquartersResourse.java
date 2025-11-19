@@ -103,7 +103,20 @@ public class ZOpenHeadquartersResourse {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Create headquarters")
+    @Operation(
+        operationId = "createHeadquarters",
+        summary = "Create headquarters",
+        description = "Creates a new headquarters entry",
+        responses = {
+            @ApiResponse(
+                responseCode = "201",
+                description = "Headquarters created successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = HeadquartersDTO.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "Invalid headquarters data supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while creating the headquarters")
+        }
+    )
     public Response create(HeadquartersDTO headquarters) {
         if (headquarters == null) {
             return Response.status(Status.BAD_REQUEST).entity("Headquarters data is required").build();
@@ -126,7 +139,21 @@ public class ZOpenHeadquartersResourse {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Update headquarters")
+    @Operation(
+        operationId = "updateHeadquarters",
+        summary = "Update headquarters",
+        description = "Updates an existing headquarters entry",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Headquarters updated successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = HeadquartersDTO.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "Invalid headquarters data supplied"),
+            @ApiResponse(responseCode = "404", description = "Headquarters not found"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while updating the headquarters")
+        }
+    )
     public Response update(HeadquartersDTO headquarters) {
         if (headquarters == null || headquarters.getId() == null) {
             return Response.status(Status.BAD_REQUEST).entity("Headquarters ID and data are required").build();
