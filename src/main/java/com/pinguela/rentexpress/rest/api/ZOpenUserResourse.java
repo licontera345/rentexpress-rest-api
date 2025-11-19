@@ -1,7 +1,5 @@
 package com.pinguela.rentexpress.rest.api;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -12,7 +10,6 @@ import com.pinguela.rentexpres.model.UserCriteria;
 import com.pinguela.rentexpres.model.UserDTO;
 import com.pinguela.rentexpres.service.UserService;
 import com.pinguela.rentexpres.service.impl.UserServiceImpl;
-import com.pinguela.rentexpress.rest.api.param.QueryParamUtils;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,7 +24,6 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
@@ -210,8 +206,9 @@ public class ZOpenUserResourse {
         }
     }
 
-    @GET
+    @POST
     @Path("/search")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(
         operationId = "searchUsers",
@@ -228,140 +225,20 @@ public class ZOpenUserResourse {
             @ApiResponse(responseCode = "500", description = "Unexpected error while searching users")
         }
     )
-    public Response findByCriteria(
-            @QueryParam("userId") Integer userId,
-            @QueryParam("roleId") Integer roleId,
-            @QueryParam("addressId") Integer addressId,
-            @QueryParam("username") String username,
-            @QueryParam("firstName") String firstName,
-            @QueryParam("lastName1") String lastName1,
-            @QueryParam("lastName2") String lastName2,
-            @QueryParam("email") String email,
-            @QueryParam("phone") String phone,
-            @QueryParam("birthDateFrom") String birthDateFrom,
-            @QueryParam("birthDateTo") String birthDateTo,
-            @QueryParam("activeStatus") Boolean activeStatus,
-            @QueryParam("pageNumber") Integer pageNumber,
-            @QueryParam("pageSize") Integer pageSize,
-            @QueryParam("createdAtFrom") String createdAtFrom,
-            @QueryParam("createdAtTo") String createdAtTo,
-            @QueryParam("updatedAtFrom") String updatedAtFrom,
-            @QueryParam("updatedAtTo") String updatedAtTo) {
+    public Response findByCriteria(UserCriteria criteria) {
+        if (criteria == null) {
+            return Response.status(Status.BAD_REQUEST).entity("Search criteria is required").build();
+        }
         try {
-            UserCriteria criteria = buildUserCriteria(
-                    userId,
-                    roleId,
-                    addressId,
-                    username,
-                    firstName,
-                    lastName1,
-                    lastName2,
-                    email,
-                    phone,
-                    birthDateFrom,
-                    birthDateTo,
-                    activeStatus,
-                    pageNumber,
-                    pageSize,
-                    createdAtFrom,
-                    createdAtTo,
-                    updatedAtFrom,
-                    updatedAtTo);
             Results<UserDTO> results = userService.findByCriteria(criteria);
             if (results == null || results.getResults() == null || results.getResults().isEmpty()) {
                 return Response.status(Status.NO_CONTENT).build();
             }
             return Response.ok(results).build();
-        } catch (IllegalArgumentException e) {
-            logger.warning(e.getMessage());
-            return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
         } catch (RentexpresException e) {
             logger.warning(e.getMessage());
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
-    }
-
-    private UserCriteria buildUserCriteria(
-            Integer userId,
-            Integer roleId,
-            Integer addressId,
-            String username,
-            String firstName,
-            String lastName1,
-            String lastName2,
-            String email,
-            String phone,
-            String birthDateFrom,
-            String birthDateTo,
-            Boolean activeStatus,
-            Integer pageNumber,
-            Integer pageSize,
-            String createdAtFrom,
-            String createdAtTo,
-            String updatedAtFrom,
-            String updatedAtTo) {
-        UserCriteria criteria = new UserCriteria();
-        if (userId != null) {
-            criteria.setUserId(userId);
-        }
-        if (roleId != null) {
-            criteria.setRoleId(roleId);
-        }
-        if (addressId != null) {
-            criteria.setAddressId(addressId);
-        }
-        if (username != null) {
-            criteria.setUsername(username);
-        }
-        if (firstName != null) {
-            criteria.setFirstName(firstName);
-        }
-        if (lastName1 != null) {
-            criteria.setLastName1(lastName1);
-        }
-        if (lastName2 != null) {
-            criteria.setLastName2(lastName2);
-        }
-        if (email != null) {
-            criteria.setEmail(email);
-        }
-        if (phone != null) {
-            criteria.setPhone(phone);
-        }
-        LocalDate birthFrom = QueryParamUtils.parseDate(birthDateFrom, "birthDateFrom");
-        LocalDate birthTo = QueryParamUtils.parseDate(birthDateTo, "birthDateTo");
-        if (birthFrom != null) {
-            criteria.setBirthDateFrom(birthFrom);
-        }
-        if (birthTo != null) {
-            criteria.setBirthDateTo(birthTo);
-        }
-        if (activeStatus != null) {
-            criteria.setActiveStatus(activeStatus);
-        }
-        if (pageNumber != null) {
-            criteria.setPageNumber(pageNumber);
-        }
-        if (pageSize != null) {
-            criteria.setPageSize(pageSize);
-        }
-        LocalDateTime createdFromValue = QueryParamUtils.parseDateTime(createdAtFrom, "createdAtFrom");
-        LocalDateTime createdToValue = QueryParamUtils.parseDateTime(createdAtTo, "createdAtTo");
-        LocalDateTime updatedFromValue = QueryParamUtils.parseDateTime(updatedAtFrom, "updatedAtFrom");
-        LocalDateTime updatedToValue = QueryParamUtils.parseDateTime(updatedAtTo, "updatedAtTo");
-        if (createdFromValue != null) {
-            criteria.setCreatedAtFrom(createdFromValue);
-        }
-        if (createdToValue != null) {
-            criteria.setCreatedAtTo(createdToValue);
-        }
-        if (updatedFromValue != null) {
-            criteria.setUpdatedAtFrom(updatedFromValue);
-        }
-        if (updatedToValue != null) {
-            criteria.setUpdatedAtTo(updatedToValue);
-        }
-        return criteria;
     }
 
     @POST
