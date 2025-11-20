@@ -17,7 +17,7 @@
 	</properties>
 
 	<dependencyManagement>
-        <dependencies>
+		<dependencies>
 			<dependency>
 				<groupId>org.glassfish.jersey</groupId>
 				<artifactId>jersey-bom</artifactId>
@@ -49,16 +49,16 @@
 			<artifactId>jersey-hk2</artifactId>
 		</dependency>
 
-                <!-- JSON -->
-                <dependency>
-                        <groupId>org.glassfish.jersey.media</groupId>
-                        <artifactId>jersey-media-json-binding</artifactId>
-                </dependency>
+		<!-- JSON -->
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-json-binding</artifactId>
+		</dependency>
 
-                <dependency>
-                        <groupId>org.glassfish.jersey.media</groupId>
-                        <artifactId>jersey-media-multipart</artifactId>
-                </dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-multipart</artifactId>
+		</dependency>
 
 		<!-- Swagger -->
 		<dependency>
@@ -125,17 +125,17 @@
 			<version>1.5</version>
 		</dependency>
 
-                <dependency>
-                        <groupId>com.mchange</groupId>
-                        <artifactId>c3p0</artifactId>
-                        <version>0.9.5.5</version>
-                </dependency>
+		<dependency>
+			<groupId>com.mchange</groupId>
+			<artifactId>c3p0</artifactId>
+			<version>0.9.5.5</version>
+		</dependency>
 
-                <dependency>
-                        <groupId>commons-io</groupId>
-                        <artifactId>commons-io</artifactId>
-                        <version>2.0.1</version>
-                </dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.0.1</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.jasypt</groupId>
