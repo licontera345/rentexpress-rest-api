@@ -5,6 +5,8 @@ import java.io.InputStream;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
+import com.pinguela.rentexpres.service.FileService;
+
 import io.swagger.v3.oas.models.media.MediaType;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
@@ -15,16 +17,20 @@ import jakarta.ws.rs.core.Response;
 @Path("/file")
 public class ZopenFileResource {
 
+		private FileService fileService = null;
+
+		public ZopenFileResource() {
+
+		}
+	
+	
 	@POST	
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response uploadFile(@FormDataParam("file") InputStream fileInputStream,
-			@FormDataParam("file") FormDataContentDisposition fileMetaData) {
+			@FormDataParam("file") FormDataContentDisposition fileDetail) {
 
-		String fileName = fileMetaData.getFileName();
-
-
-		return Response.status(Response.Status.OK).entity("File " + fileName + " uploaded successfully.").build();
+		return null;
 	}
 	
 	
