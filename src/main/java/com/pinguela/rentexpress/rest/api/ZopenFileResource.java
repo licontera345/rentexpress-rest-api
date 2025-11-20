@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -69,7 +70,7 @@ public class ZopenFileResource {
                     if (inputStream == null || originalName == null || originalName.isEmpty()) {
                         continue;
                     }
-                    java.nio.file.Path temp = Files.createTempFile("upload-", "-" + originalName);
+                    Path temp = Files.createTempFile("upload-", "-" + originalName);
                     Files.copy(inputStream, temp, StandardCopyOption.REPLACE_EXISTING);
                     tempFiles.add(temp.toFile());
                 }
