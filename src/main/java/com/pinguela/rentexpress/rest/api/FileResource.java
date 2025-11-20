@@ -1,14 +1,13 @@
 package com.pinguela.rentexpress.rest.api;
 
-import java.io.InputStream;
+import java.io.File;
 
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
+import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.service.FileService;
 import com.pinguela.rentexpres.service.impl.FileServiceImpl;
 
-import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -21,18 +20,24 @@ public class FileResource {
 	private final FileService fileService;
 
 	public FileResource() {
-
 		this.fileService = new FileServiceImpl();
-
 	}
 
 	@POST
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Path("/test-user-image")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response uploadFile(@FormDataParam("file") InputStream fileInputStream,
-			@FormDataParam("file") FormDataContentDisposition fileDetail) {
+	public Response testUserImage(@FormDataParam("userId") Integer userId) throws RentexpresException {
 
-		return null;
+		if (userId == null) {
+			return Response.status(Response.Status.BAD_REQUEST).entity("{\"error\":\"userId requerido\"}").build();
+		}
+
+		File f = fileService.getImageByUserId(userId);
+
+		if (f == null) {
+			return Response.status(Response.Status.NOT_FOUND).entity("{\"error\":\"No se encontró imagen\"}").build();
+		}
+
+		return Response.ok("{\"file\":\"" + f.getAbsolutePath() + "\"}").build();
 	}
-
 }
