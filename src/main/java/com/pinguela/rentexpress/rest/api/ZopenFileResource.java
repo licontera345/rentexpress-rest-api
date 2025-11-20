@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,33 +45,45 @@ public class ZopenFileResource {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     public Response uploadVehicleImages(@PathParam("vehicleId") Integer vehicleId,
-            @FormDataParam("file") List<FormDataBodyPart> fileParts) {
+            @FormDataParam("file") List<FormDataBodyPart> fileParts,
+            @FormDataParam("file") InputStream fileInputStream,
+            @FormDataParam("file") FormDataContentDisposition fileDetail) {
 
         if (vehicleId == null) {
             return Response.status(Status.BAD_REQUEST).entity("Vehicle ID is required").build();
         }
 
-        if (fileParts == null || fileParts.isEmpty()) {
+        boolean hasMultipleParts = fileParts != null && !fileParts.isEmpty();
+        boolean hasSinglePart = fileInputStream != null && fileDetail != null
+                && fileDetail.getFileName() != null && !fileDetail.getFileName().isEmpty();
+
+        if (!hasMultipleParts && !hasSinglePart) {
             return Response.status(Status.BAD_REQUEST).entity("At least one file is required").build();
         }
 
         List<File> tempFiles = new ArrayList<>();
         try {
-            for (FormDataBodyPart part : fileParts) {
-                if (part == null) {
-                    continue;
-                }
-
-                FormDataContentDisposition fileDetail = part.getFormDataContentDisposition();
-                String originalName = fileDetail != null ? fileDetail.getFileName() : null;
-
-                try (InputStream inputStream = part.getValueAs(InputStream.class)) {
-                    if (inputStream == null || originalName == null || originalName.isEmpty()) {
+            if (hasMultipleParts) {
+                for (FormDataBodyPart part : fileParts) {
+                    if (part == null) {
                         continue;
                     }
-                    Path temp = Files.createTempFile("upload-", "-" + originalName);
-                    Files.copy(inputStream, temp, StandardCopyOption.REPLACE_EXISTING);
-                    tempFiles.add(temp.toFile());
+
+                    FormDataContentDisposition partDetail = part.getFormDataContentDisposition();
+                    String originalName = partDetail != null ? partDetail.getFileName() : null;
+
+                    try (InputStream inputStream = part.getValueAs(InputStream.class)) {
+                        if (inputStream == null || originalName == null || originalName.isEmpty()) {
+                            continue;
+                        }
+                        tempFiles.add(saveToTempFile(inputStream, originalName));
+                    }
+                }
+            }
+
+            if (hasSinglePart) {
+                try (InputStream inputStream = fileInputStream) {
+                    tempFiles.add(saveToTempFile(inputStream, fileDetail.getFileName()));
                 }
             }
 
@@ -157,5 +168,11 @@ public class ZopenFileResource {
             logger.warning(e.getMessage());
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Error downloading image").build();
         }
+    }
+
+    private File saveToTempFile(InputStream inputStream, String originalName) throws IOException {
+        java.nio.file.Path temp = Files.createTempFile("upload-", "-" + originalName);
+        Files.copy(inputStream, temp, StandardCopyOption.REPLACE_EXISTING);
+        return temp.toFile();
     }
 }
