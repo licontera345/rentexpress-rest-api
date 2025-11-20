@@ -78,9 +78,6 @@ public class ZopenFileResource {
                         }
                         tempFiles.add(saveToTempFile(inputStream, originalName));
                     }
-                    java.nio.file.Path temp = Files.createTempFile("upload-", "-" + originalName);
-                    Files.copy(inputStream, temp, StandardCopyOption.REPLACE_EXISTING);
-                    tempFiles.add(temp.toFile());
                 }
             }
 
