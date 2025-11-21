@@ -1,5 +1,6 @@
 package com.pinguela.rentexpress.rest.api;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -77,16 +78,13 @@ public class FileResource {
             @FormDataParam("file") InputStream fileInputStream,
             @FormDataParam("file") FormDataContentDisposition fileDetail) {
 
-        if (vehicleId == null) {
-            return Response.status(Status.BAD_REQUEST).entity("Vehicle ID is required").build();
-        }
         if (fileInputStream == null || fileDetail == null || fileDetail.getFileName() == null
                 || fileDetail.getFileName().isEmpty()) {
             return Response.status(Status.BAD_REQUEST).entity("File is required").build();
         }
 
         try {
-            byte[] data = fileInputStream.readAllBytes();
+            byte[] data = toByteArray(fileInputStream);
             fileService.saveVehicleImage(vehicleId, fileDetail.getFileName(), data);
             return Response.status(Status.CREATED).entity("Image uploaded successfully").build();
         } catch (RentexpresException e) {
@@ -106,10 +104,6 @@ public class FileResource {
     public Response deleteVehicleImage(@PathParam("vehicleId") Integer vehicleId,
             @PathParam("imageName") String imageName) {
         try {
-            List<String> images = fileService.listVehicleImages(vehicleId);
-            if (!images.contains(imageName)) {
-                return Response.status(Status.NOT_FOUND).entity("Image not found").build();
-            }
             fileService.deleteVehicleImage(vehicleId, imageName);
             return Response.ok("Image deleted").build();
         } catch (RentexpresException e) {
@@ -149,7 +143,7 @@ public class FileResource {
         }
 
         try {
-            byte[] data = fileInputStream.readAllBytes();
+            byte[] data = toByteArray(fileInputStream);
             fileService.saveUserAvatar(userId, data);
             return Response.status(Status.CREATED).entity("Avatar uploaded successfully").build();
         } catch (RentexpresException e) {
@@ -191,7 +185,7 @@ public class FileResource {
         }
 
         try {
-            byte[] data = fileInputStream.readAllBytes();
+            byte[] data = toByteArray(fileInputStream);
             fileService.saveEmployeeAvatar(employeeId, data);
             return Response.status(Status.CREATED).entity("Avatar uploaded successfully").build();
         } catch (RentexpresException e) {
@@ -202,6 +196,16 @@ public class FileResource {
             logger.warning(e.getMessage());
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Error processing file").build();
         }
+    }
+
+    private byte[] toByteArray(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        byte[] data = new byte[8192];
+        int nRead;
+        while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
+            buffer.write(data, 0, nRead);
+        }
+        return buffer.toByteArray();
     }
 
     private String resolveMediaType(String imageName) {
