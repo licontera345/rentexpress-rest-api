@@ -7,7 +7,7 @@
 	<groupId>com.pinguela</groupId>
 	<artifactId>rentexpress-rest-api</artifactId>
 	<packaging>war</packaging>
-	<version>v1.0.0</version>
+	<version>v1.0.1</version>
 
 	<properties>
 		<jersey.version>4.0.0</jersey.version>
@@ -82,8 +82,8 @@
 		<!-- Middleware -->
 		<dependency>
 			<groupId>com.pinguela</groupId>
-			<artifactId>RentExpres-middleware</artifactId>
-			<version>1.0.0</version>
+			<artifactId>rentexpress-middleware</artifactId>
+			<version>1.0.1</version>
 		</dependency>
 
 		<!-- MySQL driver -->
