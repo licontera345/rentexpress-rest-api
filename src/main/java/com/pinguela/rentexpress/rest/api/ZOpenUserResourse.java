@@ -1,6 +1,5 @@
 package com.pinguela.rentexpress.rest.api;
 
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -23,6 +22,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -178,9 +178,8 @@ public class ZOpenUserResourse {
         }
     }
 
-    @POST
+    @GET
     @Path("/search")
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(
         operationId = "searchUsers",
@@ -197,10 +196,45 @@ public class ZOpenUserResourse {
             @ApiResponse(responseCode = "500", description = "Unexpected error while searching users")
         }
     )
-    public Response findByCriteria(UserCriteria criteria) {
-        if (criteria == null) {
-            return Response.status(Status.BAD_REQUEST).entity("Search criteria is required").build();
-        }
+    public Response findByCriteria(
+        @QueryParam("userId") Integer userId,
+        @QueryParam("roleId") Integer roleId,
+        @QueryParam("addressId") Integer addressId,
+        @QueryParam("username") String username,
+        @QueryParam("firstName") String firstName,
+        @QueryParam("lastName1") String lastName1,
+        @QueryParam("lastName2") String lastName2,
+        @QueryParam("email") String email,
+        @QueryParam("phone") String phone,
+        @QueryParam("birthDateFrom") java.time.LocalDate birthDateFrom,
+        @QueryParam("birthDateTo") java.time.LocalDate birthDateTo,
+        @QueryParam("activeStatus") Boolean activeStatus,
+        @QueryParam("pageNumber") Integer pageNumber,
+        @QueryParam("pageSize") Integer pageSize,
+        @QueryParam("createdAtFrom") java.time.LocalDateTime createdAtFrom,
+        @QueryParam("createdAtTo") java.time.LocalDateTime createdAtTo,
+        @QueryParam("updatedAtFrom") java.time.LocalDateTime updatedAtFrom,
+        @QueryParam("updatedAtTo") java.time.LocalDateTime updatedAtTo
+    ) {
+        UserCriteria criteria = new UserCriteria();
+        criteria.setUserId(userId);
+        criteria.setRoleId(roleId);
+        criteria.setAddressId(addressId);
+        criteria.setUsername(username);
+        criteria.setFirstName(firstName);
+        criteria.setLastName1(lastName1);
+        criteria.setLastName2(lastName2);
+        criteria.setEmail(email);
+        criteria.setPhone(phone);
+        criteria.setBirthDateFrom(birthDateFrom);
+        criteria.setBirthDateTo(birthDateTo);
+        criteria.setActiveStatus(activeStatus);
+        criteria.setPageNumber(pageNumber);
+        criteria.setPageSize(pageSize);
+        criteria.setCreatedAtFrom(createdAtFrom);
+        criteria.setCreatedAtTo(createdAtTo);
+        criteria.setUpdatedAtFrom(updatedAtFrom);
+        criteria.setUpdatedAtTo(updatedAtTo);
         try {
             Results<UserDTO> results = userService.findByCriteria(criteria);
             if (results == null || results.getResults() == null || results.getResults().isEmpty()) {

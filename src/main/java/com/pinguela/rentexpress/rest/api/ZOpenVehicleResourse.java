@@ -1,6 +1,5 @@
 package com.pinguela.rentexpress.rest.api;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import com.pinguela.rentexpres.exception.RentexpresException;
@@ -22,6 +21,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -36,44 +36,6 @@ public class ZOpenVehicleResourse {
     private final VehicleService vehicleService;
     public ZOpenVehicleResourse() {
         this.vehicleService = new VehicleServiceImpl();
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(
-        operationId = "findAllVehicles",
-        summary = "Find all vehicles",
-        description = "Retrieves all vehicles available in the system",
-        responses = {
-            @ApiResponse(
-                responseCode = "200",
-                description = "Vehicles retrieved successfully",
-                content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON,
-                    schema = @Schema(implementation = VehicleDTO[].class)
-                )
-            ),
-            @ApiResponse(
-                responseCode = "204",
-                description = "No vehicles found"
-            ),
-            @ApiResponse(
-                responseCode = "500",
-                description = "Unexpected error while retrieving vehicles"
-            )
-        }
-    )
-    public Response findAll() {
-        try {
-            List<VehicleDTO> vehicles = vehicleService.findAll();
-            if (vehicles == null || vehicles.isEmpty()) {
-                return Response.status(Status.NO_CONTENT).build();
-            }
-            return Response.ok(vehicles).build();
-        } catch (RentexpresException e) {
-            logger.warning(e.getMessage());
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
     }
 
     @GET
@@ -253,9 +215,8 @@ public class ZOpenVehicleResourse {
         }
     }
 
-    @POST
+    @GET
     @Path("/search")
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(
         operationId = "findVehiclesByCriteria",
@@ -284,10 +245,51 @@ public class ZOpenVehicleResourse {
             )
         }
     )
-    public Response findByCriteria(VehicleCriteria criteria) {
-        if (criteria == null) {
-            return Response.status(Status.BAD_REQUEST).entity("Search criteria is required").build();
-        }
+    public Response findByCriteria(
+        @QueryParam("vehicleId") Integer vehicleId,
+        @QueryParam("vehicleStatusId") Integer vehicleStatusId,
+        @QueryParam("categoryId") Integer categoryId,
+        @QueryParam("currentHeadquartersId") Integer currentHeadquartersId,
+        @QueryParam("brand") String brand,
+        @QueryParam("model") String model,
+        @QueryParam("licensePlate") String licensePlate,
+        @QueryParam("vinNumber") String vinNumber,
+        @QueryParam("manufactureYearFrom") Integer manufactureYearFrom,
+        @QueryParam("manufactureYearTo") Integer manufactureYearTo,
+        @QueryParam("dailyPriceMin") java.math.BigDecimal dailyPriceMin,
+        @QueryParam("dailyPriceMax") java.math.BigDecimal dailyPriceMax,
+        @QueryParam("currentMileageMin") Integer currentMileageMin,
+        @QueryParam("currentMileageMax") Integer currentMileageMax,
+        @QueryParam("activeStatus") Boolean activeStatus,
+        @QueryParam("pageNumber") Integer pageNumber,
+        @QueryParam("pageSize") Integer pageSize,
+        @QueryParam("createdAtFrom") java.time.LocalDateTime createdAtFrom,
+        @QueryParam("createdAtTo") java.time.LocalDateTime createdAtTo,
+        @QueryParam("updatedAtFrom") java.time.LocalDateTime updatedAtFrom,
+        @QueryParam("updatedAtTo") java.time.LocalDateTime updatedAtTo
+    ) {
+        VehicleCriteria criteria = new VehicleCriteria();
+        criteria.setVehicleId(vehicleId);
+        criteria.setVehicleStatusId(vehicleStatusId);
+        criteria.setCategoryId(categoryId);
+        criteria.setCurrentHeadquartersId(currentHeadquartersId);
+        criteria.setBrand(brand);
+        criteria.setModel(model);
+        criteria.setLicensePlate(licensePlate);
+        criteria.setVinNumber(vinNumber);
+        criteria.setManufactureYearFrom(manufactureYearFrom);
+        criteria.setManufactureYearTo(manufactureYearTo);
+        criteria.setDailyPriceMin(dailyPriceMin);
+        criteria.setDailyPriceMax(dailyPriceMax);
+        criteria.setCurrentMileageMin(currentMileageMin);
+        criteria.setCurrentMileageMax(currentMileageMax);
+        criteria.setActiveStatus(activeStatus);
+        criteria.setPageNumber(pageNumber);
+        criteria.setPageSize(pageSize);
+        criteria.setCreatedAtFrom(createdAtFrom);
+        criteria.setCreatedAtTo(createdAtTo);
+        criteria.setUpdatedAtFrom(updatedAtFrom);
+        criteria.setUpdatedAtTo(updatedAtTo);
         try {
             Results<VehicleDTO> results = vehicleService.findByCriteria(criteria);
             if (results == null || results.getResults() == null || results.getResults().isEmpty()) {

@@ -1,6 +1,5 @@
 package com.pinguela.rentexpress.rest.api;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import com.pinguela.rentexpres.exception.RentexpresException;
@@ -23,6 +22,7 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -180,9 +180,8 @@ public class ZOpenRentalResourse {
         }
     }
 
-    @POST
+    @GET
     @Path("/search")
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(
         operationId = "searchRentals",
@@ -199,10 +198,79 @@ public class ZOpenRentalResourse {
             @ApiResponse(responseCode = "500", description = "Unexpected error while searching for rentals")
         }
     )
-    public Response findByCriteria(RentalCriteria criteria) {
-        if (criteria == null) {
-            return Response.status(Status.BAD_REQUEST).entity("Search criteria is required").build();
-        }
+    public Response findByCriteria(
+        @QueryParam("rentalId") Integer rentalId,
+        @QueryParam("rentalStatusId") Integer rentalStatusId,
+        @QueryParam("reservationId") Integer reservationId,
+        @QueryParam("userId") Integer userId,
+        @QueryParam("employeeId") Integer employeeId,
+        @QueryParam("vehicleId") Integer vehicleId,
+        @QueryParam("pickupHeadquartersId") Integer pickupHeadquartersId,
+        @QueryParam("returnHeadquartersId") Integer returnHeadquartersId,
+        @QueryParam("startDateEffectiveFrom") java.time.LocalDateTime startDateEffectiveFrom,
+        @QueryParam("startDateEffectiveTo") java.time.LocalDateTime startDateEffectiveTo,
+        @QueryParam("endDateEffectiveFrom") java.time.LocalDateTime endDateEffectiveFrom,
+        @QueryParam("endDateEffectiveTo") java.time.LocalDateTime endDateEffectiveTo,
+        @QueryParam("createdAtFrom") java.time.LocalDateTime createdAtFrom,
+        @QueryParam("createdAtTo") java.time.LocalDateTime createdAtTo,
+        @QueryParam("updatedAtFrom") java.time.LocalDateTime updatedAtFrom,
+        @QueryParam("updatedAtTo") java.time.LocalDateTime updatedAtTo,
+        @QueryParam("initialKmMin") Integer initialKmMin,
+        @QueryParam("initialKmMax") Integer initialKmMax,
+        @QueryParam("finalKmMin") Integer finalKmMin,
+        @QueryParam("finalKmMax") Integer finalKmMax,
+        @QueryParam("totalCostMin") java.math.BigDecimal totalCostMin,
+        @QueryParam("totalCostMax") java.math.BigDecimal totalCostMax,
+        @QueryParam("startDateEffective") java.time.LocalDateTime startDateEffective,
+        @QueryParam("endDateEffective") java.time.LocalDateTime endDateEffective,
+        @QueryParam("initialKm") Integer initialKm,
+        @QueryParam("finalKm") Integer finalKm,
+        @QueryParam("totalCost") java.math.BigDecimal totalCost,
+        @QueryParam("userFirstName") String userFirstName,
+        @QueryParam("userLastName1") String userLastName1,
+        @QueryParam("phone") String phone,
+        @QueryParam("licensePlate") String licensePlate,
+        @QueryParam("brand") String brand,
+        @QueryParam("model") String model,
+        @QueryParam("pageNumber") Integer pageNumber,
+        @QueryParam("pageSize") Integer pageSize
+    ) {
+        RentalCriteria criteria = new RentalCriteria();
+        criteria.setRentalId(rentalId);
+        criteria.setRentalStatusId(rentalStatusId);
+        criteria.setReservationId(reservationId);
+        criteria.setUserId(userId);
+        criteria.setEmployeeId(employeeId);
+        criteria.setVehicleId(vehicleId);
+        criteria.setPickupHeadquartersId(pickupHeadquartersId);
+        criteria.setReturnHeadquartersId(returnHeadquartersId);
+        criteria.setStartDateEffectiveFrom(startDateEffectiveFrom);
+        criteria.setStartDateEffectiveTo(startDateEffectiveTo);
+        criteria.setEndDateEffectiveFrom(endDateEffectiveFrom);
+        criteria.setEndDateEffectiveTo(endDateEffectiveTo);
+        criteria.setCreatedAtFrom(createdAtFrom);
+        criteria.setCreatedAtTo(createdAtTo);
+        criteria.setUpdatedAtFrom(updatedAtFrom);
+        criteria.setUpdatedAtTo(updatedAtTo);
+        criteria.setInitialKmMin(initialKmMin);
+        criteria.setInitialKmMax(initialKmMax);
+        criteria.setFinalKmMin(finalKmMin);
+        criteria.setFinalKmMax(finalKmMax);
+        criteria.setTotalCostMin(totalCostMin);
+        criteria.setTotalCostMax(totalCostMax);
+        criteria.setStartDateEffective(startDateEffective);
+        criteria.setEndDateEffective(endDateEffective);
+        criteria.setInitialKm(initialKm);
+        criteria.setFinalKm(finalKm);
+        criteria.setTotalCost(totalCost);
+        criteria.setUserFirstName(userFirstName);
+        criteria.setUserLastName1(userLastName1);
+        criteria.setPhone(phone);
+        criteria.setLicensePlate(licensePlate);
+        criteria.setBrand(brand);
+        criteria.setModel(model);
+        criteria.setPageNumber(pageNumber);
+        criteria.setPageSize(pageSize);
         try {
             Results<RentalDTO> results = rentalService.findByCriteria(criteria);
             if (results == null || results.getResults() == null || results.getResults().isEmpty()) {
