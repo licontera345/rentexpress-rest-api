@@ -1,6 +1,5 @@
 package com.pinguela.rentexpress.rest.api;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import com.pinguela.rentexpres.exception.RentexpresException;
@@ -22,6 +21,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -181,9 +181,8 @@ public class ZOpenReservationResourse {
         }
     }
 
-    @POST
+    @GET
     @Path("/search")
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(
         operationId = "searchReservations",
@@ -200,10 +199,43 @@ public class ZOpenReservationResourse {
             @ApiResponse(responseCode = "500", description = "Unexpected error while searching reservations")
         }
     )
-    public Response findByCriteria(ReservationCriteria criteria) {
-        if (criteria == null) {
-            return Response.status(Status.BAD_REQUEST).entity("Search criteria is required").build();
-        }
+    public Response findByCriteria(
+        @QueryParam("reservationId") Integer reservationId,
+        @QueryParam("vehicleId") Integer vehicleId,
+        @QueryParam("userId") Integer userId,
+        @QueryParam("employeeId") Integer employeeId,
+        @QueryParam("reservationStatusId") Integer reservationStatusId,
+        @QueryParam("pickupHeadquartersId") Integer pickupHeadquartersId,
+        @QueryParam("returnHeadquartersId") Integer returnHeadquartersId,
+        @QueryParam("startDateFrom") java.time.LocalDateTime startDateFrom,
+        @QueryParam("startDateTo") java.time.LocalDateTime startDateTo,
+        @QueryParam("endDateFrom") java.time.LocalDateTime endDateFrom,
+        @QueryParam("endDateTo") java.time.LocalDateTime endDateTo,
+        @QueryParam("createdAtFrom") java.time.LocalDateTime createdAtFrom,
+        @QueryParam("createdAtTo") java.time.LocalDateTime createdAtTo,
+        @QueryParam("updatedAtFrom") java.time.LocalDateTime updatedAtFrom,
+        @QueryParam("updatedAtTo") java.time.LocalDateTime updatedAtTo,
+        @QueryParam("pageNumber") Integer pageNumber,
+        @QueryParam("pageSize") Integer pageSize
+    ) {
+        ReservationCriteria criteria = new ReservationCriteria();
+        criteria.setReservationId(reservationId);
+        criteria.setVehicleId(vehicleId);
+        criteria.setUserId(userId);
+        criteria.setEmployeeId(employeeId);
+        criteria.setReservationStatusId(reservationStatusId);
+        criteria.setPickupHeadquartersId(pickupHeadquartersId);
+        criteria.setReturnHeadquartersId(returnHeadquartersId);
+        criteria.setStartDateFrom(startDateFrom);
+        criteria.setStartDateTo(startDateTo);
+        criteria.setEndDateFrom(endDateFrom);
+        criteria.setEndDateTo(endDateTo);
+        criteria.setCreatedAtFrom(createdAtFrom);
+        criteria.setCreatedAtTo(createdAtTo);
+        criteria.setUpdatedAtFrom(updatedAtFrom);
+        criteria.setUpdatedAtTo(updatedAtTo);
+        criteria.setPageNumber(pageNumber);
+        criteria.setPageSize(pageSize);
         try {
             Results<ReservationDTO> results = reservationService.findByCriteria(criteria);
             if (results == null || results.getResults() == null || results.getResults().isEmpty()) {
