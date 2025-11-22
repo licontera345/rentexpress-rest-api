@@ -13,6 +13,7 @@ import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.service.FileService;
 import com.pinguela.rentexpres.service.impl.FileServiceImpl;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -25,6 +26,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
 @Path("/file")
+@Tag(name = "File Management", description = "APIs for managing vehicle images and user/employee avatars")	
 public class FileResource {
 
     private static final Logger logger = Logger.getLogger(FileResource.class.getName());
