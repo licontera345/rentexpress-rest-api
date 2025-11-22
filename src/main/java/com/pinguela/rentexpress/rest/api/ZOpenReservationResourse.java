@@ -111,6 +111,7 @@ public class ZOpenReservationResourse {
     }
 
     @PUT
+    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(
@@ -128,10 +129,11 @@ public class ZOpenReservationResourse {
             @ApiResponse(responseCode = "500", description = "Unexpected error while updating the reservation")
         }
     )
-    public Response update(ReservationDTO reservation) {
-        if (reservation == null || reservation.getReservationId() == null) {
+    public Response update(@PathParam("id") Integer id, ReservationDTO reservation) {
+        if (id == null || reservation == null) {
             return Response.status(Status.BAD_REQUEST).entity("Reservation ID and data are required").build();
         }
+        reservation.setReservationId(id);
         try {
             boolean updated = reservationService.update(reservation);
             if (!updated) {

@@ -169,6 +169,7 @@ public class ZOpenCityResourse {
     }
 
     @PUT
+    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(
@@ -186,10 +187,11 @@ public class ZOpenCityResourse {
             @ApiResponse(responseCode = "500", description = "Unexpected error while updating the city")
         }
     )
-    public Response update(CityDTO city) {
-        if (city == null || city.getId() == null) {
+    public Response update(@PathParam("id") Integer id, CityDTO city) {
+        if (id == null || city == null) {
             return Response.status(Status.BAD_REQUEST).entity("City ID and data are required").build();
         }
+        city.setId(id);
         try {
             boolean updated = cityService.update(city);
             if (!updated) {
@@ -204,6 +206,7 @@ public class ZOpenCityResourse {
     }
 
     @DELETE
+    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(
         operationId = "deleteCity",
@@ -220,11 +223,13 @@ public class ZOpenCityResourse {
             @ApiResponse(responseCode = "500", description = "Unexpected error while deleting the city")
         }
     )
-    public Response delete(CityDTO city) {
-        if (city == null || city.getId() == null) {
+    public Response delete(@PathParam("id") Integer id) {
+        if (id == null) {
             return Response.status(Status.BAD_REQUEST).entity("City ID and data are required").build();
         }
         try {
+            CityDTO city = new CityDTO();
+            city.setId(id);
             boolean deleted = cityService.delete(city);
             if (!deleted) {
                 return Response.status(Status.NOT_FOUND).entity("City not found").build();

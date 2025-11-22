@@ -110,6 +110,7 @@ public class ZOpenUserResourse {
     }
 
     @PUT
+    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(
@@ -127,10 +128,11 @@ public class ZOpenUserResourse {
             @ApiResponse(responseCode = "500", description = "Unexpected error while updating the user")
         }
     )
-    public Response update(UserDTO user) {
-        if (user == null || user.getUserId() == null) {
+    public Response update(@PathParam("id") Integer id, UserDTO user) {
+        if (id == null || user == null) {
             return Response.status(Status.BAD_REQUEST).entity("User ID and data are required").build();
         }
+        user.setUserId(id);
         try {
             boolean updated = userService.update(user);
             if (!updated) {

@@ -166,6 +166,7 @@ public class ZOpenVehicleResourse {
     }
 
     @PUT
+    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(
@@ -195,10 +196,11 @@ public class ZOpenVehicleResourse {
             )
         }
     )
-    public Response update(VehicleDTO vehicle) {
-        if (vehicle == null || vehicle.getVehicleId() == null) {
+    public Response update(@PathParam("id") Integer id, VehicleDTO vehicle) {
+        if (id == null || vehicle == null) {
             return Response.status(Status.BAD_REQUEST).entity("Vehicle ID and data are required").build();
         }
+        vehicle.setVehicleId(id);
         try {
             boolean updated = vehicleService.update(vehicle);
             if (!updated) {

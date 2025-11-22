@@ -109,6 +109,7 @@ public class ZOpenEmployeeResourse {
     }
 
     @PUT
+    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(
@@ -126,10 +127,11 @@ public class ZOpenEmployeeResourse {
             @ApiResponse(responseCode = "500", description = "Unexpected error while updating the employee")
         }
     )
-    public Response update(EmployeeDTO employee) {
-        if (employee == null || employee.getId() == null) {
+    public Response update(@PathParam("id") Integer id, EmployeeDTO employee) {
+        if (id == null || employee == null) {
             return Response.status(Status.BAD_REQUEST).entity("Employee ID and data are required").build();
         }
+        employee.setId(id);
         try {
             boolean updated = employeeService.update(employee);
             if (!updated) {
@@ -163,11 +165,13 @@ public class ZOpenEmployeeResourse {
         }
     )
     public Response delete(@PathParam("id") Integer id, EmployeeDTO employee) {
-        if (id == null || employee == null || employee.getId() == null) {
+        if (id == null) {
             return Response.status(Status.BAD_REQUEST).entity("Employee ID and data are required").build();
         }
         try {
-            boolean deleted = employeeService.delete(employee, id);
+            EmployeeDTO employeeToDelete = new EmployeeDTO();
+            employeeToDelete.setId(id);
+            boolean deleted = employeeService.delete(employeeToDelete, id);
             if (!deleted) {
                 return Response.status(Status.NOT_FOUND).entity("Employee not found").build();
             }
