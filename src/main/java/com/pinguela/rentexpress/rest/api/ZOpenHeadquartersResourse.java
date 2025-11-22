@@ -137,6 +137,7 @@ public class ZOpenHeadquartersResourse {
     }
 
     @PUT
+    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(
@@ -154,10 +155,11 @@ public class ZOpenHeadquartersResourse {
             @ApiResponse(responseCode = "500", description = "Unexpected error while updating the headquarters")
         }
     )
-    public Response update(HeadquartersDTO headquarters) {
-        if (headquarters == null || headquarters.getId() == null) {
+    public Response update(@PathParam("id") Integer id, HeadquartersDTO headquarters) {
+        if (id == null || headquarters == null) {
             return Response.status(Status.BAD_REQUEST).entity("Headquarters ID and data are required").build();
         }
+        headquarters.setId(id);
         try {
             boolean updated = headquartersService.update(headquarters);
             if (!updated) {

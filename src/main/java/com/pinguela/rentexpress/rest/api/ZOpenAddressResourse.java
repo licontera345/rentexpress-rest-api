@@ -105,6 +105,7 @@ public class ZOpenAddressResourse {
     }
 
     @PUT
+    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(
@@ -122,10 +123,11 @@ public class ZOpenAddressResourse {
             @ApiResponse(responseCode = "500", description = "Unexpected error while updating the address")
         }
     )
-    public Response update(AddressDTO address) {
-        if (address == null || address.getId() == null) {
+    public Response update(@PathParam("id") Integer id, AddressDTO address) {
+        if (id == null || address == null) {
             return Response.status(Status.BAD_REQUEST).entity("Address ID and data are required").build();
         }
+        address.setId(id);
         try {
             boolean updated = addressService.update(address);
             if (!updated) {
@@ -140,6 +142,7 @@ public class ZOpenAddressResourse {
     }
 
     @DELETE
+    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(
         operationId = "deleteAddress",
@@ -156,11 +159,13 @@ public class ZOpenAddressResourse {
             @ApiResponse(responseCode = "500", description = "Unexpected error while deleting the address")
         }
     )
-    public Response delete(AddressDTO address) {
-        if (address == null || address.getId() == null) {
+    public Response delete(@PathParam("id") Integer id) {
+        if (id == null) {
             return Response.status(Status.BAD_REQUEST).entity("Address ID and data are required").build();
         }
         try {
+            AddressDTO address = new AddressDTO();
+            address.setId(id);
             boolean deleted = addressService.delete(address);
             if (!deleted) {
                 return Response.status(Status.NOT_FOUND).entity("Address not found").build();

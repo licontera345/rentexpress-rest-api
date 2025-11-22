@@ -137,6 +137,7 @@ public class ZOpenProvinceResourse {
     }
 
     @PUT
+    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(
@@ -154,10 +155,11 @@ public class ZOpenProvinceResourse {
             @ApiResponse(responseCode = "500", description = "Unexpected error while updating the province")
         }
     )
-    public Response update(ProvinceDTO province) {
-        if (province == null || province.getProvinceId() == null) {
+    public Response update(@PathParam("id") Integer id, ProvinceDTO province) {
+        if (id == null || province == null) {
             return Response.status(Status.BAD_REQUEST).entity("Province ID and data are required").build();
         }
+        province.setProvinceId(id);
         try {
             boolean updated = provinceService.update(province);
             if (!updated) {

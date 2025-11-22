@@ -112,6 +112,7 @@ public class ZOpenRentalResourse {
     }
 
     @PUT
+    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(
@@ -129,10 +130,11 @@ public class ZOpenRentalResourse {
             @ApiResponse(responseCode = "500", description = "Unexpected error while updating the rental")
         }
     )
-    public Response update(RentalDTO rental) {
-        if (rental == null || rental.getRentalId() == null) {
+    public Response update(@PathParam("id") Integer id, RentalDTO rental) {
+        if (id == null || rental == null) {
             return Response.status(Status.BAD_REQUEST).entity("Rental ID and data are required").build();
         }
+        rental.setRentalId(id);
         try {
             boolean updated = rentalService.update(rental);
             if (!updated) {
