@@ -61,7 +61,7 @@ public class ZOpenEmployeeResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findByIdReturnsOk() {
+    public void findByIdReturnsOk() throws Exception {
         when(employeeService.findById(1)).thenReturn(new EmployeeDTO());
 
         Response response = target("employees/1").request().get();
@@ -70,7 +70,7 @@ public class ZOpenEmployeeResourseTest extends JerseyTest {
     }
 
     @Test
-    public void createReturnsCreated() {
+    public void createReturnsCreated() throws Exception {
         EmployeeDTO employee = new EmployeeDTO();
         when(employeeService.create(Mockito.any(EmployeeDTO.class))).thenReturn(true);
 
@@ -82,7 +82,7 @@ public class ZOpenEmployeeResourseTest extends JerseyTest {
     }
 
     @Test
-    public void updateReturnsOk() {
+    public void updateReturnsOk() throws Exception {
         EmployeeDTO employee = new EmployeeDTO();
         when(employeeService.findById(1)).thenReturn(employee);
         when(employeeService.update(Mockito.any(EmployeeDTO.class))).thenReturn(true);
@@ -95,7 +95,7 @@ public class ZOpenEmployeeResourseTest extends JerseyTest {
     }
 
     @Test
-    public void deleteReturnsOk() {
+    public void deleteReturnsOk() throws Exception {
         when(employeeService.delete(Mockito.any(EmployeeDTO.class), Mockito.eq(1))).thenReturn(true);
 
         Response response = target("employees/1").request().delete();
@@ -104,7 +104,7 @@ public class ZOpenEmployeeResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findByCriteriaReturnsOk() {
+    public void findByCriteriaReturnsOk() throws Exception {
         Results<EmployeeDTO> results = new Results<>();
         results.setResults(Collections.singletonList(new EmployeeDTO()));
 
@@ -118,7 +118,7 @@ public class ZOpenEmployeeResourseTest extends JerseyTest {
     }
 
     @Test
-    public void authenticateReturnsOk() {
+    public void authenticateReturnsOk() throws Exception {
         Map<String, String> credentials = new HashMap<>();
         credentials.put("username", "user");
         credentials.put("password", "pass");
@@ -133,7 +133,7 @@ public class ZOpenEmployeeResourseTest extends JerseyTest {
     }
 
     @Test
-    public void activateReturnsOk() {
+    public void activateReturnsOk() throws Exception {
         when(employeeService.activate(1)).thenReturn(true);
 
         Response response = target("employees/1/activate")

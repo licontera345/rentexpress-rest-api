@@ -58,7 +58,7 @@ public class ZOpenCityResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findAllReturnsOk() {
+    public void findAllReturnsOk() throws Exception {
         when(cityService.findAll()).thenReturn(Collections.singletonList(new CityDTO()));
 
         Response response = target("cities").request().get();
@@ -67,7 +67,7 @@ public class ZOpenCityResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findByIdReturnsOk() {
+    public void findByIdReturnsOk() throws Exception {
         when(cityService.findById(1)).thenReturn(new CityDTO());
 
         Response response = target("cities/1").request().get();
@@ -76,9 +76,9 @@ public class ZOpenCityResourseTest extends JerseyTest {
     }
 
     @Test
-    public void createReturnsCreated() {
+    public void createReturnsCreated() throws Exception {
         CityDTO city = new CityDTO();
-        when(cityService.create(any(CCityDTO.class))).thenReturn(true);
+        when(cityService.create(any(CityDTO.class))).thenReturn(true);
 
         Response response = target("cities")
                 .request()
@@ -88,7 +88,7 @@ public class ZOpenCityResourseTest extends JerseyTest {
     }
 
     @Test
-    public void updateReturnsOk() {
+    public void updateReturnsOk() throws Exception {
         CityDTO city = new CityDTO();
         when(cityService.findById(1)).thenReturn(city);
         when(cityService.update(any(CityDTO.class))).thenReturn(true);
@@ -101,7 +101,7 @@ public class ZOpenCityResourseTest extends JerseyTest {
     }
 
     @Test
-    public void deleteReturnsOk() {
+    public void deleteReturnsOk() throws Exception {
         when(cityService.delete(any(CityDTO.class))).thenReturn(true);
 
         Response response = target("cities/1").request().delete();

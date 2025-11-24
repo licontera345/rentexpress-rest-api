@@ -57,7 +57,7 @@ public class ZOpenAddressResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findByIdReturnsOk() {
+    public void findByIdReturnsOk() throws Exception {
         when(addressService.findById(1)).thenReturn(new AddressDTO());
 
         Response response = target("addresses/1").request().get();
@@ -66,7 +66,7 @@ public class ZOpenAddressResourseTest extends JerseyTest {
     }
 
     @Test
-    public void createReturnsCreated() {
+    public void createReturnsCreated() throws Exception {
         AddressDTO address = new AddressDTO();
         when(addressService.create(any(AddressDTO.class))).thenReturn(true);
 
@@ -78,7 +78,7 @@ public class ZOpenAddressResourseTest extends JerseyTest {
     }
 
     @Test
-    public void updateReturnsOk() {
+    public void updateReturnsOk() throws Exception {
         AddressDTO address = new AddressDTO();
         when(addressService.findById(1)).thenReturn(address);
         when(addressService.update(any(AddressDTO.class))).thenReturn(true);
@@ -91,7 +91,7 @@ public class ZOpenAddressResourseTest extends JerseyTest {
     }
 
     @Test
-    public void deleteReturnsOk() {
+    public void deleteReturnsOk() throws Exception {
         when(addressService.delete(any(AddressDTO.class))).thenReturn(true);
 
         Response response = target("addresses/1").request().delete();

@@ -78,7 +78,7 @@ public class FileResourceTest extends JerseyTest {
     }
 
     @Test
-    void listVehicleImagesReturnsOk() {
+    void listVehicleImagesReturnsOk() throws Exception {
         when(fileService.listVehicleImages(1)).thenReturn(Arrays.asList("img1.jpg", "img2.jpg"));
 
         Response response = target("file/vehicle/1").request().get();
@@ -87,7 +87,7 @@ public class FileResourceTest extends JerseyTest {
     }
 
     @Test
-    void getVehicleImageReturnsOk() {
+    void getVehicleImageReturnsOk() throws Exception {
         when(fileService.getVehicleImage(1, "img.jpg")).thenReturn(new byte[]{1, 2, 3});
 
         Response response = target("file/vehicle/1/img.jpg").request().get();
@@ -96,7 +96,7 @@ public class FileResourceTest extends JerseyTest {
     }
 
     @Test
-    void uploadVehicleImageReturnsCreated() {
+    void uploadVehicleImageReturnsCreated() throws Exception {
         doNothing().when(fileService).saveVehicleImage(eq(1), eq("img.jpg"), any());
 
         ByteArrayInputStream inputStream = new ByteArrayInputStream(new byte[]{1, 2, 3});
@@ -118,7 +118,7 @@ public class FileResourceTest extends JerseyTest {
     }
 
     @Test
-    void deleteVehicleImageReturnsOk() {
+    void deleteVehicleImageReturnsOk() throws Exception {
         doNothing().when(fileService).deleteVehicleImage(1, "img.jpg");
 
         Response response = target("file/vehicle/1/img.jpg").request().delete();
@@ -127,7 +127,7 @@ public class FileResourceTest extends JerseyTest {
     }
 
     @Test
-    void getUserAvatarReturnsOk() {
+    void getUserAvatarReturnsOk() throws Exception {
         when(fileService.getUserAvatar(2)).thenReturn(new byte[]{4, 5, 6});
 
         Response response = target("file/user-avatar/2").request().get();
@@ -136,7 +136,7 @@ public class FileResourceTest extends JerseyTest {
     }
 
     @Test
-    void uploadUserAvatarReturnsCreated() {
+    void uploadUserAvatarReturnsCreated() throws Exception {
         doNothing().when(fileService).saveUserAvatar(eq(2), any());
 
         ByteArrayInputStream inputStream = new ByteArrayInputStream(new byte[]{7, 8, 9});
@@ -158,7 +158,7 @@ public class FileResourceTest extends JerseyTest {
     }
 
     @Test
-    void getEmployeeAvatarReturnsOk() {
+    void getEmployeeAvatarReturnsOk() throws Exception {
         when(fileService.getEmployeeAvatar(3)).thenReturn(new byte[]{10, 11, 12});
 
         Response response = target("file/employee-avatar/3").request().get();
@@ -167,7 +167,7 @@ public class FileResourceTest extends JerseyTest {
     }
 
     @Test
-    void uploadEmployeeAvatarReturnsCreated() {
+    void uploadEmployeeAvatarReturnsCreated() throws Exception {
         doNothing().when(fileService).saveEmployeeAvatar(eq(3), any());
 
         ByteArrayInputStream inputStream = new ByteArrayInputStream(new byte[]{13, 14, 15});

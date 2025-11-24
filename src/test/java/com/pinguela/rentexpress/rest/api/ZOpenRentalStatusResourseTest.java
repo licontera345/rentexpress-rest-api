@@ -53,7 +53,7 @@ public class ZOpenRentalStatusResourseTest extends JerseyTest {
     }
 
     @Test
-    void findAllReturnsOk() {
+    void findAllReturnsOk() throws Exception {
         when(rentalStatusService.findAll("es"))
                 .thenReturn(Collections.singletonList(new RentalStatusDTO()));
 
@@ -66,7 +66,7 @@ public class ZOpenRentalStatusResourseTest extends JerseyTest {
     }
 
     @Test
-    void findByIdReturnsOk() {
+    void findByIdReturnsOk() throws Exception {
         when(rentalStatusService.findById(1, "en"))
                 .thenReturn(new RentalStatusDTO());
 

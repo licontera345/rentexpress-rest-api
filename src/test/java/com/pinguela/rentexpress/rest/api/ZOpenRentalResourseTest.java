@@ -64,7 +64,7 @@ public class ZOpenRentalResourseTest extends JerseyTest {
     // ---------------------------------------------------
 
     @Test
-    void findByIdReturnsOk() {
+    void findByIdReturnsOk() throws Exception {
         when(rentalService.findById(1)).thenReturn(new RentalDTO());
 
         Response response = target("rentals/1").request().get();
@@ -74,7 +74,7 @@ public class ZOpenRentalResourseTest extends JerseyTest {
 
 
     @Test
-    void createReturnsCreated() {
+    void createReturnsCreated() throws Exception {
         RentalDTO rental = new RentalDTO();
         rental.setRentalId(2);
 
@@ -88,7 +88,7 @@ public class ZOpenRentalResourseTest extends JerseyTest {
 
 
     @Test
-    void updateReturnsOk() {
+    void updateReturnsOk() throws Exception {
         RentalDTO rental = new RentalDTO();
 
         when(rentalService.update(any(RentalDTO.class))).thenReturn(true);
@@ -101,7 +101,7 @@ public class ZOpenRentalResourseTest extends JerseyTest {
 
 
     @Test
-    void deleteReturnsOk() {
+    void deleteReturnsOk() throws Exception {
         when(rentalService.delete(4)).thenReturn(true);
 
         Response response = target("rentals/4").request().delete();
@@ -111,7 +111,7 @@ public class ZOpenRentalResourseTest extends JerseyTest {
 
 
     @Test
-    void findByCriteriaReturnsOk() {
+    void findByCriteriaReturnsOk() throws Exception {
         @SuppressWarnings("unchecked")
         Results<RentalDTO> results = mock(Results.class);
         when(results.getResults()).thenReturn(Collections.singletonList(new RentalDTO()));
@@ -127,7 +127,7 @@ public class ZOpenRentalResourseTest extends JerseyTest {
 
 
     @Test
-    void existsByReservationReturnsOk() {
+    void existsByReservationReturnsOk() throws Exception {
         when(rentalService.existsByReservation(6)).thenReturn(true);
 
         Response response = target("rentals/reservations/6/exists").request().get();
@@ -137,7 +137,7 @@ public class ZOpenRentalResourseTest extends JerseyTest {
 
 
     @Test
-    void createFromReservationReturnsCreated() {
+    void createFromReservationReturnsCreated() throws Exception {
         ReservationDTO res = new ReservationDTO();
         res.setReservationId(7);
 
@@ -150,7 +150,7 @@ public class ZOpenRentalResourseTest extends JerseyTest {
 
 
     @Test
-    void autoConvertReservationsReturnsOk() {
+    void autoConvertReservationsReturnsOk() throws Exception {
         when(rentalService.autoConvertReservations()).thenReturn(2);
 
         Response response = target("rentals/auto-convert").request().post(null);

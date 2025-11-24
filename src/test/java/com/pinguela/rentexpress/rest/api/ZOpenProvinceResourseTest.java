@@ -58,7 +58,7 @@ public class ZOpenProvinceResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findAllReturnsOk() {
+    public void findAllReturnsOk() throws Exception {
         when(provinceService.findAll()).thenReturn(Collections.singletonList(new ProvinceDTO()));
 
         Response response = target("provinces").request().get();
@@ -67,7 +67,7 @@ public class ZOpenProvinceResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findByIdReturnsOk() {
+    public void findByIdReturnsOk() throws Exception {
         when(provinceService.findById(1)).thenReturn(new ProvinceDTO());
 
         Response response = target("provinces/1").request().get();
@@ -76,7 +76,7 @@ public class ZOpenProvinceResourseTest extends JerseyTest {
     }
 
     @Test
-    public void createReturnsCreated() {
+    public void createReturnsCreated() throws Exception {
         ProvinceDTO province = new ProvinceDTO();
 
         when(provinceService.create(any(ProvinceDTO.class))).thenReturn(true);
@@ -89,7 +89,7 @@ public class ZOpenProvinceResourseTest extends JerseyTest {
     }
 
     @Test
-    public void updateReturnsOk() {
+    public void updateReturnsOk() throws Exception {
         ProvinceDTO province = new ProvinceDTO();
 
         when(provinceService.update(any(ProvinceDTO.class))).thenReturn(true);
@@ -103,7 +103,7 @@ public class ZOpenProvinceResourseTest extends JerseyTest {
     }
 
     @Test
-    public void deleteReturnsOk() {
+    public void deleteReturnsOk() throws Exception {
         when(provinceService.delete(1)).thenReturn(true);
 
         Response response = target("provinces/1").request().delete();

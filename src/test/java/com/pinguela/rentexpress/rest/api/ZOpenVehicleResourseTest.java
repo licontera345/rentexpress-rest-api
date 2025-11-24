@@ -1,6 +1,8 @@
 package com.pinguela.rentexpress.rest.api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
@@ -14,17 +16,19 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.pinguela.rentexpres.model.VehicleStatusDTO;
-import com.pinguela.rentexpres.service.VehicleStatusService;
+import com.pinguela.rentexpres.model.Results;
+import com.pinguela.rentexpres.model.VehicleDTO;
+import com.pinguela.rentexpres.service.VehicleService;
 import com.pinguela.rentexpress.rest.api.support.JavaTimeParamConverterProvider;
 
+import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.Response;
 
-public class ZOpenVehicleStatusResourseTest extends JerseyTest {
+public class ZOpenVehicleResourseTest extends JerseyTest {
 
     @Mock
-    private VehicleStatusService vehicleStatusService;
+    private VehicleService vehicleService;
 
     private AutoCloseable mocks;
 
@@ -32,8 +36,8 @@ public class ZOpenVehicleStatusResourseTest extends JerseyTest {
     protected Application configure() {
         mocks = MockitoAnnotations.openMocks(this);
 
-        ZOpenVehicleStatusResourse resource = new ZOpenVehicleStatusResourse();
-        injectMock(resource, "vehicleStatusService", vehicleStatusService);
+        ZOpenVehicleResourse resource = new ZOpenVehicleResourse();
+        injectMock(resource, "vehicleService", vehicleService);
 
         ResourceConfig rc = new ResourceConfig();
         rc.registerInstances(resource);
@@ -53,25 +57,62 @@ public class ZOpenVehicleStatusResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findAllReturnsOk() throws Exception {
-        when(vehicleStatusService.findAll("en"))
-                .thenReturn(Collections.singletonList(new VehicleStatusDTO()));
+    void findByIdReturnsOk() throws Exception {
+        when(vehicleService.findById(1)).thenReturn(new VehicleDTO());
 
-        Response response = target("vehicle-statuses")
-                .queryParam("isoCode", "en")
-                .request()
-                .get();
+        Response response = target("vehicles/1").request().get();
 
         assertEquals(200, response.getStatus());
     }
 
     @Test
-    public void findByIdReturnsOk() throws Exception {
-        when(vehicleStatusService.findById(1, "en"))
-                .thenReturn(new VehicleStatusDTO());
+    void createReturnsCreated() throws Exception {
+        VehicleDTO vehicle = new VehicleDTO();
+        vehicle.setVehicleId(2);
 
-        Response response = target("vehicle-statuses/1")
-                .queryParam("isoCode", "en")
+        when(vehicleService.create(any(VehicleDTO.class))).thenReturn(true);
+        when(vehicleService.findById(2)).thenReturn(vehicle);
+
+        Response response = target("vehicles")
+                .request()
+                .post(Entity.json(vehicle));
+
+        assertEquals(201, response.getStatus());
+    }
+
+    @Test
+    void updateReturnsOk() throws Exception {
+        VehicleDTO vehicle = new VehicleDTO();
+
+        when(vehicleService.update(any(VehicleDTO.class))).thenReturn(true);
+        when(vehicleService.findById(3)).thenReturn(vehicle);
+
+        Response response = target("vehicles/3")
+                .request()
+                .put(Entity.json(vehicle));
+
+        assertEquals(200, response.getStatus());
+    }
+
+    @Test
+    void deleteReturnsOk() throws Exception {
+        when(vehicleService.delete(4)).thenReturn(true);
+
+        Response response = target("vehicles/4").request().delete();
+
+        assertEquals(200, response.getStatus());
+    }
+
+    @Test
+    void findByCriteriaReturnsOk() throws Exception {
+        @SuppressWarnings("unchecked")
+        Results<VehicleDTO> results = mock(Results.class);
+
+        when(results.getResults()).thenReturn(Collections.singletonList(new VehicleDTO()));
+        when(vehicleService.findByCriteria(any())).thenReturn(results);
+
+        Response response = target("vehicles/search")
+                .queryParam("brand", "test")
                 .request()
                 .get();
 

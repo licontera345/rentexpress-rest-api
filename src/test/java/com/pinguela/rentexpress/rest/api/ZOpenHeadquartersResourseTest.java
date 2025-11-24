@@ -58,7 +58,7 @@ public class ZOpenHeadquartersResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findAllReturnsOk() {
+    public void findAllReturnsOk() throws Exception {
         when(headquartersService.findAll()).thenReturn(Collections.singletonList(new HeadquartersDTO()));
 
         Response response = target("headquarters").request().get();
@@ -67,7 +67,7 @@ public class ZOpenHeadquartersResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findByIdReturnsOk() {
+    public void findByIdReturnsOk() throws Exception {
         when(headquartersService.findById(1)).thenReturn(new HeadquartersDTO());
 
         Response response = target("headquarters/1").request().get();
@@ -76,7 +76,7 @@ public class ZOpenHeadquartersResourseTest extends JerseyTest {
     }
 
     @Test
-    public void createReturnsCreated() {
+    public void createReturnsCreated() throws Exception {
         HeadquartersDTO headquarters = new HeadquartersDTO();
 
         when(headquartersService.create(any(HeadquartersDTO.class))).thenReturn(true);
@@ -89,7 +89,7 @@ public class ZOpenHeadquartersResourseTest extends JerseyTest {
     }
 
     @Test
-    public void updateReturnsOk() {
+    public void updateReturnsOk() throws Exception {
         HeadquartersDTO headquarters = new HeadquartersDTO();
 
         when(headquartersService.update(any(HeadquartersDTO.class))).thenReturn(true);
@@ -103,7 +103,7 @@ public class ZOpenHeadquartersResourseTest extends JerseyTest {
     }
 
     @Test
-    public void deleteReturnsOk() {
+    public void deleteReturnsOk() throws Exception {
         when(headquartersService.delete(1)).thenReturn(true);
 
         Response response = target("headquarters/1").request().delete();
