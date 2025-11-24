@@ -14,6 +14,7 @@ import org.glassfish.jersey.test.grizzly.GrizzlyTestContainerFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import com.pinguela.rentexpres.model.Results;
@@ -23,6 +24,7 @@ import com.pinguela.rentexpress.rest.api.support.JavaTimeParamConverterProvider;
 
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 public class ZOpenVehicleResourseTest extends JerseyTest {
@@ -53,7 +55,9 @@ public class ZOpenVehicleResourseTest extends JerseyTest {
 
     @AfterEach
     public void tearDownMocks() throws Exception {
-        if (mocks != null) mocks.close();
+        if (mocks != null) {
+            mocks.close();
+        }
     }
 
     @Test
