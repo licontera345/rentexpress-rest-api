@@ -145,6 +145,12 @@
     <scope>test</scope>
 </dependency>
 
+                <dependency>
+                        <groupId>org.glassfish.jersey.test-framework.providers</groupId>
+                        <artifactId>jersey-test-framework-provider-grizzly2</artifactId>
+                        <scope>test</scope>
+                </dependency>
+
 <!-- Mockito para los tests -->
 <dependency>
     <groupId>org.mockito</groupId>

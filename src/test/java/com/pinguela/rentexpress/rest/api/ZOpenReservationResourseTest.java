@@ -57,7 +57,7 @@ public class ZOpenReservationResourseTest extends JerseyTest {
     }
 
     @Test
-    void findByIdReturnsOk() {
+    void findByIdReturnsOk() throws Exception {
         when(reservationService.findById(1)).thenReturn(new ReservationDTO());
 
         Response response = target("reservations/1").request().get();
@@ -66,7 +66,7 @@ public class ZOpenReservationResourseTest extends JerseyTest {
     }
 
     @Test
-    void createReturnsCreated() {
+    void createReturnsCreated() throws Exception {
         ReservationDTO reservation = new ReservationDTO();
         reservation.setReservationId(2);
 
@@ -81,7 +81,7 @@ public class ZOpenReservationResourseTest extends JerseyTest {
     }
 
     @Test
-    void updateReturnsOk() {
+    void updateReturnsOk() throws Exception {
         ReservationDTO reservation = new ReservationDTO();
 
         when(reservationService.update(any(ReservationDTO.class))).thenReturn(true);
@@ -95,7 +95,7 @@ public class ZOpenReservationResourseTest extends JerseyTest {
     }
 
     @Test
-    void deleteReturnsOk() {
+    void deleteReturnsOk() throws Exception {
         when(reservationService.delete(4)).thenReturn(true);
 
         Response response = target("reservations/4").request().delete();
@@ -104,7 +104,7 @@ public class ZOpenReservationResourseTest extends JerseyTest {
     }
 
     @Test
-    void findByCriteriaReturnsOk() {
+    void findByCriteriaReturnsOk() throws Exception {
         @SuppressWarnings("unchecked")
         Results<ReservationDTO> results = mock(Results.class);
 

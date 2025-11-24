@@ -2,6 +2,7 @@ package com.pinguela.rentexpress.rest.api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
@@ -60,7 +61,7 @@ public class ZOpenVehicleResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findByIdReturnsOk() throws Exception {
+    void findByIdReturnsOk() throws Exception {
         when(vehicleService.findById(1)).thenReturn(new VehicleDTO());
 
         Response response = target("vehicles/1").request().get();
@@ -69,51 +70,53 @@ public class ZOpenVehicleResourseTest extends JerseyTest {
     }
 
     @Test
-    public void createReturnsCreated() throws Exception {
+    void createReturnsCreated() throws Exception {
         VehicleDTO vehicle = new VehicleDTO();
+        vehicle.setVehicleId(2);
 
         when(vehicleService.create(any(VehicleDTO.class))).thenReturn(true);
-        when(vehicleService.findById(null)).thenReturn(null);
+        when(vehicleService.findById(2)).thenReturn(vehicle);
 
         Response response = target("vehicles")
                 .request()
-                .post(Entity.entity(vehicle, MediaType.APPLICATION_JSON));
+                .post(Entity.json(vehicle));
 
         assertEquals(201, response.getStatus());
     }
 
     @Test
-    public void updateReturnsOk() throws Exception {
+    void updateReturnsOk() throws Exception {
         VehicleDTO vehicle = new VehicleDTO();
 
         when(vehicleService.update(any(VehicleDTO.class))).thenReturn(true);
-        when(vehicleService.findById(1)).thenReturn(vehicle);
+        when(vehicleService.findById(3)).thenReturn(vehicle);
 
-        Response response = target("vehicles/1")
+        Response response = target("vehicles/3")
                 .request()
-                .put(Entity.entity(vehicle, MediaType.APPLICATION_JSON));
+                .put(Entity.json(vehicle));
 
         assertEquals(200, response.getStatus());
     }
 
     @Test
-    public void deleteReturnsOk() throws Exception {
-        when(vehicleService.delete(1)).thenReturn(true);
+    void deleteReturnsOk() throws Exception {
+        when(vehicleService.delete(4)).thenReturn(true);
 
-        Response response = target("vehicles/1").request().delete();
+        Response response = target("vehicles/4").request().delete();
 
         assertEquals(200, response.getStatus());
     }
 
     @Test
-    public void findByCriteriaReturnsOk() throws Exception {
-        Results<VehicleDTO> results = new Results<>();
-        results.setResults(Collections.singletonList(new VehicleDTO()));
+    void findByCriteriaReturnsOk() throws Exception {
+        @SuppressWarnings("unchecked")
+        Results<VehicleDTO> results = mock(Results.class);
 
-        when(vehicleService.findByCriteria(Mockito.any())).thenReturn(results);
+        when(results.getResults()).thenReturn(Collections.singletonList(new VehicleDTO()));
+        when(vehicleService.findByCriteria(any())).thenReturn(results);
 
         Response response = target("vehicles/search")
-                .queryParam("pageNumber", 1)
+                .queryParam("brand", "test")
                 .request()
                 .get();
 

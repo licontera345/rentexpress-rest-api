@@ -48,12 +48,12 @@ public class ZOpenReservationStatusResourseTest extends JerseyTest {
     }
 
     @AfterEach
-    void tearDown() throws Exception {
+    public void tearDown() throws Exception {
         if (mocks != null) mocks.close();
     }
 
     @Test
-    void findAllReturnsOk() {
+    void findAllReturnsOk() throws Exception {
         when(reservationStatusService.findAll("es"))
                 .thenReturn(Collections.singletonList(new ReservationStatusDTO()));
 
@@ -66,7 +66,7 @@ public class ZOpenReservationStatusResourseTest extends JerseyTest {
     }
 
     @Test
-    void findByIdReturnsOk() {
+    void findByIdReturnsOk() throws Exception {
         when(reservationStatusService.findById(1, "en"))
                 .thenReturn(new ReservationStatusDTO());
 
