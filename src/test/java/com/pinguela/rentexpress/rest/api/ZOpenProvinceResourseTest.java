@@ -1,6 +1,7 @@
 package com.pinguela.rentexpress.rest.api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
@@ -15,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 
 import com.pinguela.rentexpres.model.ProvinceDTO;
 import com.pinguela.rentexpres.service.ProvinceService;
+import com.pinguela.rentexpress.rest.api.support.JavaTimeParamConverterProvider;
 
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.Application;
@@ -33,7 +35,9 @@ public class ZOpenProvinceResourseTest extends JerseyTest {
         mocks = MockitoAnnotations.openMocks(this);
         ZOpenProvinceResourse resource = new ZOpenProvinceResourse();
         injectMock(resource, "provinceService", provinceService);
-        return new ResourceConfig().register(resource);
+        return new ResourceConfig()
+                .register(resource)
+                .register(JavaTimeParamConverterProvider.class);
     }
 
     @AfterEach
@@ -44,7 +48,7 @@ public class ZOpenProvinceResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findAllReturnsOk() {
+    public void findAllReturnsOk() throws Exception {
         when(provinceService.findAll()).thenReturn(Collections.singletonList(new ProvinceDTO()));
 
         Response response = target("provinces").request().get();
@@ -53,7 +57,7 @@ public class ZOpenProvinceResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findByIdReturnsOk() {
+    public void findByIdReturnsOk() throws Exception {
         when(provinceService.findById(1)).thenReturn(new ProvinceDTO());
 
         Response response = target("provinces/1").request().get();
@@ -62,9 +66,9 @@ public class ZOpenProvinceResourseTest extends JerseyTest {
     }
 
     @Test
-    public void createReturnsCreated() {
+    public void createReturnsCreated() throws Exception {
         ProvinceDTO province = new ProvinceDTO();
-        when(provinceService.create(province)).thenReturn(true);
+        when(provinceService.create(any(ProvinceDTO.class))).thenReturn(true);
         when(provinceService.findById(null)).thenReturn(null);
 
         Response response = target("provinces").request().post(Entity.entity(province, MediaType.APPLICATION_JSON));
@@ -73,9 +77,9 @@ public class ZOpenProvinceResourseTest extends JerseyTest {
     }
 
     @Test
-    public void updateReturnsOk() {
+    public void updateReturnsOk() throws Exception {
         ProvinceDTO province = new ProvinceDTO();
-        when(provinceService.update(province)).thenReturn(true);
+        when(provinceService.update(any(ProvinceDTO.class))).thenReturn(true);
         when(provinceService.findById(1)).thenReturn(province);
 
         Response response = target("provinces/1").request().put(Entity.entity(province, MediaType.APPLICATION_JSON));
@@ -84,7 +88,7 @@ public class ZOpenProvinceResourseTest extends JerseyTest {
     }
 
     @Test
-    public void deleteReturnsOk() {
+    public void deleteReturnsOk() throws Exception {
         when(provinceService.delete(1)).thenReturn(true);
 
         Response response = target("provinces/1").request().delete();

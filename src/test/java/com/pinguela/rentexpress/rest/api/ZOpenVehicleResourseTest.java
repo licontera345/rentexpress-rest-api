@@ -1,6 +1,7 @@
 package com.pinguela.rentexpress.rest.api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
@@ -17,6 +18,7 @@ import org.mockito.MockitoAnnotations;
 import com.pinguela.rentexpres.model.Results;
 import com.pinguela.rentexpres.model.VehicleDTO;
 import com.pinguela.rentexpres.service.VehicleService;
+import com.pinguela.rentexpress.rest.api.support.JavaTimeParamConverterProvider;
 
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.Application;
@@ -35,7 +37,9 @@ public class ZOpenVehicleResourseTest extends JerseyTest {
         mocks = MockitoAnnotations.openMocks(this);
         ZOpenVehicleResourse resource = new ZOpenVehicleResourse();
         injectMock(resource, "vehicleService", vehicleService);
-        return new ResourceConfig().register(resource);
+        return new ResourceConfig()
+                .register(resource)
+                .register(JavaTimeParamConverterProvider.class);
     }
 
     @AfterEach
@@ -46,7 +50,7 @@ public class ZOpenVehicleResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findByIdReturnsOk() {
+    public void findByIdReturnsOk() throws Exception {
         when(vehicleService.findById(1)).thenReturn(new VehicleDTO());
 
         Response response = target("vehicles/1").request().get();
@@ -55,9 +59,9 @@ public class ZOpenVehicleResourseTest extends JerseyTest {
     }
 
     @Test
-    public void createReturnsCreated() {
+    public void createReturnsCreated() throws Exception {
         VehicleDTO vehicle = new VehicleDTO();
-        when(vehicleService.create(vehicle)).thenReturn(true);
+        when(vehicleService.create(any(VehicleDTO.class))).thenReturn(true);
         when(vehicleService.findById(null)).thenReturn(null);
 
         Response response = target("vehicles").request().post(Entity.entity(vehicle, MediaType.APPLICATION_JSON));
@@ -66,9 +70,9 @@ public class ZOpenVehicleResourseTest extends JerseyTest {
     }
 
     @Test
-    public void updateReturnsOk() {
+    public void updateReturnsOk() throws Exception {
         VehicleDTO vehicle = new VehicleDTO();
-        when(vehicleService.update(vehicle)).thenReturn(true);
+        when(vehicleService.update(any(VehicleDTO.class))).thenReturn(true);
         when(vehicleService.findById(1)).thenReturn(vehicle);
 
         Response response = target("vehicles/1").request().put(Entity.entity(vehicle, MediaType.APPLICATION_JSON));
@@ -77,7 +81,7 @@ public class ZOpenVehicleResourseTest extends JerseyTest {
     }
 
     @Test
-    public void deleteReturnsOk() {
+    public void deleteReturnsOk() throws Exception {
         when(vehicleService.delete(1)).thenReturn(true);
 
         Response response = target("vehicles/1").request().delete();
@@ -86,7 +90,7 @@ public class ZOpenVehicleResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findByCriteriaReturnsOk() {
+    public void findByCriteriaReturnsOk() throws Exception {
         Results<VehicleDTO> results = new Results<>();
         results.setResults(Collections.singletonList(new VehicleDTO()));
         when(vehicleService.findByCriteria(Mockito.any())).thenReturn(results);

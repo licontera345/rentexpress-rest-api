@@ -17,6 +17,7 @@ import org.mockito.MockitoAnnotations;
 import com.pinguela.rentexpres.model.ReservationDTO;
 import com.pinguela.rentexpres.model.Results;
 import com.pinguela.rentexpres.service.ReservationService;
+import com.pinguela.rentexpress.rest.api.support.JavaTimeParamConverterProvider;
 
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.Application;
@@ -32,7 +33,9 @@ public class ZOpenReservationResourseTest extends JerseyTest {
         MockitoAnnotations.openMocks(this);
         ZOpenReservationResourse resource = new ZOpenReservationResourse();
         injectReservationService(resource);
-        return new ResourceConfig().register(resource);
+        return new ResourceConfig()
+                .register(resource)
+                .register(JavaTimeParamConverterProvider.class);
     }
 
     private void injectReservationService(ZOpenReservationResourse resource) {
@@ -46,7 +49,7 @@ public class ZOpenReservationResourseTest extends JerseyTest {
     }
 
     @Test
-    void findByIdReturnsOk() {
+    void findByIdReturnsOk() throws Exception {
         when(reservationService.findById(1)).thenReturn(new ReservationDTO());
 
         Response response = target("/reservations/1").request().get();
@@ -55,7 +58,7 @@ public class ZOpenReservationResourseTest extends JerseyTest {
     }
 
     @Test
-    void createReturnsCreated() {
+    void createReturnsCreated() throws Exception {
         ReservationDTO reservation = new ReservationDTO();
         reservation.setReservationId(2);
         when(reservationService.create(any(ReservationDTO.class))).thenReturn(true);
@@ -67,7 +70,7 @@ public class ZOpenReservationResourseTest extends JerseyTest {
     }
 
     @Test
-    void updateReturnsOk() {
+    void updateReturnsOk() throws Exception {
         ReservationDTO reservation = new ReservationDTO();
         when(reservationService.update(any(ReservationDTO.class))).thenReturn(true);
         when(reservationService.findById(3)).thenReturn(reservation);
@@ -78,7 +81,7 @@ public class ZOpenReservationResourseTest extends JerseyTest {
     }
 
     @Test
-    void deleteReturnsOk() {
+    void deleteReturnsOk() throws Exception {
         when(reservationService.delete(4)).thenReturn(true);
 
         Response response = target("/reservations/4").request().delete();
@@ -87,7 +90,7 @@ public class ZOpenReservationResourseTest extends JerseyTest {
     }
 
     @Test
-    void findByCriteriaReturnsOk() {
+    void findByCriteriaReturnsOk() throws Exception {
         @SuppressWarnings("unchecked")
         Results<ReservationDTO> results = mock(Results.class);
         when(results.getResults()).thenReturn(Collections.singletonList(new ReservationDTO()));

@@ -1,6 +1,7 @@
 package com.pinguela.rentexpress.rest.api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
@@ -15,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 
 import com.pinguela.rentexpres.model.HeadquartersDTO;
 import com.pinguela.rentexpres.service.HeadquartersService;
+import com.pinguela.rentexpress.rest.api.support.JavaTimeParamConverterProvider;
 
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.Application;
@@ -33,7 +35,9 @@ public class ZOpenHeadquartersResourseTest extends JerseyTest {
         mocks = MockitoAnnotations.openMocks(this);
         ZOpenHeadquartersResourse resource = new ZOpenHeadquartersResourse();
         injectMock(resource, "headquartersService", headquartersService);
-        return new ResourceConfig().register(resource);
+        return new ResourceConfig()
+                .register(resource)
+                .register(JavaTimeParamConverterProvider.class);
     }
 
     @AfterEach
@@ -44,7 +48,7 @@ public class ZOpenHeadquartersResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findAllReturnsOk() {
+    public void findAllReturnsOk() throws Exception {
         when(headquartersService.findAll()).thenReturn(Collections.singletonList(new HeadquartersDTO()));
 
         Response response = target("headquarters").request().get();
@@ -53,7 +57,7 @@ public class ZOpenHeadquartersResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findByIdReturnsOk() {
+    public void findByIdReturnsOk() throws Exception {
         when(headquartersService.findById(1)).thenReturn(new HeadquartersDTO());
 
         Response response = target("headquarters/1").request().get();
@@ -62,9 +66,9 @@ public class ZOpenHeadquartersResourseTest extends JerseyTest {
     }
 
     @Test
-    public void createReturnsCreated() {
+    public void createReturnsCreated() throws Exception {
         HeadquartersDTO headquarters = new HeadquartersDTO();
-        when(headquartersService.create(headquarters)).thenReturn(true);
+        when(headquartersService.create(any(HeadquartersDTO.class))).thenReturn(true);
         when(headquartersService.findById(null)).thenReturn(null);
 
         Response response = target("headquarters").request().post(Entity.entity(headquarters, MediaType.APPLICATION_JSON));
@@ -73,9 +77,9 @@ public class ZOpenHeadquartersResourseTest extends JerseyTest {
     }
 
     @Test
-    public void updateReturnsOk() {
+    public void updateReturnsOk() throws Exception {
         HeadquartersDTO headquarters = new HeadquartersDTO();
-        when(headquartersService.update(headquarters)).thenReturn(true);
+        when(headquartersService.update(any(HeadquartersDTO.class))).thenReturn(true);
         when(headquartersService.findById(1)).thenReturn(headquarters);
 
         Response response = target("headquarters/1").request().put(Entity.entity(headquarters, MediaType.APPLICATION_JSON));
@@ -84,7 +88,7 @@ public class ZOpenHeadquartersResourseTest extends JerseyTest {
     }
 
     @Test
-    public void deleteReturnsOk() {
+    public void deleteReturnsOk() throws Exception {
         when(headquartersService.delete(1)).thenReturn(true);
 
         Response response = target("headquarters/1").request().delete();
