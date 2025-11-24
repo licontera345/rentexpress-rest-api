@@ -8,6 +8,8 @@ import java.util.Collections;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
+import org.glassfish.jersey.test.grizzly.GrizzlyTestContainerFactory;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -24,41 +26,65 @@ public class ZOpenReservationStatusResourseTest extends JerseyTest {
     @Mock
     private ReservationStatusService reservationStatusService;
 
+    private AutoCloseable mocks;
+
     @Override
     protected Application configure() {
-        MockitoAnnotations.openMocks(this);
+        mocks = MockitoAnnotations.openMocks(this);
+
         ZOpenReservationStatusResourse resource = new ZOpenReservationStatusResourse();
-        injectReservationStatusService(resource);
-        return new ResourceConfig()
-                .register(resource)
-                .register(JavaTimeParamConverterProvider.class);
+        injectMock(resource, "reservationStatusService", reservationStatusService);
+
+        ResourceConfig rc = new ResourceConfig();
+        rc.registerInstances(resource);
+        rc.register(JavaTimeParamConverterProvider.class);
+
+        return rc;
     }
 
-    private void injectReservationStatusService(ZOpenReservationStatusResourse resource) {
+    @Override
+    protected org.glassfish.jersey.test.spi.TestContainerFactory getTestContainerFactory() {
+        return new GrizzlyTestContainerFactory();
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        if (mocks != null) mocks.close();
+    }
+
+    @Test
+    void findAllReturnsOk() {
+        when(reservationStatusService.findAll("es"))
+                .thenReturn(Collections.singletonList(new ReservationStatusDTO()));
+
+        Response response = target("reservation-statuses")
+                .queryParam("isoCode", "es")
+                .request()
+                .get();
+
+        assertEquals(200, response.getStatus());
+    }
+
+    @Test
+    void findByIdReturnsOk() {
+        when(reservationStatusService.findById(1, "en"))
+                .thenReturn(new ReservationStatusDTO());
+
+        Response response = target("reservation-statuses/1")
+                .queryParam("isoCode", "en")
+                .request()
+                .get();
+
+        assertEquals(200, response.getStatus());
+    }
+
+    private void injectMock(Object target, String fieldName, Object value) {
         try {
-            Field field = ZOpenReservationStatusResourse.class.getDeclaredField("reservationStatusService");
+            Field field = target.getClass().getDeclaredField(fieldName);
             field.setAccessible(true);
-            field.set(resource, reservationStatusService);
-        } catch (IllegalAccessException | NoSuchFieldException e) {
+            field.set(target, value);
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Test
-    void findAllReturnsOk() throws Exception {
-        when(reservationStatusService.findAll("es")).thenReturn(Collections.singletonList(new ReservationStatusDTO()));
-
-        Response response = target("/reservation-statuses").queryParam("isoCode", "es").request().get();
-
-        assertEquals(200, response.getStatus());
-    }
-
-    @Test
-    void findByIdReturnsOk() throws Exception {
-        when(reservationStatusService.findById(1, "en")).thenReturn(new ReservationStatusDTO());
-
-        Response response = target("/reservation-statuses/1").queryParam("isoCode", "en").request().get();
-
-        assertEquals(200, response.getStatus());
     }
 }

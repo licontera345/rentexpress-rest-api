@@ -1,4 +1,4 @@
- package com.pinguela.rentexpress.rest.api;
+package com.pinguela.rentexpress.rest.api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -8,6 +8,7 @@ import java.util.Collections;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
+import org.glassfish.jersey.test.grizzly.GrizzlyTestContainerFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -30,11 +31,20 @@ public class ZOpenVehicleCategoryResourseTest extends JerseyTest {
     @Override
     protected Application configure() {
         mocks = MockitoAnnotations.openMocks(this);
+
         ZOpenVehicleCategoryResourse resource = new ZOpenVehicleCategoryResourse();
         injectMock(resource, "vehicleCategoryService", vehicleCategoryService);
-        return new ResourceConfig()
-                .register(resource)
-                .register(JavaTimeParamConverterProvider.class);
+ 
+        ResourceConfig rc = new ResourceConfig();
+        rc.registerInstances(resource);
+        rc.register(JavaTimeParamConverterProvider.class);
+
+        return rc;
+    }
+
+    @Override
+    protected org.glassfish.jersey.test.spi.TestContainerFactory getTestContainerFactory() {
+        return new GrizzlyTestContainerFactory();
     }
 
     @AfterEach
@@ -46,20 +56,28 @@ public class ZOpenVehicleCategoryResourseTest extends JerseyTest {
 
     @Test
     public void findAllReturnsOk() throws Exception {
-        when(vehicleCategoryService.findAll("en")).thenReturn(Collections.singletonList(new VehicleCategoryDTO()));
+        when(vehicleCategoryService.findAll("en"))
+                .thenReturn(Collections.singletonList(new VehicleCategoryDTO()));
 
-        Response response = target("vehicle-categories").queryParam("isoCode", "en").request().get();
+        Response response = target("vehicle-categories")
+                .queryParam("isoCode", "en")
+                .request()
+                .get();
 
-        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        assertEquals(200, response.getStatus());
     }
 
     @Test
     public void findByIdReturnsOk() throws Exception {
-        when(vehicleCategoryService.findById(1, "en")).thenReturn(new VehicleCategoryDTO());
+        when(vehicleCategoryService.findById(1, "en"))
+                .thenReturn(new VehicleCategoryDTO());
 
-        Response response = target("vehicle-categories/1").queryParam("isoCode", "en").request().get();
+        Response response = target("vehicle-categories/1")
+                .queryParam("isoCode", "en")
+                .request()
+                .get();
 
-        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        assertEquals(200, response.getStatus());
     }
 
     private void injectMock(Object target, String fieldName, Object value) {

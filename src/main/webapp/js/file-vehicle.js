@@ -1,11 +1,11 @@
 function uploadVehicleImage() {
     var id = document.getElementById("vehicleId").value;
-    var file = document.getElementById("vehicleFile").files[0];
+    var fileInput = document.getElementById("vehicleFile");
+    var file = fileInput.files[0];
 
     if (id == "" || !file) {
         alert("ID y archivo necesarios");
     } else {
-
         var form = new FormData();
         form.append("file", file);
 
@@ -13,7 +13,7 @@ function uploadVehicleImage() {
         xhr.open("POST", "/rentexpress-rest-api/api/file/vehicle/" + id, true);
 
         xhr.onload = function () {
-            if (xhr.status == 200) {
+			if (xhr.status == 200 || xhr.status == 201) {
                 loadVehicleGallery();
             } else {
                 alert("Error al subir imagen");
@@ -28,29 +28,41 @@ function loadVehicleGallery() {
     var id = document.getElementById("vehicleId").value;
 
     if (id == "") {
-        // no hacemos nada
+        alert("Falta ID de vehículo");
     } else {
         var xhr = new XMLHttpRequest();
         xhr.open("GET", "/rentexpress-rest-api/api/file/vehicle/" + id, true);
 
         xhr.onload = function () {
+            console.log("GET imágenes:", xhr.status, xhr.responseText);
+
             if (xhr.status == 200) {
-                var images = JSON.parse(xhr.responseText);
-                var div = document.getElementById("vehicleGallery");
-                div.innerHTML = "";
+                var images;
 
-                for (var i = 0; i < images.length; i++) {
-                    var img = images[i];
-                    var container = document.createElement("div");
+                try {
+                    images = JSON.parse(xhr.responseText);   // backend debe devolver JSON (lista de nombres)
+                } catch (e) {
+                    alert("Respuesta del servidor no es JSON válido");
+                    images = null;
+                }
 
-                    container.innerHTML =
-                        "<img src='/rentexpress-rest-api/api/file/vehicle/" + id + "/" + img + "' width='120'>" +
-                        "<button onclick=\"deleteImage('" + img + "')\">Eliminar</button>";
+                if (images != null) {
+                    var div = document.getElementById("vehicleGallery");
+                    div.innerHTML = "";
 
-                    div.appendChild(container);
+                    for (var i = 0; i < images.length; i++) {
+                        var imgName = images[i];
+                        var cont = document.createElement("div");
+
+                        cont.innerHTML =
+                            "<img src='/rentexpress-rest-api/api/file/vehicle/" + id + "/" + imgName + "' width='120'>" +
+                            "<button onclick=\"deleteImage('" + imgName + "')\">Eliminar</button>";
+
+                        div.appendChild(cont);
+                    }
                 }
             } else {
-                alert("Error al cargar imágenes");
+                alert("Error al cargar imágenes: " + xhr.status);
             }
         };
 

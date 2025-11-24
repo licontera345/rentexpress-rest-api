@@ -1,4 +1,4 @@
- package com.pinguela.rentexpress.rest.api;
+package com.pinguela.rentexpress.rest.api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -8,6 +8,7 @@ import java.util.Collections;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
+import org.glassfish.jersey.test.grizzly.GrizzlyTestContainerFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -26,15 +27,24 @@ public class ZOpenRoleResourseTest extends JerseyTest {
     private RoleService roleService;
 
     private AutoCloseable mocks;
-
+ 
     @Override
     protected Application configure() {
         mocks = MockitoAnnotations.openMocks(this);
+
         ZOpenRoleResourse resource = new ZOpenRoleResourse();
         injectMock(resource, "roleService", roleService);
-        return new ResourceConfig()
-                .register(resource)
-                .register(JavaTimeParamConverterProvider.class);
+
+        ResourceConfig rc = new ResourceConfig();
+        rc.registerInstances(resource);
+        rc.register(JavaTimeParamConverterProvider.class);
+
+        return rc;
+    }
+
+    @Override
+    protected org.glassfish.jersey.test.spi.TestContainerFactory getTestContainerFactory() {
+        return new GrizzlyTestContainerFactory();
     }
 
     @AfterEach
@@ -50,7 +60,7 @@ public class ZOpenRoleResourseTest extends JerseyTest {
 
         Response response = target("roles").request().get();
 
-        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        assertEquals(200, response.getStatus());
     }
 
     @Test
@@ -59,7 +69,7 @@ public class ZOpenRoleResourseTest extends JerseyTest {
 
         Response response = target("roles/1").request().get();
 
-        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        assertEquals(200, response.getStatus());
     }
 
     private void injectMock(Object target, String fieldName, Object value) {

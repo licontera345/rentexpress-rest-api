@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
+import org.glassfish.jersey.test.grizzly.GrizzlyTestContainerFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -36,11 +37,20 @@ public class ZOpenUserResourseTest extends JerseyTest {
     @Override
     protected Application configure() {
         mocks = MockitoAnnotations.openMocks(this);
+
         ZOpenUserResourse resource = new ZOpenUserResourse();
         injectMock(resource, "userService", userService);
-        return new ResourceConfig()
-                .register(resource)
-                .register(JavaTimeParamConverterProvider.class);
+
+        ResourceConfig rc = new ResourceConfig();
+        rc.registerInstances(resource);
+        rc.register(JavaTimeParamConverterProvider.class);
+
+        return rc;
+    }
+
+    @Override
+    protected org.glassfish.jersey.test.spi.TestContainerFactory getTestContainerFactory() {
+        return new GrizzlyTestContainerFactory();
     }
 
     @AfterEach
@@ -56,7 +66,7 @@ public class ZOpenUserResourseTest extends JerseyTest {
 
         Response response = target("users/1").request().get();
 
-        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        assertEquals(200, response.getStatus());
     }
 
     @Test
@@ -65,9 +75,10 @@ public class ZOpenUserResourseTest extends JerseyTest {
         when(userService.create(Mockito.any(UserDTO.class))).thenReturn(true);
         when(userService.findById(null)).thenReturn(null);
 
-        Response response = target("users").request().post(Entity.entity(user, MediaType.APPLICATION_JSON));
+        Response response = target("users").request()
+                .post(Entity.entity(user, MediaType.APPLICATION_JSON));
 
-        assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
+        assertEquals(201, response.getStatus());
     }
 
     @Test
@@ -76,9 +87,10 @@ public class ZOpenUserResourseTest extends JerseyTest {
         when(userService.update(Mockito.any(UserDTO.class))).thenReturn(true);
         when(userService.findById(1)).thenReturn(user);
 
-        Response response = target("users/1").request().put(Entity.entity(user, MediaType.APPLICATION_JSON));
+        Response response = target("users/1").request()
+                .put(Entity.entity(user, MediaType.APPLICATION_JSON));
 
-        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        assertEquals(200, response.getStatus());
     }
 
     @Test
@@ -87,18 +99,21 @@ public class ZOpenUserResourseTest extends JerseyTest {
 
         Response response = target("users/1").request().delete();
 
-        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        assertEquals(200, response.getStatus());
     }
 
     @Test
     public void findByCriteriaReturnsOk() throws Exception {
         Results<UserDTO> results = new Results<>();
         results.setResults(Collections.singletonList(new UserDTO()));
-        when(userService.findByCriteria(org.mockito.Mockito.any())).thenReturn(results);
+        when(userService.findByCriteria(Mockito.any())).thenReturn(results);
 
-        Response response = target("users/search").queryParam("pageNumber", 1).request().get();
+        Response response = target("users/search")
+                .queryParam("pageNumber", 1)
+                .request()
+                .get();
 
-        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        assertEquals(200, response.getStatus());
     }
 
     @Test
@@ -106,21 +121,25 @@ public class ZOpenUserResourseTest extends JerseyTest {
         Map<String, String> credentials = new HashMap<>();
         credentials.put("login", "user");
         credentials.put("password", "pass");
-        when(userService.authenticate("user", "pass")).thenReturn(new UserDTO());
+
+        when(userService.authenticate("user", "pass"))
+                .thenReturn(new UserDTO());
 
         Response response = target("users/authenticate").request()
-            .post(Entity.entity(credentials, MediaType.APPLICATION_JSON));
+                .post(Entity.entity(credentials, MediaType.APPLICATION_JSON));
 
-        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        assertEquals(200, response.getStatus());
     }
 
     @Test
     public void activateReturnsOk() throws Exception {
         when(userService.activate(1)).thenReturn(true);
 
-        Response response = target("users/1/activate").request().post(null);
+        Response response = target("users/1/activate")
+                .request()
+                .post(null); 
 
-        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        assertEquals(200, response.getStatus());
     }
 
     private void injectMock(Object target, String fieldName, Object value) {

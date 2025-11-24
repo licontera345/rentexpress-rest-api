@@ -16,10 +16,12 @@ import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
+import org.glassfish.jersey.test.grizzly.GrizzlyTestContainerFactory;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
+ 
 import com.pinguela.rentexpres.service.FileService;
 import com.pinguela.rentexpress.rest.api.support.JavaTimeParamConverterProvider;
 
@@ -33,15 +35,26 @@ public class FileResourceTest extends JerseyTest {
     @Mock
     private FileService fileService;
 
+    private AutoCloseable mocks;
+
     @Override
     protected Application configure() {
-        MockitoAnnotations.openMocks(this);
+        mocks = MockitoAnnotations.openMocks(this);
+
         FileResource resource = new FileResource();
         injectFileService(resource);
-        return new ResourceConfig()
-                .register(resource)
-                .register(JavaTimeParamConverterProvider.class)
-                .register(MultiPartFeature.class);
+
+        ResourceConfig rc = new ResourceConfig();
+        rc.registerInstances(resource);
+        rc.register(JavaTimeParamConverterProvider.class);
+        rc.register(MultiPartFeature.class);
+
+        return rc;
+    }
+
+    @Override
+    protected org.glassfish.jersey.test.spi.TestContainerFactory getTestContainerFactory() {
+        return new GrizzlyTestContainerFactory();
     }
 
     @Override
@@ -49,44 +62,55 @@ public class FileResourceTest extends JerseyTest {
         config.register(MultiPartFeature.class);
     }
 
+    @AfterEach
+    void tearDownMocks() throws Exception {
+        if (mocks != null) mocks.close();
+    }
+
     private void injectFileService(FileResource resource) {
         try {
             Field field = FileResource.class.getDeclaredField("fileService");
             field.setAccessible(true);
             field.set(resource, fileService);
-        } catch (IllegalAccessException | NoSuchFieldException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     @Test
-    void listVehicleImagesReturnsOk() throws Exception {
+    void listVehicleImagesReturnsOk() {
         when(fileService.listVehicleImages(1)).thenReturn(Arrays.asList("img1.jpg", "img2.jpg"));
 
-        Response response = target("/file/vehicle/1").request().get();
+        Response response = target("file/vehicle/1").request().get();
 
         assertEquals(200, response.getStatus());
     }
 
     @Test
-    void getVehicleImageReturnsOk() throws Exception {
-        when(fileService.getVehicleImage(1, "img.jpg")).thenReturn(new byte[] { 1, 2, 3 });
+    void getVehicleImageReturnsOk() {
+        when(fileService.getVehicleImage(1, "img.jpg")).thenReturn(new byte[]{1, 2, 3});
 
-        Response response = target("/file/vehicle/1/img.jpg").request().get();
+        Response response = target("file/vehicle/1/img.jpg").request().get();
 
         assertEquals(200, response.getStatus());
     }
 
     @Test
-    void uploadVehicleImageReturnsCreated() throws Exception {
+    void uploadVehicleImageReturnsCreated() {
         doNothing().when(fileService).saveVehicleImage(eq(1), eq("img.jpg"), any());
 
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(new byte[] { 1, 2, 3 });
-        StreamDataBodyPart filePart = new StreamDataBodyPart("file", inputStream, "img.jpg", MediaType.APPLICATION_OCTET_STREAM_TYPE);
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(new byte[]{1, 2, 3});
+        StreamDataBodyPart filePart = new StreamDataBodyPart(
+                "file",
+                inputStream,
+                "img.jpg",
+                MediaType.APPLICATION_OCTET_STREAM_TYPE
+        );
+
         FormDataMultiPart multiPart = new FormDataMultiPart();
         multiPart.bodyPart(filePart);
 
-        Response response = target("/file/vehicle/1")
+        Response response = target("file/vehicle/1")
                 .request()
                 .post(Entity.entity(multiPart, multiPart.getMediaType()));
 
@@ -94,33 +118,39 @@ public class FileResourceTest extends JerseyTest {
     }
 
     @Test
-    void deleteVehicleImageReturnsOk() throws Exception {
+    void deleteVehicleImageReturnsOk() {
         doNothing().when(fileService).deleteVehicleImage(1, "img.jpg");
 
-        Response response = target("/file/vehicle/1/img.jpg").request().delete();
+        Response response = target("file/vehicle/1/img.jpg").request().delete();
 
         assertEquals(200, response.getStatus());
     }
 
     @Test
-    void getUserAvatarReturnsOk() throws Exception {
-        when(fileService.getUserAvatar(2)).thenReturn(new byte[] { 4, 5, 6 });
+    void getUserAvatarReturnsOk() {
+        when(fileService.getUserAvatar(2)).thenReturn(new byte[]{4, 5, 6});
 
-        Response response = target("/file/user-avatar/2").request().get();
+        Response response = target("file/user-avatar/2").request().get();
 
         assertEquals(200, response.getStatus());
     }
 
     @Test
-    void uploadUserAvatarReturnsCreated() throws Exception {
+    void uploadUserAvatarReturnsCreated() {
         doNothing().when(fileService).saveUserAvatar(eq(2), any());
 
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(new byte[] { 7, 8, 9 });
-        StreamDataBodyPart filePart = new StreamDataBodyPart("file", inputStream, "avatar.jpg", MediaType.APPLICATION_OCTET_STREAM_TYPE);
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(new byte[]{7, 8, 9});
+        StreamDataBodyPart filePart = new StreamDataBodyPart(
+                "file",
+                inputStream,
+                "avatar.jpg",
+                MediaType.APPLICATION_OCTET_STREAM_TYPE
+        );
+
         FormDataMultiPart multiPart = new FormDataMultiPart();
         multiPart.bodyPart(filePart);
 
-        Response response = target("/file/user-avatar/2")
+        Response response = target("file/user-avatar/2")
                 .request()
                 .post(Entity.entity(multiPart, multiPart.getMediaType()));
 
@@ -128,24 +158,30 @@ public class FileResourceTest extends JerseyTest {
     }
 
     @Test
-    void getEmployeeAvatarReturnsOk() throws Exception {
-        when(fileService.getEmployeeAvatar(3)).thenReturn(new byte[] { 10, 11, 12 });
+    void getEmployeeAvatarReturnsOk() {
+        when(fileService.getEmployeeAvatar(3)).thenReturn(new byte[]{10, 11, 12});
 
-        Response response = target("/file/employee-avatar/3").request().get();
+        Response response = target("file/employee-avatar/3").request().get();
 
         assertEquals(200, response.getStatus());
     }
 
     @Test
-    void uploadEmployeeAvatarReturnsCreated() throws Exception {
+    void uploadEmployeeAvatarReturnsCreated() {
         doNothing().when(fileService).saveEmployeeAvatar(eq(3), any());
 
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(new byte[] { 13, 14, 15 });
-        StreamDataBodyPart filePart = new StreamDataBodyPart("file", inputStream, "employee.jpg", MediaType.APPLICATION_OCTET_STREAM_TYPE);
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(new byte[]{13, 14, 15});
+        StreamDataBodyPart filePart = new StreamDataBodyPart(
+                "file",
+                inputStream,
+                "employee.jpg",
+                MediaType.APPLICATION_OCTET_STREAM_TYPE
+        );
+
         FormDataMultiPart multiPart = new FormDataMultiPart();
         multiPart.bodyPart(filePart);
 
-        Response response = target("/file/employee-avatar/3")
+        Response response = target("file/employee-avatar/3")
                 .request()
                 .post(Entity.entity(multiPart, multiPart.getMediaType()));
 
