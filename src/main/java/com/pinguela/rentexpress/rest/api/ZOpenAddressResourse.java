@@ -2,10 +2,10 @@ package com.pinguela.rentexpress.rest.api;
 
 import java.util.logging.Logger;
 
-import com.pinguela.rentexpres.exception.RentexpresException;
-import com.pinguela.rentexpres.model.AddressDTO;
-import com.pinguela.rentexpres.service.AddressService;
-import com.pinguela.rentexpres.service.impl.AddressServiceImpl;
+import com.pinguela.rentexpress.exception.RentexpresException;
+import com.pinguela.rentexpress.model.AddressDTO;
+import com.pinguela.rentexpress.service.AddressService;
+import com.pinguela.rentexpress.service.impl.AddressServiceImpl;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

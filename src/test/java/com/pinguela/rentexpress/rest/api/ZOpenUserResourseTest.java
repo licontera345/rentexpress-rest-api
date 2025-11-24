@@ -17,9 +17,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import com.pinguela.rentexpres.model.Results;
-import com.pinguela.rentexpres.model.UserDTO;
-import com.pinguela.rentexpres.service.UserService;
+import com.pinguela.rentexpress.model.Results;
+import com.pinguela.rentexpress.model.UserDTO;
+import com.pinguela.rentexpress.service.UserService;
 import com.pinguela.rentexpress.rest.api.support.JavaTimeParamConverterProvider;
 
 import jakarta.ws.rs.client.Entity;

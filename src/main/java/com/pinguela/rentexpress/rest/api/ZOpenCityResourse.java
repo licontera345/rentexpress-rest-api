@@ -3,10 +3,10 @@ package com.pinguela.rentexpress.rest.api;
 import java.util.List;
 import java.util.logging.Logger;
 
-import com.pinguela.rentexpres.exception.RentexpresException;
-import com.pinguela.rentexpres.model.CityDTO;
-import com.pinguela.rentexpres.service.CityService;
-import com.pinguela.rentexpres.service.impl.CityServiceImpl;
+import com.pinguela.rentexpress.exception.RentexpresException;
+import com.pinguela.rentexpress.model.CityDTO;
+import com.pinguela.rentexpress.service.CityService;
+import com.pinguela.rentexpress.service.impl.CityServiceImpl;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

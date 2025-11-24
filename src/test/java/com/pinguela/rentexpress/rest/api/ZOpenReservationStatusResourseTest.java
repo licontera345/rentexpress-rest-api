@@ -14,8 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.pinguela.rentexpres.model.ReservationStatusDTO;
-import com.pinguela.rentexpres.service.ReservationStatusService;
+import com.pinguela.rentexpress.model.ReservationStatusDTO;
+import com.pinguela.rentexpress.service.ReservationStatusService;
 import com.pinguela.rentexpress.rest.api.support.JavaTimeParamConverterProvider;
 
 import jakarta.ws.rs.core.Application;

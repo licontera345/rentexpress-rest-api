@@ -3,10 +3,10 @@ package com.pinguela.rentexpress.rest.api;
 import java.util.List;
 import java.util.logging.Logger;
 
-import com.pinguela.rentexpres.exception.RentexpresException;
-import com.pinguela.rentexpres.model.RoleDTO;
-import com.pinguela.rentexpres.service.RoleService;
-import com.pinguela.rentexpres.service.impl.RoleServiceImpl;
+import com.pinguela.rentexpress.exception.RentexpresException;
+import com.pinguela.rentexpress.model.RoleDTO;
+import com.pinguela.rentexpress.service.RoleService;
+import com.pinguela.rentexpress.service.impl.RoleServiceImpl;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

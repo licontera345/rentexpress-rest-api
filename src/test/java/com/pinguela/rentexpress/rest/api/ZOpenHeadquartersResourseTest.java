@@ -15,8 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
  
-import com.pinguela.rentexpres.model.HeadquartersDTO;
-import com.pinguela.rentexpres.service.HeadquartersService;
+import com.pinguela.rentexpress.model.HeadquartersDTO;
+import com.pinguela.rentexpress.service.HeadquartersService;
 import com.pinguela.rentexpress.rest.api.support.JavaTimeParamConverterProvider;
 
 import jakarta.ws.rs.client.Entity;

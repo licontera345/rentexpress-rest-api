@@ -14,8 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.pinguela.rentexpres.model.RoleDTO;
-import com.pinguela.rentexpres.service.RoleService;
+import com.pinguela.rentexpress.model.RoleDTO;
+import com.pinguela.rentexpress.service.RoleService;
 import com.pinguela.rentexpress.rest.api.support.JavaTimeParamConverterProvider;
 
 import jakarta.ws.rs.core.Application;

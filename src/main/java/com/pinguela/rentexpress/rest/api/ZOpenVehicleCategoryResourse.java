@@ -3,10 +3,10 @@ package com.pinguela.rentexpress.rest.api;
 import java.util.List;
 import java.util.logging.Logger;
 
-import com.pinguela.rentexpres.exception.RentexpresException;
-import com.pinguela.rentexpres.model.VehicleCategoryDTO;
-import com.pinguela.rentexpres.service.VehicleCategoryService;
-import com.pinguela.rentexpres.service.impl.VehicleCategoryServiceImpl;
+import com.pinguela.rentexpress.exception.RentexpresException;
+import com.pinguela.rentexpress.model.VehicleCategoryDTO;
+import com.pinguela.rentexpress.service.VehicleCategoryService;
+import com.pinguela.rentexpress.service.impl.VehicleCategoryServiceImpl;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

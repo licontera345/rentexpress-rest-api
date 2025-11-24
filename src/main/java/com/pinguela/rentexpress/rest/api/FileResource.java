@@ -9,9 +9,9 @@ import java.util.logging.Logger;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
-import com.pinguela.rentexpres.exception.RentexpresException;
-import com.pinguela.rentexpres.service.FileService;
-import com.pinguela.rentexpres.service.impl.FileServiceImpl;
+import com.pinguela.rentexpress.exception.RentexpresException;
+import com.pinguela.rentexpress.service.FileService;
+import com.pinguela.rentexpress.service.impl.FileServiceImpl;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.Consumes;

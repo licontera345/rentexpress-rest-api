@@ -14,8 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.pinguela.rentexpres.model.VehicleCategoryDTO;
-import com.pinguela.rentexpres.service.VehicleCategoryService;
+import com.pinguela.rentexpress.model.VehicleCategoryDTO;
+import com.pinguela.rentexpress.service.VehicleCategoryService;
 import com.pinguela.rentexpress.rest.api.support.JavaTimeParamConverterProvider;
 
 import jakarta.ws.rs.core.Application;

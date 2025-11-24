@@ -2,13 +2,13 @@ package com.pinguela.rentexpress.rest.api;
 
 import java.util.logging.Logger;
 
-import com.pinguela.rentexpres.exception.RentexpresException;
-import com.pinguela.rentexpres.model.RentalCriteria;
-import com.pinguela.rentexpres.model.RentalDTO;
-import com.pinguela.rentexpres.model.ReservationDTO;
-import com.pinguela.rentexpres.model.Results;
-import com.pinguela.rentexpres.service.RentalService;
-import com.pinguela.rentexpres.service.impl.RentalServiceImpl;
+import com.pinguela.rentexpress.exception.RentexpresException;
+import com.pinguela.rentexpress.model.RentalCriteria;
+import com.pinguela.rentexpress.model.RentalDTO;
+import com.pinguela.rentexpress.model.ReservationDTO;
+import com.pinguela.rentexpress.model.Results;
+import com.pinguela.rentexpress.service.RentalService;
+import com.pinguela.rentexpress.service.impl.RentalServiceImpl;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
