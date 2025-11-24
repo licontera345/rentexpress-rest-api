@@ -1,6 +1,7 @@
 package com.pinguela.rentexpress.rest.api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
@@ -15,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 
 import com.pinguela.rentexpres.model.CityDTO;
 import com.pinguela.rentexpres.service.CityService;
+import com.pinguela.rentexpress.rest.api.support.JavaTimeParamConverterProvider;
 
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.Application;
@@ -33,7 +35,9 @@ public class ZOpenCityResourseTest extends JerseyTest {
         mocks = MockitoAnnotations.openMocks(this);
         ZOpenCityResourse resource = new ZOpenCityResourse();
         injectMock(resource, "cityService", cityService);
-        return new ResourceConfig().register(resource);
+        return new ResourceConfig()
+                .register(resource)
+                .register(JavaTimeParamConverterProvider.class);
     }
 
     @AfterEach
@@ -44,7 +48,7 @@ public class ZOpenCityResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findAllReturnsOk() {
+    public void findAllReturnsOk() throws Exception {
         when(cityService.findAll()).thenReturn(Collections.singletonList(new CityDTO()));
 
         Response response = target("cities").request().get();
@@ -53,7 +57,7 @@ public class ZOpenCityResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findByIdReturnsOk() {
+    public void findByIdReturnsOk() throws Exception {
         when(cityService.findById(1)).thenReturn(new CityDTO());
 
         Response response = target("cities/1").request().get();
@@ -62,9 +66,9 @@ public class ZOpenCityResourseTest extends JerseyTest {
     }
 
     @Test
-    public void createReturnsCreated() {
+    public void createReturnsCreated() throws Exception {
         CityDTO city = new CityDTO();
-        when(cityService.create(city)).thenReturn(true);
+        when(cityService.create(any(CityDTO.class))).thenReturn(true);
         when(cityService.findById(null)).thenReturn(null);
 
         Response response = target("cities").request().post(Entity.entity(city, MediaType.APPLICATION_JSON));
@@ -73,9 +77,9 @@ public class ZOpenCityResourseTest extends JerseyTest {
     }
 
     @Test
-    public void updateReturnsOk() {
+    public void updateReturnsOk() throws Exception {
         CityDTO city = new CityDTO();
-        when(cityService.update(city)).thenReturn(true);
+        when(cityService.update(any(CityDTO.class))).thenReturn(true);
         when(cityService.findById(1)).thenReturn(city);
 
         Response response = target("cities/1").request().put(Entity.entity(city, MediaType.APPLICATION_JSON));
@@ -84,8 +88,8 @@ public class ZOpenCityResourseTest extends JerseyTest {
     }
 
     @Test
-    public void deleteReturnsOk() {
-        when(cityService.delete(1)).thenReturn(true);
+    public void deleteReturnsOk() throws Exception {
+        when(cityService.delete(any(CityDTO.class))).thenReturn(true);
 
         Response response = target("cities/1").request().delete();
 

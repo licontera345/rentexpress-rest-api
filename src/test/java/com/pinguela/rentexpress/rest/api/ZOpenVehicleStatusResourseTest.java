@@ -15,6 +15,7 @@ import org.mockito.MockitoAnnotations;
 
 import com.pinguela.rentexpres.model.VehicleStatusDTO;
 import com.pinguela.rentexpres.service.VehicleStatusService;
+import com.pinguela.rentexpress.rest.api.support.JavaTimeParamConverterProvider;
 
 import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.Response;
@@ -31,7 +32,9 @@ public class ZOpenVehicleStatusResourseTest extends JerseyTest {
         mocks = MockitoAnnotations.openMocks(this);
         ZOpenVehicleStatusResourse resource = new ZOpenVehicleStatusResourse();
         injectMock(resource, "vehicleStatusService", vehicleStatusService);
-        return new ResourceConfig().register(resource);
+        return new ResourceConfig()
+                .register(resource)
+                .register(JavaTimeParamConverterProvider.class);
     }
 
     @AfterEach
@@ -42,7 +45,7 @@ public class ZOpenVehicleStatusResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findAllReturnsOk() {
+    public void findAllReturnsOk() throws Exception {
         when(vehicleStatusService.findAll("en")).thenReturn(Collections.singletonList(new VehicleStatusDTO()));
 
         Response response = target("vehicle-statuses").queryParam("isoCode", "en").request().get();
@@ -51,7 +54,7 @@ public class ZOpenVehicleStatusResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findByIdReturnsOk() {
+    public void findByIdReturnsOk() throws Exception {
         when(vehicleStatusService.findById(1, "en")).thenReturn(new VehicleStatusDTO());
 
         Response response = target("vehicle-statuses/1").queryParam("isoCode", "en").request().get();

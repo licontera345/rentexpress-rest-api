@@ -15,6 +15,7 @@ import org.mockito.MockitoAnnotations;
 
 import com.pinguela.rentexpres.model.RoleDTO;
 import com.pinguela.rentexpres.service.RoleService;
+import com.pinguela.rentexpress.rest.api.support.JavaTimeParamConverterProvider;
 
 import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.Response;
@@ -31,7 +32,9 @@ public class ZOpenRoleResourseTest extends JerseyTest {
         mocks = MockitoAnnotations.openMocks(this);
         ZOpenRoleResourse resource = new ZOpenRoleResourse();
         injectMock(resource, "roleService", roleService);
-        return new ResourceConfig().register(resource);
+        return new ResourceConfig()
+                .register(resource)
+                .register(JavaTimeParamConverterProvider.class);
     }
 
     @AfterEach
@@ -42,7 +45,7 @@ public class ZOpenRoleResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findAllReturnsOk() {
+    public void findAllReturnsOk() throws Exception {
         when(roleService.findAll()).thenReturn(Collections.singletonList(new RoleDTO()));
 
         Response response = target("roles").request().get();
@@ -51,7 +54,7 @@ public class ZOpenRoleResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findByIdReturnsOk() {
+    public void findByIdReturnsOk() throws Exception {
         when(roleService.findById(1)).thenReturn(new RoleDTO());
 
         Response response = target("roles/1").request().get();

@@ -13,11 +13,13 @@ import org.glassfish.jersey.test.JerseyTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import com.pinguela.rentexpres.model.Results;
 import com.pinguela.rentexpres.model.UserDTO;
 import com.pinguela.rentexpres.service.UserService;
+import com.pinguela.rentexpress.rest.api.support.JavaTimeParamConverterProvider;
 
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.Application;
@@ -36,7 +38,9 @@ public class ZOpenUserResourseTest extends JerseyTest {
         mocks = MockitoAnnotations.openMocks(this);
         ZOpenUserResourse resource = new ZOpenUserResourse();
         injectMock(resource, "userService", userService);
-        return new ResourceConfig().register(resource);
+        return new ResourceConfig()
+                .register(resource)
+                .register(JavaTimeParamConverterProvider.class);
     }
 
     @AfterEach
@@ -47,7 +51,7 @@ public class ZOpenUserResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findByIdReturnsOk() {
+    public void findByIdReturnsOk() throws Exception {
         when(userService.findById(1)).thenReturn(new UserDTO());
 
         Response response = target("users/1").request().get();
@@ -56,9 +60,9 @@ public class ZOpenUserResourseTest extends JerseyTest {
     }
 
     @Test
-    public void createReturnsCreated() {
+    public void createReturnsCreated() throws Exception {
         UserDTO user = new UserDTO();
-        when(userService.create(user)).thenReturn(true);
+        when(userService.create(Mockito.any(UserDTO.class))).thenReturn(true);
         when(userService.findById(null)).thenReturn(null);
 
         Response response = target("users").request().post(Entity.entity(user, MediaType.APPLICATION_JSON));
@@ -67,9 +71,9 @@ public class ZOpenUserResourseTest extends JerseyTest {
     }
 
     @Test
-    public void updateReturnsOk() {
+    public void updateReturnsOk() throws Exception {
         UserDTO user = new UserDTO();
-        when(userService.update(user)).thenReturn(true);
+        when(userService.update(Mockito.any(UserDTO.class))).thenReturn(true);
         when(userService.findById(1)).thenReturn(user);
 
         Response response = target("users/1").request().put(Entity.entity(user, MediaType.APPLICATION_JSON));
@@ -78,7 +82,7 @@ public class ZOpenUserResourseTest extends JerseyTest {
     }
 
     @Test
-    public void deleteReturnsOk() {
+    public void deleteReturnsOk() throws Exception {
         when(userService.delete(1)).thenReturn(true);
 
         Response response = target("users/1").request().delete();
@@ -87,7 +91,7 @@ public class ZOpenUserResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findByCriteriaReturnsOk() {
+    public void findByCriteriaReturnsOk() throws Exception {
         Results<UserDTO> results = new Results<>();
         results.setResults(Collections.singletonList(new UserDTO()));
         when(userService.findByCriteria(org.mockito.Mockito.any())).thenReturn(results);
@@ -98,7 +102,7 @@ public class ZOpenUserResourseTest extends JerseyTest {
     }
 
     @Test
-    public void authenticateReturnsOk() {
+    public void authenticateReturnsOk() throws Exception {
         Map<String, String> credentials = new HashMap<>();
         credentials.put("login", "user");
         credentials.put("password", "pass");
@@ -111,7 +115,7 @@ public class ZOpenUserResourseTest extends JerseyTest {
     }
 
     @Test
-    public void activateReturnsOk() {
+    public void activateReturnsOk() throws Exception {
         when(userService.activate(1)).thenReturn(true);
 
         Response response = target("users/1/activate").request().post(null);

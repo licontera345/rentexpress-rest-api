@@ -14,6 +14,7 @@ import org.mockito.MockitoAnnotations;
 
 import com.pinguela.rentexpres.model.ReservationStatusDTO;
 import com.pinguela.rentexpres.service.ReservationStatusService;
+import com.pinguela.rentexpress.rest.api.support.JavaTimeParamConverterProvider;
 
 import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.Response;
@@ -28,7 +29,9 @@ public class ZOpenReservationStatusResourseTest extends JerseyTest {
         MockitoAnnotations.openMocks(this);
         ZOpenReservationStatusResourse resource = new ZOpenReservationStatusResourse();
         injectReservationStatusService(resource);
-        return new ResourceConfig().register(resource);
+        return new ResourceConfig()
+                .register(resource)
+                .register(JavaTimeParamConverterProvider.class);
     }
 
     private void injectReservationStatusService(ZOpenReservationStatusResourse resource) {
@@ -42,7 +45,7 @@ public class ZOpenReservationStatusResourseTest extends JerseyTest {
     }
 
     @Test
-    void findAllReturnsOk() {
+    void findAllReturnsOk() throws Exception {
         when(reservationStatusService.findAll("es")).thenReturn(Collections.singletonList(new ReservationStatusDTO()));
 
         Response response = target("/reservation-statuses").queryParam("isoCode", "es").request().get();
@@ -51,7 +54,7 @@ public class ZOpenReservationStatusResourseTest extends JerseyTest {
     }
 
     @Test
-    void findByIdReturnsOk() {
+    void findByIdReturnsOk() throws Exception {
         when(reservationStatusService.findById(1, "en")).thenReturn(new ReservationStatusDTO());
 
         Response response = target("/reservation-statuses/1").queryParam("isoCode", "en").request().get();
