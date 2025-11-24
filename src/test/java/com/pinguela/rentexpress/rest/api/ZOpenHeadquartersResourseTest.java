@@ -1,7 +1,6 @@
 package com.pinguela.rentexpress.rest.api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
@@ -9,6 +8,7 @@ import java.util.Collections;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -18,6 +18,7 @@ import com.pinguela.rentexpres.service.HeadquartersService;
 
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 public class ZOpenHeadquartersResourseTest extends JerseyTest {
@@ -25,71 +26,79 @@ public class ZOpenHeadquartersResourseTest extends JerseyTest {
     @Mock
     private HeadquartersService headquartersService;
 
+    private AutoCloseable mocks;
+
     @Override
     protected Application configure() {
-        MockitoAnnotations.openMocks(this);
+        mocks = MockitoAnnotations.openMocks(this);
         ZOpenHeadquartersResourse resource = new ZOpenHeadquartersResourse();
-        injectHeadquartersService(resource);
+        injectMock(resource, "headquartersService", headquartersService);
         return new ResourceConfig().register(resource);
     }
 
-    private void injectHeadquartersService(ZOpenHeadquartersResourse resource) {
-        try {
-            Field field = ZOpenHeadquartersResourse.class.getDeclaredField("headquartersService");
-            field.setAccessible(true);
-            field.set(resource, headquartersService);
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            throw new RuntimeException(e);
+    @AfterEach
+    public void tearDownMocks() throws Exception {
+        if (mocks != null) {
+            mocks.close();
         }
     }
 
     @Test
-    void findAllReturnsOk() {
+    public void findAllReturnsOk() {
         when(headquartersService.findAll()).thenReturn(Collections.singletonList(new HeadquartersDTO()));
 
-        Response response = target("/headquarters").request().get();
+        Response response = target("headquarters").request().get();
 
-        assertEquals(200, response.getStatus());
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
     @Test
-    void findByIdReturnsOk() {
+    public void findByIdReturnsOk() {
         when(headquartersService.findById(1)).thenReturn(new HeadquartersDTO());
 
-        Response response = target("/headquarters/1").request().get();
+        Response response = target("headquarters/1").request().get();
 
-        assertEquals(200, response.getStatus());
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
     @Test
-    void createReturnsCreated() {
+    public void createReturnsCreated() {
         HeadquartersDTO headquarters = new HeadquartersDTO();
-        headquarters.setHeadquartersId(2);
-        when(headquartersService.create(any(HeadquartersDTO.class))).thenReturn(true);
-        when(headquartersService.findById(2)).thenReturn(headquarters);
+        when(headquartersService.create(headquarters)).thenReturn(true);
+        when(headquartersService.findById(null)).thenReturn(null);
 
-        Response response = target("/headquarters").request().post(Entity.json(headquarters));
+        Response response = target("headquarters").request().post(Entity.entity(headquarters, MediaType.APPLICATION_JSON));
 
-        assertEquals(201, response.getStatus());
+        assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
     }
 
     @Test
-    void updateReturnsOk() {
+    public void updateReturnsOk() {
         HeadquartersDTO headquarters = new HeadquartersDTO();
-        when(headquartersService.update(any(HeadquartersDTO.class))).thenReturn(true);
-        when(headquartersService.findById(3)).thenReturn(headquarters);
+        when(headquartersService.update(headquarters)).thenReturn(true);
+        when(headquartersService.findById(1)).thenReturn(headquarters);
 
-        Response response = target("/headquarters/3").request().put(Entity.json(headquarters));
+        Response response = target("headquarters/1").request().put(Entity.entity(headquarters, MediaType.APPLICATION_JSON));
 
-        assertEquals(200, response.getStatus());
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
     @Test
-    void deleteReturnsOk() {
-        when(headquartersService.delete(4)).thenReturn(true);
+    public void deleteReturnsOk() {
+        when(headquartersService.delete(1)).thenReturn(true);
 
-        Response response = target("/headquarters/4").request().delete();
+        Response response = target("headquarters/1").request().delete();
 
-        assertEquals(200, response.getStatus());
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+    }
+
+    private void injectMock(Object target, String fieldName, Object value) {
+        try {
+            Field field = target.getClass().getDeclaredField(fieldName);
+            field.setAccessible(true);
+            field.set(target, value);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
