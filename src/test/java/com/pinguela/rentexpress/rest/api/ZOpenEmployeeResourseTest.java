@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
+import org.glassfish.jersey.test.grizzly.GrizzlyTestContainerFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -36,11 +37,20 @@ public class ZOpenEmployeeResourseTest extends JerseyTest {
     @Override
     protected Application configure() {
         mocks = MockitoAnnotations.openMocks(this);
+
         ZOpenEmployeeResourse resource = new ZOpenEmployeeResourse();
         injectMock(resource, "employeeService", employeeService);
-        return new ResourceConfig()
-                .register(resource)
-                .register(JavaTimeParamConverterProvider.class);
+
+        ResourceConfig rc = new ResourceConfig();
+        rc.registerInstances(resource);  
+        rc.register(JavaTimeParamConverterProvider.class);
+
+        return rc;
+    }
+
+    @Override
+    protected org.glassfish.jersey.test.spi.TestContainerFactory getTestContainerFactory() {
+        return new GrizzlyTestContainerFactory(); 
     }
 
     @AfterEach
@@ -51,7 +61,7 @@ public class ZOpenEmployeeResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findByIdReturnsOk() throws Exception {
+    public void findByIdReturnsOk() {
         when(employeeService.findById(1)).thenReturn(new EmployeeDTO());
 
         Response response = target("employees/1").request().get();
@@ -60,29 +70,32 @@ public class ZOpenEmployeeResourseTest extends JerseyTest {
     }
 
     @Test
-    public void createReturnsCreated() throws Exception {
+    public void createReturnsCreated() {
         EmployeeDTO employee = new EmployeeDTO();
         when(employeeService.create(Mockito.any(EmployeeDTO.class))).thenReturn(true);
-        when(employeeService.findById(null)).thenReturn(null);
 
-        Response response = target("employees").request().post(Entity.entity(employee, MediaType.APPLICATION_JSON));
+        Response response = target("employees")
+                .request()
+                .post(Entity.entity(employee, MediaType.APPLICATION_JSON));
 
         assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
     }
 
     @Test
-    public void updateReturnsOk() throws Exception {
+    public void updateReturnsOk() {
         EmployeeDTO employee = new EmployeeDTO();
-        when(employeeService.update(Mockito.any(EmployeeDTO.class))).thenReturn(true);
         when(employeeService.findById(1)).thenReturn(employee);
+        when(employeeService.update(Mockito.any(EmployeeDTO.class))).thenReturn(true);
 
-        Response response = target("employees/1").request().put(Entity.entity(employee, MediaType.APPLICATION_JSON));
+        Response response = target("employees/1")
+                .request()
+                .put(Entity.entity(employee, MediaType.APPLICATION_JSON));
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
     @Test
-    public void deleteReturnsOk() throws Exception {
+    public void deleteReturnsOk() {
         when(employeeService.delete(Mockito.any(EmployeeDTO.class), Mockito.eq(1))).thenReturn(true);
 
         Response response = target("employees/1").request().delete();
@@ -91,34 +104,41 @@ public class ZOpenEmployeeResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findByCriteriaReturnsOk() throws Exception {
+    public void findByCriteriaReturnsOk() {
         Results<EmployeeDTO> results = new Results<>();
         results.setResults(Collections.singletonList(new EmployeeDTO()));
+
         when(employeeService.findByCriteria(Mockito.any())).thenReturn(results);
 
-        Response response = target("employees/search").queryParam("pageNumber", 1).request().get();
+        Response response = target("employees/search")
+                .queryParam("pageNumber", 1)
+                .request().get();
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
     @Test
-    public void authenticateReturnsOk() throws Exception {
+    public void authenticateReturnsOk() {
         Map<String, String> credentials = new HashMap<>();
         credentials.put("username", "user");
         credentials.put("password", "pass");
+
         when(employeeService.autenticar("user", "pass")).thenReturn(new EmployeeDTO());
 
-        Response response = target("employees/authenticate").request()
-            .post(Entity.entity(credentials, MediaType.APPLICATION_JSON));
+        Response response = target("employees/authenticate")
+                .request()
+                .post(Entity.entity(credentials, MediaType.APPLICATION_JSON));
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
     @Test
-    public void activateReturnsOk() throws Exception {
+    public void activateReturnsOk() {
         when(employeeService.activate(1)).thenReturn(true);
 
-        Response response = target("employees/1/activate").request().post(null);
+        Response response = target("employees/1/activate")
+                .request()
+                .post(null);
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }

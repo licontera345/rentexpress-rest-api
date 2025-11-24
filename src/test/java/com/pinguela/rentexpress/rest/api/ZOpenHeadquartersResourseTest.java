@@ -9,6 +9,7 @@ import java.util.Collections;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
+import org.glassfish.jersey.test.grizzly.GrizzlyTestContainerFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -33,11 +34,20 @@ public class ZOpenHeadquartersResourseTest extends JerseyTest {
     @Override
     protected Application configure() {
         mocks = MockitoAnnotations.openMocks(this);
+
         ZOpenHeadquartersResourse resource = new ZOpenHeadquartersResourse();
         injectMock(resource, "headquartersService", headquartersService);
-        return new ResourceConfig()
-                .register(resource)
-                .register(JavaTimeParamConverterProvider.class);
+
+        ResourceConfig rc = new ResourceConfig();
+        rc.registerInstances(resource);
+        rc.register(JavaTimeParamConverterProvider.class);
+
+        return rc;
+    }
+
+    @Override
+    protected org.glassfish.jersey.test.spi.TestContainerFactory getTestContainerFactory() {
+        return new GrizzlyTestContainerFactory();
     }
 
     @AfterEach
@@ -48,7 +58,7 @@ public class ZOpenHeadquartersResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findAllReturnsOk() throws Exception {
+    public void findAllReturnsOk() {
         when(headquartersService.findAll()).thenReturn(Collections.singletonList(new HeadquartersDTO()));
 
         Response response = target("headquarters").request().get();
@@ -57,7 +67,7 @@ public class ZOpenHeadquartersResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findByIdReturnsOk() throws Exception {
+    public void findByIdReturnsOk() {
         when(headquartersService.findById(1)).thenReturn(new HeadquartersDTO());
 
         Response response = target("headquarters/1").request().get();
@@ -66,29 +76,34 @@ public class ZOpenHeadquartersResourseTest extends JerseyTest {
     }
 
     @Test
-    public void createReturnsCreated() throws Exception {
+    public void createReturnsCreated() {
         HeadquartersDTO headquarters = new HeadquartersDTO();
-        when(headquartersService.create(any(HeadquartersDTO.class))).thenReturn(true);
-        when(headquartersService.findById(null)).thenReturn(null);
 
-        Response response = target("headquarters").request().post(Entity.entity(headquarters, MediaType.APPLICATION_JSON));
+        when(headquartersService.create(any(HeadquartersDTO.class))).thenReturn(true);
+
+        Response response = target("headquarters")
+                .request()
+                .post(Entity.entity(headquarters, MediaType.APPLICATION_JSON));
 
         assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
     }
 
     @Test
-    public void updateReturnsOk() throws Exception {
+    public void updateReturnsOk() {
         HeadquartersDTO headquarters = new HeadquartersDTO();
+
         when(headquartersService.update(any(HeadquartersDTO.class))).thenReturn(true);
         when(headquartersService.findById(1)).thenReturn(headquarters);
 
-        Response response = target("headquarters/1").request().put(Entity.entity(headquarters, MediaType.APPLICATION_JSON));
+        Response response = target("headquarters/1")
+                .request()
+                .put(Entity.entity(headquarters, MediaType.APPLICATION_JSON));
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
     @Test
-    public void deleteReturnsOk() throws Exception {
+    public void deleteReturnsOk() {
         when(headquartersService.delete(1)).thenReturn(true);
 
         Response response = target("headquarters/1").request().delete();

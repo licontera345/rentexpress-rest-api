@@ -9,6 +9,7 @@ import java.util.Collections;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
+import org.glassfish.jersey.test.grizzly.GrizzlyTestContainerFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -33,11 +34,20 @@ public class ZOpenCityResourseTest extends JerseyTest {
     @Override
     protected Application configure() {
         mocks = MockitoAnnotations.openMocks(this);
+
         ZOpenCityResourse resource = new ZOpenCityResourse();
         injectMock(resource, "cityService", cityService);
-        return new ResourceConfig()
-                .register(resource)
-                .register(JavaTimeParamConverterProvider.class);
+
+        ResourceConfig rc = new ResourceConfig();
+        rc.registerInstances(resource); // Registrar INSTANCIA con mock inyectado
+        rc.register(JavaTimeParamConverterProvider.class);
+
+        return rc;
+    }
+
+    @Override
+    protected org.glassfish.jersey.test.spi.TestContainerFactory getTestContainerFactory() {
+        return new GrizzlyTestContainerFactory(); // Usar Grizzly, no InMemory
     }
 
     @AfterEach
@@ -48,7 +58,7 @@ public class ZOpenCityResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findAllReturnsOk() throws Exception {
+    public void findAllReturnsOk() {
         when(cityService.findAll()).thenReturn(Collections.singletonList(new CityDTO()));
 
         Response response = target("cities").request().get();
@@ -57,7 +67,7 @@ public class ZOpenCityResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findByIdReturnsOk() throws Exception {
+    public void findByIdReturnsOk() {
         when(cityService.findById(1)).thenReturn(new CityDTO());
 
         Response response = target("cities/1").request().get();
@@ -66,29 +76,32 @@ public class ZOpenCityResourseTest extends JerseyTest {
     }
 
     @Test
-    public void createReturnsCreated() throws Exception {
+    public void createReturnsCreated() {
         CityDTO city = new CityDTO();
-        when(cityService.create(any(CityDTO.class))).thenReturn(true);
-        when(cityService.findById(null)).thenReturn(null);
+        when(cityService.create(any(CCityDTO.class))).thenReturn(true);
 
-        Response response = target("cities").request().post(Entity.entity(city, MediaType.APPLICATION_JSON));
+        Response response = target("cities")
+                .request()
+                .post(Entity.entity(city, MediaType.APPLICATION_JSON));
 
         assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
     }
 
     @Test
-    public void updateReturnsOk() throws Exception {
+    public void updateReturnsOk() {
         CityDTO city = new CityDTO();
-        when(cityService.update(any(CityDTO.class))).thenReturn(true);
         when(cityService.findById(1)).thenReturn(city);
+        when(cityService.update(any(CityDTO.class))).thenReturn(true);
 
-        Response response = target("cities/1").request().put(Entity.entity(city, MediaType.APPLICATION_JSON));
+        Response response = target("cities/1")
+                .request()
+                .put(Entity.entity(city, MediaType.APPLICATION_JSON));
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
     @Test
-    public void deleteReturnsOk() throws Exception {
+    public void deleteReturnsOk() {
         when(cityService.delete(any(CityDTO.class))).thenReturn(true);
 
         Response response = target("cities/1").request().delete();

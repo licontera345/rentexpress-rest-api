@@ -1,4 +1,4 @@
-package com.pinguela.rentexpress.rest.api;
+ package com.pinguela.rentexpress.rest.api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;

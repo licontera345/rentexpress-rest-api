@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
+import org.glassfish.jersey.test.grizzly.GrizzlyTestContainerFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -32,11 +33,20 @@ public class ZOpenAddressResourseTest extends JerseyTest {
     @Override
     protected Application configure() {
         mocks = MockitoAnnotations.openMocks(this);
+
         ZOpenAddressResourse resource = new ZOpenAddressResourse();
         injectMock(resource, "addressService", addressService);
-        return new ResourceConfig()
-                .register(resource)
-                .register(JavaTimeParamConverterProvider.class);
+
+        ResourceConfig rc = new ResourceConfig();
+        rc.registerInstances(resource); // IMPORTANTE: instancias, no clases
+        rc.register(JavaTimeParamConverterProvider.class);
+
+        return rc;
+    }
+
+    @Override
+    protected org.glassfish.jersey.test.spi.TestContainerFactory getTestContainerFactory() {
+        return new GrizzlyTestContainerFactory();  // IMPORTANTE: No usar InMemory
     }
 
     @AfterEach
@@ -47,7 +57,7 @@ public class ZOpenAddressResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findByIdReturnsOk() throws Exception {
+    public void findByIdReturnsOk() {
         when(addressService.findById(1)).thenReturn(new AddressDTO());
 
         Response response = target("addresses/1").request().get();
@@ -56,29 +66,32 @@ public class ZOpenAddressResourseTest extends JerseyTest {
     }
 
     @Test
-    public void createReturnsCreated() throws Exception {
+    public void createReturnsCreated() {
         AddressDTO address = new AddressDTO();
         when(addressService.create(any(AddressDTO.class))).thenReturn(true);
-        when(addressService.findById(null)).thenReturn(null);
 
-        Response response = target("addresses").request().post(Entity.entity(address, MediaType.APPLICATION_JSON));
+        Response response =
+                target("addresses").request()
+                        .post(Entity.entity(address, MediaType.APPLICATION_JSON));
 
         assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
     }
 
     @Test
-    public void updateReturnsOk() throws Exception {
+    public void updateReturnsOk() {
         AddressDTO address = new AddressDTO();
-        when(addressService.update(any(AddressDTO.class))).thenReturn(true);
         when(addressService.findById(1)).thenReturn(address);
+        when(addressService.update(any(AddressDTO.class))).thenReturn(true);
 
-        Response response = target("addresses/1").request().put(Entity.entity(address, MediaType.APPLICATION_JSON));
+        Response response =
+                target("addresses/1").request()
+                        .put(Entity.entity(address, MediaType.APPLICATION_JSON));
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
     @Test
-    public void deleteReturnsOk() throws Exception {
+    public void deleteReturnsOk() {
         when(addressService.delete(any(AddressDTO.class))).thenReturn(true);
 
         Response response = target("addresses/1").request().delete();

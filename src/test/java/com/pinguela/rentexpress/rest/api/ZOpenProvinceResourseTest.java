@@ -9,6 +9,7 @@ import java.util.Collections;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
+import org.glassfish.jersey.test.grizzly.GrizzlyTestContainerFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -33,11 +34,20 @@ public class ZOpenProvinceResourseTest extends JerseyTest {
     @Override
     protected Application configure() {
         mocks = MockitoAnnotations.openMocks(this);
+
         ZOpenProvinceResourse resource = new ZOpenProvinceResourse();
         injectMock(resource, "provinceService", provinceService);
-        return new ResourceConfig()
-                .register(resource)
-                .register(JavaTimeParamConverterProvider.class);
+
+        ResourceConfig rc = new ResourceConfig();
+        rc.registerInstances(resource);
+        rc.register(JavaTimeParamConverterProvider.class);
+
+        return rc;
+    }
+
+    @Override
+    protected org.glassfish.jersey.test.spi.TestContainerFactory getTestContainerFactory() {
+        return new GrizzlyTestContainerFactory();
     }
 
     @AfterEach
@@ -48,7 +58,7 @@ public class ZOpenProvinceResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findAllReturnsOk() throws Exception {
+    public void findAllReturnsOk() {
         when(provinceService.findAll()).thenReturn(Collections.singletonList(new ProvinceDTO()));
 
         Response response = target("provinces").request().get();
@@ -57,7 +67,7 @@ public class ZOpenProvinceResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findByIdReturnsOk() throws Exception {
+    public void findByIdReturnsOk() {
         when(provinceService.findById(1)).thenReturn(new ProvinceDTO());
 
         Response response = target("provinces/1").request().get();
@@ -66,29 +76,34 @@ public class ZOpenProvinceResourseTest extends JerseyTest {
     }
 
     @Test
-    public void createReturnsCreated() throws Exception {
+    public void createReturnsCreated() {
         ProvinceDTO province = new ProvinceDTO();
-        when(provinceService.create(any(ProvinceDTO.class))).thenReturn(true);
-        when(provinceService.findById(null)).thenReturn(null);
 
-        Response response = target("provinces").request().post(Entity.entity(province, MediaType.APPLICATION_JSON));
+        when(provinceService.create(any(ProvinceDTO.class))).thenReturn(true);
+
+        Response response = target("provinces")
+                .request()
+                .post(Entity.entity(province, MediaType.APPLICATION_JSON));
 
         assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
     }
 
     @Test
-    public void updateReturnsOk() throws Exception {
+    public void updateReturnsOk() {
         ProvinceDTO province = new ProvinceDTO();
+
         when(provinceService.update(any(ProvinceDTO.class))).thenReturn(true);
         when(provinceService.findById(1)).thenReturn(province);
 
-        Response response = target("provinces/1").request().put(Entity.entity(province, MediaType.APPLICATION_JSON));
+        Response response = target("provinces/1")
+                .request()
+                .put(Entity.entity(province, MediaType.APPLICATION_JSON));
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
     @Test
-    public void deleteReturnsOk() throws Exception {
+    public void deleteReturnsOk() {
         when(provinceService.delete(1)).thenReturn(true);
 
         Response response = target("provinces/1").request().delete();
