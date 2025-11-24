@@ -13,30 +13,29 @@ import org.glassfish.jersey.test.JerseyTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import com.pinguela.rentexpres.model.EmployeeDTO;
 import com.pinguela.rentexpres.model.Results;
-import com.pinguela.rentexpres.service.EmployeeService;
+import com.pinguela.rentexpres.model.UserDTO;
+import com.pinguela.rentexpres.service.UserService;
 
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-public class ZOpenEmployeeResourseTest extends JerseyTest {
+public class ZOpenUserResourseTest extends JerseyTest {
 
     @Mock
-    private EmployeeService employeeService;
+    private UserService userService;
 
     private AutoCloseable mocks;
 
     @Override
     protected Application configure() {
         mocks = MockitoAnnotations.openMocks(this);
-        ZOpenEmployeeResourse resource = new ZOpenEmployeeResourse();
-        injectMock(resource, "employeeService", employeeService);
+        ZOpenUserResourse resource = new ZOpenUserResourse();
+        injectMock(resource, "userService", userService);
         return new ResourceConfig().register(resource);
     }
 
@@ -49,51 +48,51 @@ public class ZOpenEmployeeResourseTest extends JerseyTest {
 
     @Test
     public void findByIdReturnsOk() {
-        when(employeeService.findById(1)).thenReturn(new EmployeeDTO());
+        when(userService.findById(1)).thenReturn(new UserDTO());
 
-        Response response = target("employees/1").request().get();
+        Response response = target("users/1").request().get();
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
     @Test
     public void createReturnsCreated() {
-        EmployeeDTO employee = new EmployeeDTO();
-        when(employeeService.create(employee)).thenReturn(true);
-        when(employeeService.findById(null)).thenReturn(null);
+        UserDTO user = new UserDTO();
+        when(userService.create(user)).thenReturn(true);
+        when(userService.findById(null)).thenReturn(null);
 
-        Response response = target("employees").request().post(Entity.entity(employee, MediaType.APPLICATION_JSON));
+        Response response = target("users").request().post(Entity.entity(user, MediaType.APPLICATION_JSON));
 
         assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
     }
 
     @Test
     public void updateReturnsOk() {
-        EmployeeDTO employee = new EmployeeDTO();
-        when(employeeService.update(employee)).thenReturn(true);
-        when(employeeService.findById(1)).thenReturn(employee);
+        UserDTO user = new UserDTO();
+        when(userService.update(user)).thenReturn(true);
+        when(userService.findById(1)).thenReturn(user);
 
-        Response response = target("employees/1").request().put(Entity.entity(employee, MediaType.APPLICATION_JSON));
+        Response response = target("users/1").request().put(Entity.entity(user, MediaType.APPLICATION_JSON));
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
     @Test
     public void deleteReturnsOk() {
-        when(employeeService.delete(Mockito.any(EmployeeDTO.class), Mockito.eq(1))).thenReturn(true);
+        when(userService.delete(1)).thenReturn(true);
 
-        Response response = target("employees/1").request().delete();
+        Response response = target("users/1").request().delete();
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
     @Test
     public void findByCriteriaReturnsOk() {
-        Results<EmployeeDTO> results = new Results<>();
-        results.setResults(Collections.singletonList(new EmployeeDTO()));
-        when(employeeService.findByCriteria(Mockito.any())).thenReturn(results);
+        Results<UserDTO> results = new Results<>();
+        results.setResults(Collections.singletonList(new UserDTO()));
+        when(userService.findByCriteria(org.mockito.Mockito.any())).thenReturn(results);
 
-        Response response = target("employees/search").queryParam("pageNumber", 1).request().get();
+        Response response = target("users/search").queryParam("pageNumber", 1).request().get();
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
@@ -101,11 +100,11 @@ public class ZOpenEmployeeResourseTest extends JerseyTest {
     @Test
     public void authenticateReturnsOk() {
         Map<String, String> credentials = new HashMap<>();
-        credentials.put("username", "user");
+        credentials.put("login", "user");
         credentials.put("password", "pass");
-        when(employeeService.autenticar("user", "pass")).thenReturn(new EmployeeDTO());
+        when(userService.authenticate("user", "pass")).thenReturn(new UserDTO());
 
-        Response response = target("employees/authenticate").request()
+        Response response = target("users/authenticate").request()
             .post(Entity.entity(credentials, MediaType.APPLICATION_JSON));
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -113,9 +112,9 @@ public class ZOpenEmployeeResourseTest extends JerseyTest {
 
     @Test
     public void activateReturnsOk() {
-        when(employeeService.activate(1)).thenReturn(true);
+        when(userService.activate(1)).thenReturn(true);
 
-        Response response = target("employees/1/activate").request().post(null);
+        Response response = target("users/1/activate").request().post(null);
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }

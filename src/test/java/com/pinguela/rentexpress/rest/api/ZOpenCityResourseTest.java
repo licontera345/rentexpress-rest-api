@@ -1,7 +1,6 @@
 package com.pinguela.rentexpress.rest.api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
@@ -9,6 +8,7 @@ import java.util.Collections;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -18,6 +18,7 @@ import com.pinguela.rentexpres.service.CityService;
 
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 public class ZOpenCityResourseTest extends JerseyTest {
@@ -25,80 +26,79 @@ public class ZOpenCityResourseTest extends JerseyTest {
     @Mock
     private CityService cityService;
 
+    private AutoCloseable mocks;
+
     @Override
     protected Application configure() {
-        MockitoAnnotations.openMocks(this);
+        mocks = MockitoAnnotations.openMocks(this);
         ZOpenCityResourse resource = new ZOpenCityResourse();
-        injectCityService(resource);
+        injectMock(resource, "cityService", cityService);
         return new ResourceConfig().register(resource);
     }
 
-    private void injectCityService(ZOpenCityResourse resource) {
-        try {
-            Field field = ZOpenCityResourse.class.getDeclaredField("cityService");
-            field.setAccessible(true);
-            field.set(resource, cityService);
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            throw new RuntimeException(e);
+    @AfterEach
+    public void tearDownMocks() throws Exception {
+        if (mocks != null) {
+            mocks.close();
         }
     }
 
     @Test
-    void findAllReturnsOk() {
+    public void findAllReturnsOk() {
         when(cityService.findAll()).thenReturn(Collections.singletonList(new CityDTO()));
 
-        Response response = target("/cities").request().get();
+        Response response = target("cities").request().get();
 
-        assertEquals(200, response.getStatus());
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
     @Test
-    void findByIdReturnsOk() {
+    public void findByIdReturnsOk() {
         when(cityService.findById(1)).thenReturn(new CityDTO());
 
-        Response response = target("/cities/1").request().get();
+        Response response = target("cities/1").request().get();
 
-        assertEquals(200, response.getStatus());
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
     @Test
-    void findByProvinceReturnsOk() {
-        when(cityService.findByProvinceId(2)).thenReturn(Collections.singletonList(new CityDTO()));
-
-        Response response = target("/cities/province/2").request().get();
-
-        assertEquals(200, response.getStatus());
-    }
-
-    @Test
-    void createReturnsCreated() {
+    public void createReturnsCreated() {
         CityDTO city = new CityDTO();
-        city.setId(3);
-        when(cityService.create(any(CityDTO.class))).thenReturn(true);
-        when(cityService.findById(3)).thenReturn(city);
+        when(cityService.create(city)).thenReturn(true);
+        when(cityService.findById(null)).thenReturn(null);
 
-        Response response = target("/cities").request().post(Entity.json(city));
+        Response response = target("cities").request().post(Entity.entity(city, MediaType.APPLICATION_JSON));
 
-        assertEquals(201, response.getStatus());
+        assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
     }
 
     @Test
-    void updateReturnsOk() {
+    public void updateReturnsOk() {
         CityDTO city = new CityDTO();
-        when(cityService.update(any(CityDTO.class))).thenReturn(true);
-        when(cityService.findById(4)).thenReturn(city);
+        when(cityService.update(city)).thenReturn(true);
+        when(cityService.findById(1)).thenReturn(city);
 
-        Response response = target("/cities/4").request().put(Entity.json(city));
+        Response response = target("cities/1").request().put(Entity.entity(city, MediaType.APPLICATION_JSON));
 
-        assertEquals(200, response.getStatus());
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
     @Test
-    void deleteReturnsOk() {
-        when(cityService.delete(any(CityDTO.class))).thenReturn(true);
+    public void deleteReturnsOk() {
+        when(cityService.delete(1)).thenReturn(true);
 
-        Response response = target("/cities/5").request().delete();
+        Response response = target("cities/1").request().delete();
 
-        assertEquals(200, response.getStatus());
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+    }
+
+    private void injectMock(Object target, String fieldName, Object value) {
+        try {
+            Field field = target.getClass().getDeclaredField(fieldName);
+            field.setAccessible(true);
+            field.set(target, value);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

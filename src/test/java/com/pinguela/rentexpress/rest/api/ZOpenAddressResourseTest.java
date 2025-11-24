@@ -1,13 +1,13 @@
 package com.pinguela.rentexpress.rest.api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -17,6 +17,7 @@ import com.pinguela.rentexpres.service.AddressService;
 
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 public class ZOpenAddressResourseTest extends JerseyTest {
@@ -24,64 +25,70 @@ public class ZOpenAddressResourseTest extends JerseyTest {
     @Mock
     private AddressService addressService;
 
+    private AutoCloseable mocks;
+
     @Override
     protected Application configure() {
-        MockitoAnnotations.openMocks(this);
+        mocks = MockitoAnnotations.openMocks(this);
         ZOpenAddressResourse resource = new ZOpenAddressResourse();
-        injectAddressService(resource);
+        injectMock(resource, "addressService", addressService);
         return new ResourceConfig().register(resource);
     }
 
-    private void injectAddressService(ZOpenAddressResourse resource) {
-        try {
-            Field field = ZOpenAddressResourse.class.getDeclaredField("addressService");
-            field.setAccessible(true);
-            field.set(resource, addressService);
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            throw new RuntimeException(e);
+    @AfterEach
+    public void tearDownMocks() throws Exception {
+        if (mocks != null) {
+            mocks.close();
         }
     }
 
     @Test
-    void findByIdReturnsOk() {
-        AddressDTO address = new AddressDTO();
-        when(addressService.findById(1)).thenReturn(address);
+    public void findByIdReturnsOk() {
+        when(addressService.findById(1)).thenReturn(new AddressDTO());
 
-        Response response = target("/addresses/1").request().get();
+        Response response = target("addresses/1").request().get();
 
-        assertEquals(200, response.getStatus());
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
     @Test
-    void createReturnsCreated() {
+    public void createReturnsCreated() {
         AddressDTO address = new AddressDTO();
-        address.setId(1);
-        when(addressService.create(any(AddressDTO.class))).thenReturn(true);
-        when(addressService.findById(1)).thenReturn(address);
+        when(addressService.create(address)).thenReturn(true);
+        when(addressService.findById(null)).thenReturn(null);
 
-        Response response = target("/addresses").request().post(Entity.json(address));
+        Response response = target("addresses").request().post(Entity.entity(address, MediaType.APPLICATION_JSON));
 
-        assertEquals(201, response.getStatus());
+        assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
     }
 
     @Test
-    void updateReturnsOk() {
+    public void updateReturnsOk() {
         AddressDTO address = new AddressDTO();
-        when(addressService.update(any(AddressDTO.class))).thenReturn(true);
+        when(addressService.update(address)).thenReturn(true);
         when(addressService.findById(1)).thenReturn(address);
 
-        Response response = target("/addresses/1").request().put(Entity.json(address));
+        Response response = target("addresses/1").request().put(Entity.entity(address, MediaType.APPLICATION_JSON));
 
-        assertEquals(200, response.getStatus());
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
     @Test
-    void deleteReturnsOk() {
-        AddressDTO address = new AddressDTO();
-        when(addressService.delete(any(AddressDTO.class))).thenReturn(true);
+    public void deleteReturnsOk() {
+        when(addressService.delete(1)).thenReturn(true);
 
-        Response response = target("/addresses/1").request().delete();
+        Response response = target("addresses/1").request().delete();
 
-        assertEquals(200, response.getStatus());
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+    }
+
+    private void injectMock(Object target, String fieldName, Object value) {
+        try {
+            Field field = target.getClass().getDeclaredField(fieldName);
+            field.setAccessible(true);
+            field.set(target, value);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

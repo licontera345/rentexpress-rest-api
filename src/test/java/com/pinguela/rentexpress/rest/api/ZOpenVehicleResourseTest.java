@@ -11,28 +11,30 @@ import org.glassfish.jersey.test.JerseyTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import com.pinguela.rentexpres.model.ProvinceDTO;
-import com.pinguela.rentexpres.service.ProvinceService;
+import com.pinguela.rentexpres.model.Results;
+import com.pinguela.rentexpres.model.VehicleDTO;
+import com.pinguela.rentexpres.service.VehicleService;
 
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-public class ZOpenProvinceResourseTest extends JerseyTest {
+public class ZOpenVehicleResourseTest extends JerseyTest {
 
     @Mock
-    private ProvinceService provinceService;
+    private VehicleService vehicleService;
 
     private AutoCloseable mocks;
 
     @Override
     protected Application configure() {
         mocks = MockitoAnnotations.openMocks(this);
-        ZOpenProvinceResourse resource = new ZOpenProvinceResourse();
-        injectMock(resource, "provinceService", provinceService);
+        ZOpenVehicleResourse resource = new ZOpenVehicleResourse();
+        injectMock(resource, "vehicleService", vehicleService);
         return new ResourceConfig().register(resource);
     }
 
@@ -44,50 +46,52 @@ public class ZOpenProvinceResourseTest extends JerseyTest {
     }
 
     @Test
-    public void findAllReturnsOk() {
-        when(provinceService.findAll()).thenReturn(Collections.singletonList(new ProvinceDTO()));
-
-        Response response = target("provinces").request().get();
-
-        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-    }
-
-    @Test
     public void findByIdReturnsOk() {
-        when(provinceService.findById(1)).thenReturn(new ProvinceDTO());
+        when(vehicleService.findById(1)).thenReturn(new VehicleDTO());
 
-        Response response = target("provinces/1").request().get();
+        Response response = target("vehicles/1").request().get();
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
     @Test
     public void createReturnsCreated() {
-        ProvinceDTO province = new ProvinceDTO();
-        when(provinceService.create(province)).thenReturn(true);
-        when(provinceService.findById(null)).thenReturn(null);
+        VehicleDTO vehicle = new VehicleDTO();
+        when(vehicleService.create(vehicle)).thenReturn(true);
+        when(vehicleService.findById(null)).thenReturn(null);
 
-        Response response = target("provinces").request().post(Entity.entity(province, MediaType.APPLICATION_JSON));
+        Response response = target("vehicles").request().post(Entity.entity(vehicle, MediaType.APPLICATION_JSON));
 
         assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
     }
 
     @Test
     public void updateReturnsOk() {
-        ProvinceDTO province = new ProvinceDTO();
-        when(provinceService.update(province)).thenReturn(true);
-        when(provinceService.findById(1)).thenReturn(province);
+        VehicleDTO vehicle = new VehicleDTO();
+        when(vehicleService.update(vehicle)).thenReturn(true);
+        when(vehicleService.findById(1)).thenReturn(vehicle);
 
-        Response response = target("provinces/1").request().put(Entity.entity(province, MediaType.APPLICATION_JSON));
+        Response response = target("vehicles/1").request().put(Entity.entity(vehicle, MediaType.APPLICATION_JSON));
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
     @Test
     public void deleteReturnsOk() {
-        when(provinceService.delete(1)).thenReturn(true);
+        when(vehicleService.delete(1)).thenReturn(true);
 
-        Response response = target("provinces/1").request().delete();
+        Response response = target("vehicles/1").request().delete();
+
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+    }
+
+    @Test
+    public void findByCriteriaReturnsOk() {
+        Results<VehicleDTO> results = new Results<>();
+        results.setResults(Collections.singletonList(new VehicleDTO()));
+        when(vehicleService.findByCriteria(Mockito.any())).thenReturn(results);
+
+        Response response = target("vehicles/search").queryParam("pageNumber", 1).request().get();
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
