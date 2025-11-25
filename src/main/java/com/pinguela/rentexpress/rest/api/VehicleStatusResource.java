@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -21,13 +22,15 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-public class ZOpenVehicleStatusResourse {
+@Path("/api/vehicle-status")
+@Tag(name = "Vehicle Statuses", description = "Operations for vehicle status reference data")
+public class VehicleStatusResource {
 
-    private static final Logger logger = Logger.getLogger(ZOpenVehicleStatusResourse.class.getName());
+    private static final Logger logger = Logger.getLogger(VehicleStatusResource.class.getName());
 
     private final VehicleStatusService vehicleStatusService;
 
-    public ZOpenVehicleStatusResourse() {
+    public VehicleStatusResource() {
         this.vehicleStatusService = new VehicleStatusServiceImpl();
     }
 
