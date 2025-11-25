@@ -1,4 +1,4 @@
-package com.pinguela.rentexpress.rest.api;
+package com.pinguela.rentexpress.rest.api.rental;
 
 import java.util.logging.Logger;
 
@@ -16,33 +16,32 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
 /**
- * @deprecated Replaced by RentalResource under /api/rental.
+ * Private rental resource.
  */
-@Deprecated
-@Tag(name = "Rentals", description = "Operations for rental management (deprecated)")
-public class ZOpenRentalResourse {
+@Path("/api/rental")
+@Tag(name = "Rentals", description = "Operations for rental management")
+public class RentalResource {
 
-    private static final Logger logger = Logger.getLogger(ZOpenRentalResourse.class.getName());
+    private static final Logger logger = Logger.getLogger(RentalResource.class.getName());
 
     private final RentalService rentalService;
 
-    public ZOpenRentalResourse() {
+    public RentalResource() {
         this.rentalService = new RentalServiceImpl();
     }
-
 
     @GET
     @Path("/{id}")
