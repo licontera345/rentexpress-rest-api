@@ -1,4 +1,4 @@
-package com.pinguela.rentexpress.rest.api;
+package com.pinguela.rentexpress.rest.api.headquarters;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -14,7 +14,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
- 
+
 import com.pinguela.rentexpres.model.HeadquartersDTO;
 import com.pinguela.rentexpres.service.HeadquartersService;
 import com.pinguela.rentexpress.rest.api.support.JavaTimeParamConverterProvider;
@@ -24,7 +24,7 @@ import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-public class ZOpenHeadquartersResourseTest extends JerseyTest {
+public class HeadquartersResourceTest extends JerseyTest {
 
     @Mock
     private HeadquartersService headquartersService;
@@ -35,7 +35,7 @@ public class ZOpenHeadquartersResourseTest extends JerseyTest {
     protected Application configure() {
         mocks = MockitoAnnotations.openMocks(this);
 
-        ZOpenHeadquartersResourse resource = new ZOpenHeadquartersResourse();
+        HeadquartersResource resource = new HeadquartersResource();
         injectMock(resource, "headquartersService", headquartersService);
 
         ResourceConfig rc = new ResourceConfig();
@@ -61,7 +61,7 @@ public class ZOpenHeadquartersResourseTest extends JerseyTest {
     public void findAllReturnsOk() throws Exception {
         when(headquartersService.findAll()).thenReturn(Collections.singletonList(new HeadquartersDTO()));
 
-        Response response = target("headquarters").request().get();
+        Response response = target("api/headquarters").request().get();
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
@@ -70,7 +70,7 @@ public class ZOpenHeadquartersResourseTest extends JerseyTest {
     public void findByIdReturnsOk() throws Exception {
         when(headquartersService.findById(1)).thenReturn(new HeadquartersDTO());
 
-        Response response = target("headquarters/1").request().get();
+        Response response = target("api/headquarters/1").request().get();
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
@@ -81,7 +81,7 @@ public class ZOpenHeadquartersResourseTest extends JerseyTest {
 
         when(headquartersService.create(any(HeadquartersDTO.class))).thenReturn(true);
 
-        Response response = target("headquarters")
+        Response response = target("api/headquarters")
                 .request()
                 .post(Entity.entity(headquarters, MediaType.APPLICATION_JSON));
 
@@ -95,7 +95,7 @@ public class ZOpenHeadquartersResourseTest extends JerseyTest {
         when(headquartersService.update(any(HeadquartersDTO.class))).thenReturn(true);
         when(headquartersService.findById(1)).thenReturn(headquarters);
 
-        Response response = target("headquarters/1")
+        Response response = target("api/headquarters/1")
                 .request()
                 .put(Entity.entity(headquarters, MediaType.APPLICATION_JSON));
 
@@ -106,7 +106,7 @@ public class ZOpenHeadquartersResourseTest extends JerseyTest {
     public void deleteReturnsOk() throws Exception {
         when(headquartersService.delete(1)).thenReturn(true);
 
-        Response response = target("headquarters/1").request().delete();
+        Response response = target("api/headquarters/1").request().delete();
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
