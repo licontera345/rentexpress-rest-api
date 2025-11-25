@@ -1,4 +1,4 @@
-package com.pinguela.rentexpress.rest.api;
+package com.pinguela.rentexpress.rest.api.city;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -25,16 +25,20 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/cities")
+@Path("/api/city")
 @Tag(name = "Cities", description = "Operations for city management")
-public class ZOpenCityResourse {
+public class CityResource {
 
-    private static final Logger logger = Logger.getLogger(ZOpenCityResourse.class.getName());
+    private static final Logger logger = Logger.getLogger(CityResource.class.getName());
 
     private final CityService cityService;
 
-    public ZOpenCityResourse() {
-        this.cityService = new CityServiceImpl();
+    public CityResource() {
+        this(new CityServiceImpl());
+    }
+
+    public CityResource(CityService cityService) {
+        this.cityService = cityService;
     }
 
     @GET
