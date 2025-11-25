@@ -44,23 +44,23 @@ public class LoginResource {
             return Response.status(Status.BAD_REQUEST).entity("Credentials are required").build();
         }
 
-        String username = extractUsername(credentials);
+        String login = extractLogin(credentials);
         String password = credentials.get("password");
 
-        if (username == null || password == null) {
-            return Response.status(Status.BAD_REQUEST).entity("Username and password are required").build();
+        if (login == null || password == null) {
+            return Response.status(Status.BAD_REQUEST).entity("Login and password are required").build();
         }
 
         try {
-            UserDTO user = userService.authenticate(username, password);
+            UserDTO user = userService.authenticate(login, password);
             if (user != null) {
-                Map<String, Object> response = buildUserResponse(user, username);
+                Map<String, Object> response = buildUserResponse(user, login);
                 return Response.ok(response).build();
             }
 
-            EmployeeDTO employee = employeeService.autenticar(username, password);
+            EmployeeDTO employee = employeeService.autenticar(login, password);
             if (employee != null) {
-                Map<String, Object> response = buildEmployeeResponse(employee, username);
+                Map<String, Object> response = buildEmployeeResponse(employee, login);
                 return Response.ok(response).build();
             }
 
@@ -71,13 +71,13 @@ public class LoginResource {
         }
     }
 
-    private Map<String, Object> buildUserResponse(UserDTO user, String username) {
+    private Map<String, Object> buildUserResponse(UserDTO user, String login) {
         Map<String, Object> claims = new HashMap<String, Object>();
         claims.put("profile", PROFILE_USER);
         claims.put("userId", user.getUserId());
         claims.put("roleId", user.getRoleId());
 
-        String token = JwtUtil.generateToken(username, claims);
+        String token = JwtUtil.generateToken(login, claims);
 
         Map<String, Object> response = new HashMap<String, Object>();
         response.put("token", token);
@@ -87,13 +87,13 @@ public class LoginResource {
         return response;
     }
 
-    private Map<String, Object> buildEmployeeResponse(EmployeeDTO employee, String username) {
+    private Map<String, Object> buildEmployeeResponse(EmployeeDTO employee, String login) {
         Map<String, Object> claims = new HashMap<String, Object>();
         claims.put("profile", PROFILE_EMPLOYEE);
         claims.put("employeeId", employee.getId());
         claims.put("roleId", employee.getRoleId());
 
-        String token = JwtUtil.generateToken(username, claims);
+        String token = JwtUtil.generateToken(login, claims);
 
         Map<String, Object> response = new HashMap<String, Object>();
         response.put("token", token);
@@ -103,9 +103,12 @@ public class LoginResource {
         return response;
     }
 
-    private String extractUsername(Map<String, String> credentials) {
+    private String extractLogin(Map<String, String> credentials) {
         if (credentials.containsKey("username")) {
             return credentials.get("username");
+        }
+        if (credentials.containsKey("email")) {
+            return credentials.get("email");
         }
         if (credentials.containsKey("login")) {
             return credentials.get("login");
