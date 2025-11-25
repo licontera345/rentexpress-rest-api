@@ -27,7 +27,7 @@ import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-public class ZOpenUserResourseTest extends JerseyTest {
+public class UserResourceTest extends JerseyTest {
 
     @Mock
     private UserService userService;
@@ -38,7 +38,7 @@ public class ZOpenUserResourseTest extends JerseyTest {
     protected Application configure() {
         mocks = MockitoAnnotations.openMocks(this);
 
-        ZOpenUserResourse resource = new ZOpenUserResourse();
+        UserResource resource = new UserResource();
         injectMock(resource, "userService", userService);
 
         ResourceConfig rc = new ResourceConfig();
@@ -64,21 +64,21 @@ public class ZOpenUserResourseTest extends JerseyTest {
     public void findByIdReturnsOk() throws Exception {
         when(userService.findById(1)).thenReturn(new UserDTO());
 
-        Response response = target("users/1").request().get();
+        Response response = target("api/user/1").request().get();
 
         assertEquals(200, response.getStatus());
     }
 
     @Test
-    public void createReturnsCreated() throws Exception {
+    public void createReturnsOk() throws Exception {
         UserDTO user = new UserDTO();
         when(userService.create(Mockito.any(UserDTO.class))).thenReturn(true);
         when(userService.findById(null)).thenReturn(null);
 
-        Response response = target("users").request()
+        Response response = target("api/user").request()
                 .post(Entity.entity(user, MediaType.APPLICATION_JSON));
 
-        assertEquals(201, response.getStatus());
+        assertEquals(200, response.getStatus());
     }
 
     @Test
@@ -87,7 +87,7 @@ public class ZOpenUserResourseTest extends JerseyTest {
         when(userService.update(Mockito.any(UserDTO.class))).thenReturn(true);
         when(userService.findById(1)).thenReturn(user);
 
-        Response response = target("users/1").request()
+        Response response = target("api/user/1").request()
                 .put(Entity.entity(user, MediaType.APPLICATION_JSON));
 
         assertEquals(200, response.getStatus());
@@ -97,18 +97,18 @@ public class ZOpenUserResourseTest extends JerseyTest {
     public void deleteReturnsOk() throws Exception {
         when(userService.delete(1)).thenReturn(true);
 
-        Response response = target("users/1").request().delete();
+        Response response = target("api/user/1").request().delete();
 
         assertEquals(200, response.getStatus());
     }
 
     @Test
     public void findByCriteriaReturnsOk() throws Exception {
-        Results<UserDTO> results = new Results<>();
+        Results<UserDTO> results = new Results<UserDTO>();
         results.setResults(Collections.singletonList(new UserDTO()));
         when(userService.findByCriteria(Mockito.any())).thenReturn(results);
 
-        Response response = target("users/search")
+        Response response = target("api/user/search")
                 .queryParam("pageNumber", 1)
                 .request()
                 .get();
@@ -118,14 +118,14 @@ public class ZOpenUserResourseTest extends JerseyTest {
 
     @Test
     public void authenticateReturnsOk() throws Exception {
-        Map<String, String> credentials = new HashMap<>();
+        Map<String, String> credentials = new HashMap<String, String>();
         credentials.put("login", "user");
         credentials.put("password", "pass");
 
         when(userService.authenticate("user", "pass"))
                 .thenReturn(new UserDTO());
 
-        Response response = target("users/authenticate").request()
+        Response response = target("api/user/authenticate").request()
                 .post(Entity.entity(credentials, MediaType.APPLICATION_JSON));
 
         assertEquals(200, response.getStatus());
@@ -135,9 +135,9 @@ public class ZOpenUserResourseTest extends JerseyTest {
     public void activateReturnsOk() throws Exception {
         when(userService.activate(1)).thenReturn(true);
 
-        Response response = target("users/1/activate")
+        Response response = target("api/user/1/activate")
                 .request()
-                .post(null); 
+                .post(null);
 
         assertEquals(200, response.getStatus());
     }
