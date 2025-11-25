@@ -30,7 +30,7 @@ import jakarta.ws.rs.core.Response.Status;
 /**
  * Vehicle REST API resource built from ZOpenVehicleResourse.
  */
-@Path("/api/vehicle")
+@Path("/vehicle")
 @Tag(name = "Vehicle", description = "Operations for vehicle management")
 public class VehicleResource {
 

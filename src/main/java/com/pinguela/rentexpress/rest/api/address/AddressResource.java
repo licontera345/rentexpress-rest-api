@@ -24,7 +24,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/api/address")
+@Path("/address")
 @Tag(name = "Addresses", description = "Operations for address management")
 public class AddressResource {
 

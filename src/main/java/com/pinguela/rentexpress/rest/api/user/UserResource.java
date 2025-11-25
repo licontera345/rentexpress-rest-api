@@ -28,7 +28,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/api/user")
+@Path("/user")
 @Tag(name = "Users", description = "Operations for user management")
 public class UserResource {
 
