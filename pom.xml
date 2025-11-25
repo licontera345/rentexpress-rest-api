@@ -125,15 +125,20 @@
 			<artifactId>jasypt</artifactId>
 			<version>1.9.3</version>
 		</dependency>
-		<dependency>
-			<groupId>org.mindrot</groupId>
-			<artifactId>jbcrypt</artifactId>
-			<version>0.4</version>
-		</dependency>
-		<!--  Tests  -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
+                <dependency>
+                        <groupId>org.mindrot</groupId>
+                        <artifactId>jbcrypt</artifactId>
+                        <version>0.4</version>
+                </dependency>
+                <dependency>
+                        <groupId>io.jsonwebtoken</groupId>
+                        <artifactId>jjwt</artifactId>
+                        <version>0.9.1</version>
+                </dependency>
+                <!--  Tests  -->
+                <dependency>
+                        <groupId>junit</groupId>
+                        <artifactId>junit</artifactId>
 			<version>4.13.2</version>
 			<scope>test</scope>
 		</dependency>
