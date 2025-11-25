@@ -1,4 +1,4 @@
-package com.pinguela.rentexpress.rest.api;
+package com.pinguela.rentexpress.rest.api.auth;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -21,15 +21,15 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/roles")
+@Path("/api/role")
 @Tag(name = "Roles", description = "Operations for role reference data")
-public class ZOpenRoleResourse {
+public class RoleResource {
 
-    private static final Logger logger = Logger.getLogger(ZOpenRoleResourse.class.getName());
+    private static final Logger logger = Logger.getLogger(RoleResource.class.getName());
 
     private final RoleService roleService;
 
-    public ZOpenRoleResourse() {
+    public RoleResource() {
         this.roleService = new RoleServiceImpl();
     }
 
