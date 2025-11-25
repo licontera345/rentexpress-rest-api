@@ -21,6 +21,10 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
+/**
+ * @deprecated Legacy open resource retained only for reference. Use {@link VehicleStatusResource}.
+ */
+@Deprecated
 public class ZOpenVehicleStatusResourse {
 
     private static final Logger logger = Logger.getLogger(ZOpenVehicleStatusResourse.class.getName());

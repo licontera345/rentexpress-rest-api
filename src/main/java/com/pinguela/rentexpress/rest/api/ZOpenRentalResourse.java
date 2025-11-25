@@ -29,7 +29,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
 /**
- * @deprecated Replaced by RentalResource under /api/rental.
+ * @deprecated Legacy open resource retained only for reference. Use {@link com.pinguela.rentexpress.rest.api.rental.RentalResource}.
  */
 @Deprecated
 @Tag(name = "Rentals", description = "Operations for rental management (deprecated)")

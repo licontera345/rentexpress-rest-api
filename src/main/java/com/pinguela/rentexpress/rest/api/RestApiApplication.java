@@ -2,25 +2,25 @@ package com.pinguela.rentexpress.rest.api;
 
 import org.glassfish.jersey.server.ResourceConfig;
 
-import com.pinguela.rentexpress.rest.api.param.DateTimeJsonbProvider;
-import com.pinguela.rentexpress.rest.api.param.JavaTimeParamConverterProvider;
+import com.pinguela.rentexpress.rest.api.AddressResource;
 import com.pinguela.rentexpress.rest.api.auth.LoginResource;
 import com.pinguela.rentexpress.rest.api.auth.filter.AuthFilter;
-import com.pinguela.rentexpress.rest.api.ZOpenAddressResourse;
-import com.pinguela.rentexpress.rest.api.ZOpenCityResourse;
-import com.pinguela.rentexpress.rest.api.ZOpenEmployeeResourse;
-import com.pinguela.rentexpress.rest.api.ZOpenHeadquartersResourse;
-import com.pinguela.rentexpress.rest.api.ZOpenProvinceResourse;
-import com.pinguela.rentexpress.rest.api.ZOpenRentalResourse;
-import com.pinguela.rentexpress.rest.api.ZOpenRentalStatusResourse;
-import com.pinguela.rentexpress.rest.api.ZOpenReservationResourse;
-import com.pinguela.rentexpress.rest.api.ZOpenReservationStatusResourse;
-import com.pinguela.rentexpress.rest.api.ZOpenRoleResourse;
-import com.pinguela.rentexpress.rest.api.ZOpenUserResourse;
-import com.pinguela.rentexpress.rest.api.ZOpenVehicleCategoryResourse;
-import com.pinguela.rentexpress.rest.api.ZOpenVehicleResourse;
-import com.pinguela.rentexpress.rest.api.ZOpenVehicleStatusResourse;
+import com.pinguela.rentexpress.rest.api.auth.RoleResource;
 import com.pinguela.rentexpress.rest.api.FileResource;
+import com.pinguela.rentexpress.rest.api.ProvinceResource;
+import com.pinguela.rentexpress.rest.api.ReservationStatusResource;
+import com.pinguela.rentexpress.rest.api.RentalStatusResource;
+import com.pinguela.rentexpress.rest.api.user.UserResource;
+import com.pinguela.rentexpress.rest.api.city.CityResource;
+import com.pinguela.rentexpress.rest.api.headquarters.HeadquartersResource;
+import com.pinguela.rentexpress.rest.api.param.DateTimeJsonbProvider;
+import com.pinguela.rentexpress.rest.api.param.JavaTimeParamConverterProvider;
+import com.pinguela.rentexpress.rest.api.resource.EmployeeResource;
+import com.pinguela.rentexpress.rest.api.reservation.ReservationResource;
+import com.pinguela.rentexpress.rest.api.rental.RentalResource;
+import com.pinguela.rentexpress.rest.api.vehicle.VehicleResource;
+import com.pinguela.rentexpress.rest.api.vehiclecategory.VehicleCategoryResource;
+import com.pinguela.rentexpress.rest.api.vehiclestatus.VehicleStatusResource;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;
@@ -42,20 +42,20 @@ public class RestApiApplication extends ResourceConfig {
 
         public RestApiApplication() {
                 // Recursos REST
-                register(ZOpenUserResourse.class);
-                register(ZOpenEmployeeResourse.class);
-                register(ZOpenAddressResourse.class);
-                register(ZOpenCityResourse.class);
-                register(ZOpenProvinceResourse.class);
-                register(ZOpenRoleResourse.class);
-                register(ZOpenHeadquartersResourse.class);
-                register(ZOpenVehicleCategoryResourse.class);
-                register(ZOpenVehicleStatusResourse.class);
-                register(ZOpenVehicleResourse.class);
-                register(ZOpenReservationStatusResourse.class);
-                register(ZOpenReservationResourse.class);
-                register(ZOpenRentalStatusResourse.class);
-                register(ZOpenRentalResourse.class);
+                register(UserResource.class);
+                register(EmployeeResource.class);
+                register(AddressResource.class);
+                register(CityResource.class);
+                register(ProvinceResource.class);
+                register(RoleResource.class);
+                register(HeadquartersResource.class);
+                register(VehicleCategoryResource.class);
+                register(VehicleStatusResource.class);
+                register(VehicleResource.class);
+                register(ReservationStatusResource.class);
+                register(ReservationResource.class);
+                register(RentalStatusResource.class);
+                register(RentalResource.class);
                 register(FileResource.class);
                 register(LoginResource.class);
 
