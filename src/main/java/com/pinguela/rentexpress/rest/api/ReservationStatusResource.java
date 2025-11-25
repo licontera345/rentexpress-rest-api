@@ -22,15 +22,18 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/reservation-statuses")
+/**
+ * REST resource for reservation status reference data.
+ */
+@Path("/api/reservation-status")
 @Tag(name = "Reservation Statuses", description = "Operations for reservation status reference data")
-public class ZOpenReservationStatusResourse {
+public class ReservationStatusResource {
 
-    private static final Logger logger = Logger.getLogger(ZOpenReservationStatusResourse.class.getName());
+    private static final Logger logger = Logger.getLogger(ReservationStatusResource.class.getName());
 
     private final ReservationStatusService reservationStatusService;
 
-    public ZOpenReservationStatusResourse() {
+    public ReservationStatusResource() {
         this.reservationStatusService = new ReservationStatusServiceImpl();
     }
 
