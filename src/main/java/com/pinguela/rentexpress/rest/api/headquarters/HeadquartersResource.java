@@ -1,4 +1,4 @@
-package com.pinguela.rentexpress.rest.api;
+package com.pinguela.rentexpress.rest.api.headquarters;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -25,15 +25,15 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/headquarters")
+@Path("/api/headquarters")
 @Tag(name = "Headquarters", description = "Operations for headquarters management")
-public class ZOpenHeadquartersResourse {
+public class HeadquartersResource {
 
-    private static final Logger logger = Logger.getLogger(ZOpenHeadquartersResourse.class.getName());
+    private static final Logger logger = Logger.getLogger(HeadquartersResource.class.getName());
 
     private final HeadquartersService headquartersService;
 
-    public ZOpenHeadquartersResourse() {
+    public HeadquartersResource() {
         this.headquartersService = new HeadquartersServiceImpl();
     }
 
