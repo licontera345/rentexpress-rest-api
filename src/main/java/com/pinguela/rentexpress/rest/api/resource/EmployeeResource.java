@@ -1,4 +1,4 @@
-package com.pinguela.rentexpress.rest.api;
+package com.pinguela.rentexpress.rest.api.resource;
 
 import java.util.Map;
 import java.util.logging.Logger;
@@ -28,15 +28,15 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/employees")
+@Path("/api/employee")
 @Tag(name = "Employees", description = "Operations for employee management")
-public class ZOpenEmployeeResourse {
+public class EmployeeResource {
 
-    private static final Logger logger = Logger.getLogger(ZOpenEmployeeResourse.class.getName());
+    private static final Logger logger = Logger.getLogger(EmployeeResource.class.getName());
 
     private final EmployeeService employeeService;
 
-    public ZOpenEmployeeResourse() {
+    public EmployeeResource() {
         this.employeeService = new EmployeeServiceImpl();
     }
 
