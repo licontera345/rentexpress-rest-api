@@ -25,7 +25,7 @@ import jakarta.ws.rs.core.Response.Status;
 /**
  * REST resource for reservation status reference data.
  */
-@Path("/api/reservation-status")
+@Path("/reservation-status")
 @Tag(name = "Reservation Statuses", description = "Operations for reservation status reference data")
 public class ReservationStatusResource {
 

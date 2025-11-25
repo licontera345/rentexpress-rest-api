@@ -28,7 +28,7 @@ import jakarta.ws.rs.core.Response.Status;
 /**
  * REST resource for province CRUD operations.
  */
-@Path("/api/province")
+@Path("/province")
 @Tag(name = "Provinces", description = "Operations for province management")
 public class ProvinceResource {
 

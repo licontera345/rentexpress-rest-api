@@ -25,7 +25,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/api/headquarters")
+@Path("/headquarters")
 @Tag(name = "Headquarters", description = "Operations for headquarters management")
 public class HeadquartersResource {
 

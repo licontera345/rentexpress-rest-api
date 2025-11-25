@@ -22,7 +22,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/api/rental-status")
+@Path("/rental-status")
 @Tag(name = "Rental Statuses", description = "Operations for rental status reference data")
 public class RentalStatusResource {
 
