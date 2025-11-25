@@ -23,7 +23,7 @@ import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-public class ZOpenAddressResourseTest extends JerseyTest {
+public class AddressResourceTest extends JerseyTest {
 
     @Mock
     private AddressService addressService;
@@ -34,7 +34,7 @@ public class ZOpenAddressResourseTest extends JerseyTest {
     protected Application configure() {
         mocks = MockitoAnnotations.openMocks(this);
 
-        ZOpenAddressResourse resource = new ZOpenAddressResourse();
+        AddressResource resource = new AddressResource();
         injectMock(resource, "addressService", addressService);
 
         ResourceConfig rc = new ResourceConfig();
@@ -60,21 +60,21 @@ public class ZOpenAddressResourseTest extends JerseyTest {
     public void findByIdReturnsOk() throws Exception {
         when(addressService.findById(1)).thenReturn(new AddressDTO());
 
-        Response response = target("addresses/1").request().get();
+        Response response = target("api/address/1").request().get();
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
     @Test
-    public void createReturnsCreated() throws Exception {
+    public void createReturnsOk() throws Exception {
         AddressDTO address = new AddressDTO();
         when(addressService.create(any(AddressDTO.class))).thenReturn(true);
 
         Response response =
-                target("addresses").request()
+                target("api/address").request()
                         .post(Entity.entity(address, MediaType.APPLICATION_JSON));
 
-        assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
     @Test
@@ -84,7 +84,7 @@ public class ZOpenAddressResourseTest extends JerseyTest {
         when(addressService.update(any(AddressDTO.class))).thenReturn(true);
 
         Response response =
-                target("addresses/1").request()
+                target("api/address/1").request()
                         .put(Entity.entity(address, MediaType.APPLICATION_JSON));
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -94,7 +94,7 @@ public class ZOpenAddressResourseTest extends JerseyTest {
     public void deleteReturnsOk() throws Exception {
         when(addressService.delete(any(AddressDTO.class))).thenReturn(true);
 
-        Response response = target("addresses/1").request().delete();
+        Response response = target("api/address/1").request().delete();
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
