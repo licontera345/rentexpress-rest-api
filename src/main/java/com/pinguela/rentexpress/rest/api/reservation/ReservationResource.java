@@ -1,4 +1,4 @@
-package com.pinguela.rentexpress.rest.api;
+package com.pinguela.rentexpress.rest.api.reservation;
 
 import java.util.logging.Logger;
 
@@ -27,18 +27,20 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/reservations")
+/**
+ * Protected Reservation endpoints.
+ */
+@Path("/api/reservation")
 @Tag(name = "Reservations", description = "Operations for reservation management")
-public class ZOpenReservationResourse {
+public class ReservationResource {
 
-    private static final Logger logger = Logger.getLogger(ZOpenReservationResourse.class.getName());
+    private static final Logger logger = Logger.getLogger(ReservationResource.class.getName());
 
     private final ReservationService reservationService;
 
-    public ZOpenReservationResourse() {
+    public ReservationResource() {
         this.reservationService = new ReservationServiceImpl();
     }
-    
 
     @GET
     @Path("/{id}")
