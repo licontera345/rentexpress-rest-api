@@ -1,12 +1,12 @@
-package com.pinguela.rentexpress.rest.api;
+package com.pinguela.rentexpress.rest.api.vehiclestatus;
 
 import java.util.List;
 import java.util.logging.Logger;
 
 import com.pinguela.rentexpres.exception.RentexpresException;
-import com.pinguela.rentexpres.model.RentalStatusDTO;
-import com.pinguela.rentexpres.service.RentalStatusService;
-import com.pinguela.rentexpres.service.impl.RentalStatusServiceImpl;
+import com.pinguela.rentexpres.model.VehicleStatusDTO;
+import com.pinguela.rentexpres.service.VehicleStatusService;
+import com.pinguela.rentexpres.service.impl.VehicleStatusServiceImpl;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -22,33 +22,33 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/api/rental-status")
-@Tag(name = "Rental Statuses", description = "Operations for rental status reference data")
-public class RentalStatusResource {
+@Path("/api/vehicle-status")
+@Tag(name = "Vehicle Statuses", description = "Operations for vehicle status reference data")
+public class VehicleStatusResource {
 
-    private static final Logger logger = Logger.getLogger(RentalStatusResource.class.getName());
+    private static final Logger logger = Logger.getLogger(VehicleStatusResource.class.getName());
 
-    private final RentalStatusService rentalStatusService;
+    private final VehicleStatusService vehicleStatusService;
 
-    public RentalStatusResource() {
-        this.rentalStatusService = new RentalStatusServiceImpl();
+    public VehicleStatusResource() {
+        this.vehicleStatusService = new VehicleStatusServiceImpl();
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(
-        operationId = "findAllRentalStatuses",
-        summary = "Find all rental statuses",
-        description = "Retrieves every rental status translated with the provided isoCode",
+        operationId = "findAllVehicleStatuses",
+        summary = "Find all vehicle statuses",
+        description = "Retrieves every vehicle status translated with the provided isoCode",
         responses = {
             @ApiResponse(
                 responseCode = "200",
-                description = "Rental statuses retrieved successfully",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RentalStatusDTO[].class))
+                description = "Vehicle statuses retrieved successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = VehicleStatusDTO[].class))
             ),
-            @ApiResponse(responseCode = "204", description = "No rental statuses found"),
+            @ApiResponse(responseCode = "204", description = "No vehicle statuses found"),
             @ApiResponse(responseCode = "400", description = "Missing or invalid isoCode supplied"),
-            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving rental statuses")
+            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving vehicle statuses")
         }
     )
     public Response findAll(@QueryParam("isoCode") String isoCode) {
@@ -56,7 +56,7 @@ public class RentalStatusResource {
             return Response.status(Status.BAD_REQUEST).entity("isoCode is required").build();
         }
         try {
-            List<RentalStatusDTO> statuses = rentalStatusService.findAll(isoCode);
+            List<VehicleStatusDTO> statuses = vehicleStatusService.findAll(isoCode);
             if (statuses == null || statuses.isEmpty()) {
                 return Response.status(Status.NO_CONTENT).build();
             }
@@ -71,26 +71,26 @@ public class RentalStatusResource {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(
-        operationId = "findRentalStatusById",
-        summary = "Find rental status by ID",
-        description = "Retrieves a rental status using its unique identifier and language code",
+        operationId = "findVehicleStatusById",
+        summary = "Find vehicle status by ID",
+        description = "Retrieves a vehicle status using its unique identifier and language code",
         responses = {
             @ApiResponse(
                 responseCode = "200",
-                description = "Rental status retrieved successfully",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RentalStatusDTO.class))
+                description = "Vehicle status retrieved successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = VehicleStatusDTO.class))
             ),
-            @ApiResponse(responseCode = "404", description = "Rental status not found"),
-            @ApiResponse(responseCode = "400", description = "Invalid rental status identifier or isoCode supplied"),
-            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving the rental status")
+            @ApiResponse(responseCode = "404", description = "Vehicle status not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid vehicle status identifier or isoCode supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving the vehicle status")
         }
     )
     public Response findById(@PathParam("id") Integer id, @QueryParam("isoCode") String isoCode) {
         if (id == null || isoCode == null || isoCode.isEmpty()) {
-            return Response.status(Status.BAD_REQUEST).entity("Rental status ID and isoCode are required").build();
+            return Response.status(Status.BAD_REQUEST).entity("Vehicle status ID and isoCode are required").build();
         }
         try {
-            RentalStatusDTO status = rentalStatusService.findById(id, isoCode);
+            VehicleStatusDTO status = vehicleStatusService.findById(id, isoCode);
             if (status == null) {
                 return Response.status(Status.NOT_FOUND).build();
             }

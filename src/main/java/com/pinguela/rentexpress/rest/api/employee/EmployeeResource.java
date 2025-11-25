@@ -1,4 +1,4 @@
-package com.pinguela.rentexpress.rest.api.resource;
+package com.pinguela.rentexpress.rest.api.employee;
 
 import java.util.Map;
 import java.util.logging.Logger;

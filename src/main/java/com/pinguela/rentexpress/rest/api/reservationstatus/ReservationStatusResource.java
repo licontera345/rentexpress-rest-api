@@ -1,4 +1,4 @@
-package com.pinguela.rentexpress.rest.api;
+package com.pinguela.rentexpress.rest.api.reservationstatus;
 
 import java.util.List;
 import java.util.logging.Logger;
