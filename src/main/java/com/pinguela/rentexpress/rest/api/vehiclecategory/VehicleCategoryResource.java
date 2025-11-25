@@ -1,4 +1,4 @@
-package com.pinguela.rentexpress.rest.api;
+package com.pinguela.rentexpress.rest.api.vehiclecategory;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -22,15 +22,15 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/vehicle-categories")
+@Path("/api/vehicle-category")
 @Tag(name = "Vehicle Categories", description = "Operations for vehicle category reference data")
-public class ZOpenVehicleCategoryResourse {
+public class VehicleCategoryResource {
 
-    private static final Logger logger = Logger.getLogger(ZOpenVehicleCategoryResourse.class.getName());
+    private static final Logger logger = Logger.getLogger(VehicleCategoryResource.class.getName());
 
     private final VehicleCategoryService vehicleCategoryService;
 
-    public ZOpenVehicleCategoryResourse() {
+    public VehicleCategoryResource() {
         this.vehicleCategoryService = new VehicleCategoryServiceImpl();
     }
 
