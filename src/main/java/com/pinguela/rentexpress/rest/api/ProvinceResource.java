@@ -25,15 +25,18 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/provinces")
+/**
+ * REST resource for province CRUD operations.
+ */
+@Path("/api/province")
 @Tag(name = "Provinces", description = "Operations for province management")
-public class ZOpenProvinceResourse {
+public class ProvinceResource {
 
-    private static final Logger logger = Logger.getLogger(ZOpenProvinceResourse.class.getName());
+    private static final Logger logger = Logger.getLogger(ProvinceResource.class.getName());
 
     private final ProvinceService provinceService;
 
-    public ZOpenProvinceResourse() {
+    public ProvinceResource() {
         this.provinceService = new ProvinceServiceImpl();
     }
 
