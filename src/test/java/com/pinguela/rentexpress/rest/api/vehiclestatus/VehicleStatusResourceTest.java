@@ -1,4 +1,4 @@
-package com.pinguela.rentexpress.rest.api;
+package com.pinguela.rentexpress.rest.api.vehiclestatus;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -14,17 +14,17 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.pinguela.rentexpres.model.ReservationStatusDTO;
-import com.pinguela.rentexpres.service.ReservationStatusService;
+import com.pinguela.rentexpres.model.VehicleStatusDTO;
+import com.pinguela.rentexpres.service.VehicleStatusService;
 import com.pinguela.rentexpress.rest.api.support.JavaTimeParamConverterProvider;
 
 import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.Response;
 
-public class ReservationStatusResourceTest extends JerseyTest {
+public class VehicleStatusResourceTest extends JerseyTest {
 
     @Mock
-    private ReservationStatusService reservationStatusService;
+    private VehicleStatusService vehicleStatusService;
 
     private AutoCloseable mocks;
 
@@ -32,8 +32,8 @@ public class ReservationStatusResourceTest extends JerseyTest {
     protected Application configure() {
         mocks = MockitoAnnotations.openMocks(this);
 
-        ReservationStatusResource resource = new ReservationStatusResource();
-        injectMock(resource, "reservationStatusService", reservationStatusService);
+        VehicleStatusResource resource = new VehicleStatusResource();
+        injectMock(resource, "vehicleStatusService", vehicleStatusService);
 
         ResourceConfig rc = new ResourceConfig();
         rc.registerInstances(resource);
@@ -48,17 +48,17 @@ public class ReservationStatusResourceTest extends JerseyTest {
     }
 
     @AfterEach
-    public void tearDown() throws Exception {
+    public void tearDownMocks() throws Exception {
         if (mocks != null) mocks.close();
     }
 
     @Test
-    void findAllReturnsOk() throws Exception {
-        when(reservationStatusService.findAll("es"))
-                .thenReturn(Collections.singletonList(new ReservationStatusDTO()));
+    public void findAllReturnsOk() throws Exception {
+        when(vehicleStatusService.findAll("en"))
+                .thenReturn(Collections.singletonList(new VehicleStatusDTO()));
 
-        Response response = target("api/reservation-status")
-                .queryParam("isoCode", "es")
+        Response response = target("api/vehicle-status")
+                .queryParam("isoCode", "en")
                 .request()
                 .get();
 
@@ -66,11 +66,11 @@ public class ReservationStatusResourceTest extends JerseyTest {
     }
 
     @Test
-    void findByIdReturnsOk() throws Exception {
-        when(reservationStatusService.findById(1, "en"))
-                .thenReturn(new ReservationStatusDTO());
+    public void findByIdReturnsOk() throws Exception {
+        when(vehicleStatusService.findById(1, "en"))
+                .thenReturn(new VehicleStatusDTO());
 
-        Response response = target("api/reservation-status/1")
+        Response response = target("api/vehicle-status/1")
                 .queryParam("isoCode", "en")
                 .request()
                 .get();
@@ -88,3 +88,4 @@ public class ReservationStatusResourceTest extends JerseyTest {
         }
     }
 }
+ 

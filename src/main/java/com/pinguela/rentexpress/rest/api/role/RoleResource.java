@@ -1,4 +1,4 @@
-package com.pinguela.rentexpress.rest.api.auth;
+package com.pinguela.rentexpress.rest.api.role;
 
 import java.util.List;
 import java.util.logging.Logger;

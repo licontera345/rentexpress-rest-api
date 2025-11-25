@@ -1,4 +1,4 @@
-package com.pinguela.rentexpress.rest.api;
+package com.pinguela.rentexpress.rest.api.file;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

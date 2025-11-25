@@ -2,20 +2,20 @@ package com.pinguela.rentexpress.rest.api;
 
 import org.glassfish.jersey.server.ResourceConfig;
 
-import com.pinguela.rentexpress.rest.api.AddressResource;
+import com.pinguela.rentexpress.rest.api.address.AddressResource;
 import com.pinguela.rentexpress.rest.api.auth.LoginResource;
 import com.pinguela.rentexpress.rest.api.auth.filter.AuthFilter;
-import com.pinguela.rentexpress.rest.api.auth.RoleResource;
-import com.pinguela.rentexpress.rest.api.FileResource;
-import com.pinguela.rentexpress.rest.api.ProvinceResource;
-import com.pinguela.rentexpress.rest.api.ReservationStatusResource;
-import com.pinguela.rentexpress.rest.api.RentalStatusResource;
+import com.pinguela.rentexpress.rest.api.role.RoleResource;
+import com.pinguela.rentexpress.rest.api.employee.EmployeeResource;
+import com.pinguela.rentexpress.rest.api.file.FileResource;
+import com.pinguela.rentexpress.rest.api.province.ProvinceResource;
+import com.pinguela.rentexpress.rest.api.reservationstatus.ReservationStatusResource;
+import com.pinguela.rentexpress.rest.api.rentalstatus.RentalStatusResource;
 import com.pinguela.rentexpress.rest.api.user.UserResource;
 import com.pinguela.rentexpress.rest.api.city.CityResource;
 import com.pinguela.rentexpress.rest.api.headquarters.HeadquartersResource;
 import com.pinguela.rentexpress.rest.api.param.DateTimeJsonbProvider;
 import com.pinguela.rentexpress.rest.api.param.JavaTimeParamConverterProvider;
-import com.pinguela.rentexpress.rest.api.resource.EmployeeResource;
 import com.pinguela.rentexpress.rest.api.reservation.ReservationResource;
 import com.pinguela.rentexpress.rest.api.rental.RentalResource;
 import com.pinguela.rentexpress.rest.api.vehicle.VehicleResource;
