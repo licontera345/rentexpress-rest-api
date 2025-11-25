@@ -1,4 +1,4 @@
-package com.pinguela.rentexpress.rest.api;
+package com.pinguela.rentexpress.rest.api.auth;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -21,18 +21,18 @@ import com.pinguela.rentexpress.rest.api.support.JavaTimeParamConverterProvider;
 import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.Response;
 
-public class ZOpenRoleResourseTest extends JerseyTest {
+public class RoleResourceTest extends JerseyTest {
 
     @Mock
     private RoleService roleService;
 
     private AutoCloseable mocks;
- 
+
     @Override
     protected Application configure() {
         mocks = MockitoAnnotations.openMocks(this);
 
-        ZOpenRoleResourse resource = new ZOpenRoleResourse();
+        RoleResource resource = new RoleResource();
         injectMock(resource, "roleService", roleService);
 
         ResourceConfig rc = new ResourceConfig();
@@ -58,7 +58,7 @@ public class ZOpenRoleResourseTest extends JerseyTest {
     public void findAllReturnsOk() throws Exception {
         when(roleService.findAll()).thenReturn(Collections.singletonList(new RoleDTO()));
 
-        Response response = target("roles").request().get();
+        Response response = target("api/role").request().get();
 
         assertEquals(200, response.getStatus());
     }
@@ -67,7 +67,7 @@ public class ZOpenRoleResourseTest extends JerseyTest {
     public void findByIdReturnsOk() throws Exception {
         when(roleService.findById(1)).thenReturn(new RoleDTO());
 
-        Response response = target("roles/1").request().get();
+        Response response = target("api/role/1").request().get();
 
         assertEquals(200, response.getStatus());
     }
