@@ -24,15 +24,15 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/addresses")
+@Path("/api/address")
 @Tag(name = "Addresses", description = "Operations for address management")
-public class ZOpenAddressResourse {
+public class AddressResource {
 
-    private static final Logger logger = Logger.getLogger(ZOpenAddressResourse.class.getName());
+    private static final Logger logger = Logger.getLogger(AddressResource.class.getName());
 
     private final AddressService addressService;
 
-    public ZOpenAddressResourse() {
+    public AddressResource() {
         this.addressService = new AddressServiceImpl();
     }
 
@@ -49,7 +49,7 @@ public class ZOpenAddressResourse {
                 description = "Address retrieved successfully",
                 content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = AddressDTO.class))
             ),
-            @ApiResponse(responseCode = "404", description = "Address not found"),
+            @ApiResponse(responseCode = "204", description = "Address not found"),
             @ApiResponse(responseCode = "400", description = "Invalid address identifier supplied"),
             @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving the address")
         }
@@ -61,7 +61,7 @@ public class ZOpenAddressResourse {
         try {
             AddressDTO address = addressService.findById(id);
             if (address == null) {
-                return Response.status(Status.NOT_FOUND).build();
+                return Response.status(Status.NO_CONTENT).build();
             }
             return Response.ok(address).build();
         } catch (RentexpresException e) {
@@ -79,10 +79,11 @@ public class ZOpenAddressResourse {
         description = "Creates a new address and returns the created entity",
         responses = {
             @ApiResponse(
-                responseCode = "201",
+                responseCode = "200",
                 description = "Address created successfully",
                 content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = AddressDTO.class))
             ),
+            @ApiResponse(responseCode = "204", description = "Address could not be created"),
             @ApiResponse(responseCode = "400", description = "Invalid or incomplete address data supplied"),
             @ApiResponse(responseCode = "500", description = "Unexpected error while creating the address")
         }
@@ -94,10 +95,10 @@ public class ZOpenAddressResourse {
         try {
             boolean created = addressService.create(address);
             if (!created) {
-                return Response.status(Status.BAD_REQUEST).entity("Address could not be created").build();
+                return Response.status(Status.NO_CONTENT).build();
             }
             AddressDTO createdAddress = address.getId() != null ? addressService.findById(address.getId()) : address;
-            return Response.status(Status.CREATED).entity(createdAddress).build();
+            return Response.ok(createdAddress).build();
         } catch (RentexpresException e) {
             logger.warning(e.getMessage());
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
@@ -118,8 +119,8 @@ public class ZOpenAddressResourse {
                 description = "Address updated successfully",
                 content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = AddressDTO.class))
             ),
+            @ApiResponse(responseCode = "204", description = "Address not found"),
             @ApiResponse(responseCode = "400", description = "Invalid address data supplied"),
-            @ApiResponse(responseCode = "404", description = "Address not found"),
             @ApiResponse(responseCode = "500", description = "Unexpected error while updating the address")
         }
     )
@@ -131,7 +132,7 @@ public class ZOpenAddressResourse {
         try {
             boolean updated = addressService.update(address);
             if (!updated) {
-                return Response.status(Status.NOT_FOUND).entity("Address not found or not updated").build();
+                return Response.status(Status.NO_CONTENT).build();
             }
             AddressDTO updatedAddress = addressService.findById(address.getId());
             return Response.ok(updatedAddress).build();
@@ -154,7 +155,7 @@ public class ZOpenAddressResourse {
                 description = "Address deleted successfully",
                 content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = String.class))
             ),
-            @ApiResponse(responseCode = "404", description = "Address not found"),
+            @ApiResponse(responseCode = "204", description = "Address not found"),
             @ApiResponse(responseCode = "400", description = "Invalid address identifier supplied"),
             @ApiResponse(responseCode = "500", description = "Unexpected error while deleting the address")
         }
@@ -168,7 +169,7 @@ public class ZOpenAddressResourse {
             address.setId(id);
             boolean deleted = addressService.delete(address);
             if (!deleted) {
-                return Response.status(Status.NOT_FOUND).entity("Address not found").build();
+                return Response.status(Status.NO_CONTENT).build();
             }
             return Response.ok().entity("Address deleted successfully").build();
         } catch (RentexpresException e) {
