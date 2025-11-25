@@ -21,7 +21,7 @@ import com.pinguela.rentexpress.rest.api.support.JavaTimeParamConverterProvider;
 import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.Response;
 
-public class ZOpenReservationStatusResourseTest extends JerseyTest {
+public class ReservationStatusResourceTest extends JerseyTest {
 
     @Mock
     private ReservationStatusService reservationStatusService;
@@ -32,7 +32,7 @@ public class ZOpenReservationStatusResourseTest extends JerseyTest {
     protected Application configure() {
         mocks = MockitoAnnotations.openMocks(this);
 
-        ZOpenReservationStatusResourse resource = new ZOpenReservationStatusResourse();
+        ReservationStatusResource resource = new ReservationStatusResource();
         injectMock(resource, "reservationStatusService", reservationStatusService);
 
         ResourceConfig rc = new ResourceConfig();
@@ -57,7 +57,7 @@ public class ZOpenReservationStatusResourseTest extends JerseyTest {
         when(reservationStatusService.findAll("es"))
                 .thenReturn(Collections.singletonList(new ReservationStatusDTO()));
 
-        Response response = target("reservation-statuses")
+        Response response = target("api/reservation-status")
                 .queryParam("isoCode", "es")
                 .request()
                 .get();
@@ -70,7 +70,7 @@ public class ZOpenReservationStatusResourseTest extends JerseyTest {
         when(reservationStatusService.findById(1, "en"))
                 .thenReturn(new ReservationStatusDTO());
 
-        Response response = target("reservation-statuses/1")
+        Response response = target("api/reservation-status/1")
                 .queryParam("isoCode", "en")
                 .request()
                 .get();
