@@ -22,15 +22,15 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/rental-statuses")
+@Path("/api/rental-status")
 @Tag(name = "Rental Statuses", description = "Operations for rental status reference data")
-public class ZOpenRentalStatusResourse {
+public class RentalStatusResource {
 
-    private static final Logger logger = Logger.getLogger(ZOpenRentalStatusResourse.class.getName());
+    private static final Logger logger = Logger.getLogger(RentalStatusResource.class.getName());
 
     private final RentalStatusService rentalStatusService;
 
-    public ZOpenRentalStatusResourse() {
+    public RentalStatusResource() {
         this.rentalStatusService = new RentalStatusServiceImpl();
     }
 
