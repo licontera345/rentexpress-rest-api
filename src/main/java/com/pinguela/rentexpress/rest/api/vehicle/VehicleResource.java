@@ -28,7 +28,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
 /**
- * Vehicle REST API resource built from ZOpenVehicleResourse.
+ * Vehicle REST API resource.
  */
 @Path("/vehicle")
 @Tag(name = "Vehicle", description = "Operations for vehicle management")
