@@ -27,30 +27,58 @@ public class AuthFilter implements ContainerRequestFilter {
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
+
         String path = requestContext.getUriInfo().getPath();
-        if (path != null && path.startsWith(LOGIN_PATH)) {
-            return;
+
+        // ░░░░░░░░░░░░░░░░░░░░░░░
+        // 1) Rutas EXENTAS de token
+        // ░░░░░░░░░░░░░░░░░░░░░░░
+
+        if (path != null &&
+            (path.startsWith(LOGIN_PATH) ||
+             path.startsWith("swagger-ui") ||
+             path.startsWith("v3/api-docs") ||
+             path.startsWith("openapi") ||
+             path.startsWith("api/openapi.json") ||
+             path.endsWith("swagger-ui/index.html") ||
+             path.endsWith("swagger-ui.html"))) {
+
+            return; // swagger y login quedan libres
         }
 
+        // ░░░░░░░░░░░░░░░░░░░░░░░
+        // 2) Validación del Header
+        // ░░░░░░░░░░░░░░░░░░░░░░░
+
         String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
+
         if (authorizationHeader == null || !authorizationHeader.startsWith(BEARER_PREFIX)) {
             abort(requestContext, "Authorization header missing or invalid");
             return;
         }
 
         String token = authorizationHeader.substring(BEARER_PREFIX.length());
-        if (token == null || token.trim().length() == 0) {
+
+        if (token == null || token.trim().isEmpty()) {
             abort(requestContext, "Authorization token is empty");
             return;
         }
 
+        // ░░░░░░░░░░░░░░░░░░░░░░░
+        // 3) Validación del JWT
+        // ░░░░░░░░░░░░░░░░░░░░░░░
+
         try {
             boolean valid = JwtUtil.isTokenValid(token);
+
             if (!valid) {
                 abort(requestContext, "Invalid or expired token");
                 return;
             }
+
+            // Guardamos subject por si algún recurso quiere usarlo
             requestContext.setProperty("jwtSubject", JwtUtil.getSubject(token));
+
         } catch (JwtException e) {
             logger.warning("JWT validation failed: " + e.getMessage());
             abort(requestContext, "Token validation error");
@@ -58,7 +86,8 @@ public class AuthFilter implements ContainerRequestFilter {
     }
 
     private void abort(ContainerRequestContext requestContext, String message) {
-        Response response = Response.status(Response.Status.UNAUTHORIZED).entity(message).build();
+        Response response =
+                Response.status(Response.Status.UNAUTHORIZED).entity(message).build();
         requestContext.abortWith(response);
     }
 }
