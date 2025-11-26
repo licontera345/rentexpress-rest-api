@@ -186,9 +186,6 @@
                                 <groupId>org.apache.maven.plugins</groupId>
                                 <artifactId>maven-war-plugin</artifactId>
                                 <version>3.4.0</version>
-                                <configuration>
-                                        <packagingExcludes>WEB-INF/classes/com/pinguela/rentexpress/rest/api/ZOpen*.class</packagingExcludes>
-                                </configuration>
                         </plugin>
                 </plugins>
         </build>
