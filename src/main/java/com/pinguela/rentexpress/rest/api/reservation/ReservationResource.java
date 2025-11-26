@@ -30,7 +30,7 @@ import jakarta.ws.rs.core.Response.Status;
 /**
  * Protected Reservation endpoints.
  */
-@Path("/api/reservation")
+@Path("/reservation")
 @Tag(name = "Reservations", description = "Operations for reservation management")
 public class ReservationResource {
 

@@ -25,7 +25,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/api/city")
+@Path("/city")
 @Tag(name = "Cities", description = "Operations for city management")
 public class CityResource {
 

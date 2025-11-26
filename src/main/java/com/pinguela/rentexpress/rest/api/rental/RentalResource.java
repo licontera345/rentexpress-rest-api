@@ -31,7 +31,7 @@ import jakarta.ws.rs.core.Response.Status;
 /**
  * Private rental resource.
  */
-@Path("/api/rental")
+@Path("/rental")
 @Tag(name = "Rentals", description = "Operations for rental management")
 public class RentalResource {
 
