@@ -3,7 +3,6 @@ package com.pinguela.rentexpress.rest.api.vehiclestatus;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-import java.lang.reflect.Field;
 import java.util.Collections;
 
 import org.glassfish.jersey.server.ResourceConfig;
@@ -16,7 +15,7 @@ import org.mockito.MockitoAnnotations;
 
 import com.pinguela.rentexpres.model.VehicleStatusDTO;
 import com.pinguela.rentexpres.service.VehicleStatusService;
-import com.pinguela.rentexpress.rest.api.VehicleStatusResource;
+import com.pinguela.rentexpress.rest.api.ZOpenVehicleStatusResource;
 import com.pinguela.rentexpress.rest.api.support.JavaTimeParamConverterProvider;
 
 import jakarta.ws.rs.core.Application;
@@ -33,8 +32,7 @@ public class VehicleStatusResourceTest extends JerseyTest {
     protected Application configure() {
         mocks = MockitoAnnotations.openMocks(this);
 
-        VehicleStatusResource resource = new VehicleStatusResource();
-        injectMock(resource, "vehicleStatusService", vehicleStatusService);
+        ZOpenVehicleStatusResource resource = new ZOpenVehicleStatusResource(vehicleStatusService);
 
         ResourceConfig rc = new ResourceConfig();
         rc.registerInstances(resource);
@@ -58,7 +56,7 @@ public class VehicleStatusResourceTest extends JerseyTest {
         when(vehicleStatusService.findAll("en"))
                 .thenReturn(Collections.singletonList(new VehicleStatusDTO()));
 
-        Response response = target("api/vehicle-status")
+        Response response = target("api/zopen/vehicle-status")
                 .queryParam("isoCode", "en")
                 .request()
                 .get();
@@ -71,7 +69,7 @@ public class VehicleStatusResourceTest extends JerseyTest {
         when(vehicleStatusService.findById(1, "en"))
                 .thenReturn(new VehicleStatusDTO());
 
-        Response response = target("api/vehicle-status/1")
+        Response response = target("api/zopen/vehicle-status/1")
                 .queryParam("isoCode", "en")
                 .request()
                 .get();
@@ -79,14 +77,5 @@ public class VehicleStatusResourceTest extends JerseyTest {
         assertEquals(200, response.getStatus());
     }
 
-    private void injectMock(Object target, String fieldName, Object value) {
-        try {
-            Field field = target.getClass().getDeclaredField(fieldName);
-            field.setAccessible(true);
-            field.set(target, value);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 }
  
