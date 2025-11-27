@@ -31,8 +31,6 @@ import jakarta.ws.rs.core.Response.Status;
  * REST resource for province CRUD operations.
  */
 @Path("/province")
-@Secured
-@RolesAllowed({"EMPLOYEE", "USER"})
 @Tag(name = "Provinces", description = "Operations for province management")
 public class ProvinceResource {
 
@@ -110,6 +108,8 @@ public class ProvinceResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "createProvince",
         summary = "Create province",
@@ -147,6 +147,8 @@ public class ProvinceResource {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "updateProvince",
         summary = "Update province",
@@ -183,6 +185,8 @@ public class ProvinceResource {
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "deleteProvince",
         summary = "Delete province",

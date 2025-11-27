@@ -1,9 +1,9 @@
 package com.pinguela.rentexpress.rest.api;
 
-import java.util.Map;
 import java.util.logging.Logger;
 
 import com.pinguela.rentexpress.rest.api.auth.filter.Secured;
+import com.pinguela.rentexpress.rest.api.auth.util.JwtUtil;
 import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.Results;
 import com.pinguela.rentexpres.model.UserCriteria;
@@ -11,24 +11,26 @@ import com.pinguela.rentexpres.model.UserDTO;
 import com.pinguela.rentexpres.service.UserService;
 import com.pinguela.rentexpres.service.impl.UserServiceImpl;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.SecurityContext;
 
 @Path("/user")
 @Secured
@@ -37,6 +39,12 @@ import jakarta.ws.rs.core.Response.Status;
 public class UserResource {
 
     private static final Logger logger = Logger.getLogger(UserResource.class.getName());
+
+    @Context
+    private SecurityContext securityContext;
+
+    @Context
+    private HttpHeaders headers;
 
     private final UserService userService;
 
@@ -52,33 +60,15 @@ public class UserResource {
         if (id == null) {
             return Response.status(Status.NO_CONTENT).build();
         }
+        if (!isUserAuthorized(id)) {
+            return Response.status(Status.FORBIDDEN).build();
+        }
         try {
             UserDTO user = userService.findById(id);
             if (user == null) {
                 return Response.status(Status.NO_CONTENT).build();
             }
             return Response.ok(user).build();
-        } catch (RentexpresException e) {
-            logger.warning(e.getMessage());
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-    }
-
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(operationId = "createUser", summary = "Create user", description = "Creates a new user in the system")
-    public Response create(UserDTO user) {
-        if (user == null) {
-            return Response.status(Status.NO_CONTENT).build();
-        }
-        try {
-            boolean created = userService.create(user);
-            if (!created) {
-                return Response.status(Status.NO_CONTENT).build();
-            }
-            UserDTO createdUser = user.getUserId() != null ? userService.findById(user.getUserId()) : user;
-            return Response.ok(createdUser).build();
         } catch (RentexpresException e) {
             logger.warning(e.getMessage());
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
@@ -95,6 +85,9 @@ public class UserResource {
             return Response.status(Status.NO_CONTENT).build();
         }
         user.setUserId(id);
+        if (!isUserAuthorized(id)) {
+            return Response.status(Status.FORBIDDEN).build();
+        }
         try {
             boolean updated = userService.update(user);
             if (!updated) {
@@ -113,6 +106,7 @@ public class UserResource {
 
     @DELETE
     @Path("/{id}")
+    @RolesAllowed({"EMPLOYEE"})
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(operationId = "deleteUser", summary = "Delete user", description = "Deletes a user using its unique identifier")
     public Response delete(@PathParam("id") Integer id) {
@@ -133,6 +127,7 @@ public class UserResource {
 
     @GET
     @Path("/search")
+    @RolesAllowed({"EMPLOYEE"})
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(operationId = "searchUsers", summary = "Search users by criteria", description = "Retrieves users that match the provided search criteria")
     public Response findByCriteria(
@@ -187,28 +182,8 @@ public class UserResource {
     }
 
     @POST
-    @Path("/authenticate")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(operationId = "authenticateUser", summary = "Authenticate user", description = "Authenticates a user using login credentials")
-    public Response authenticate(Map<String, String> credentials) {
-        if (credentials == null || !credentials.containsKey("login") || !credentials.containsKey("password")) {
-            return Response.status(Status.NO_CONTENT).build();
-        }
-        try {
-            UserDTO user = userService.authenticate(credentials.get("login"), credentials.get("password"));
-            if (user == null) {
-                return Response.status(Status.NO_CONTENT).build();
-            }
-            return Response.ok(user).build();
-        } catch (RentexpresException e) {
-            logger.warning(e.getMessage());
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-    }
-
-    @POST
     @Path("/{id}/activate")
+    @RolesAllowed({"EMPLOYEE"})
     @Operation(operationId = "activateUser", summary = "Activate user", description = "Activates a user using its unique identifier")
     public Response activate(@PathParam("id") Integer id) {
         if (id == null) {
@@ -224,5 +199,58 @@ public class UserResource {
             logger.warning(e.getMessage());
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
+    }
+
+    private boolean isUserAuthorized(Integer id) {
+        if (id == null) {
+            return false;
+        }
+        if (hasRole("EMPLOYEE")) {
+            return true;
+        }
+        if (hasRole("USER")) {
+            Integer currentUserId = getCurrentUserId();
+            return currentUserId != null && currentUserId.equals(id);
+        }
+        return false;
+    }
+
+    private boolean hasRole(String role) {
+        if (securityContext == null) {
+            return false;
+        }
+        return securityContext.isUserInRole(role);
+    }
+
+    private Integer getCurrentUserId() {
+        if (headers == null) {
+            return null;
+        }
+        String authorizationHeader = headers.getHeaderString(HttpHeaders.AUTHORIZATION);
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return null;
+        }
+        String token = authorizationHeader.substring("Bearer ".length()).trim();
+        if (token.length() == 0) {
+            return null;
+        }
+        try {
+            Claims claims = JwtUtil.parseClaims(token);
+            Object userIdClaim = claims.get("userId");
+            if (userIdClaim instanceof Number) {
+                return Integer.valueOf(((Number) userIdClaim).intValue());
+            }
+            if (userIdClaim != null) {
+                try {
+                    return Integer.valueOf(userIdClaim.toString());
+                } catch (NumberFormatException e) {
+                    return null;
+                }
+            }
+        } catch (JwtException e) {
+            logger.warning(e.getMessage());
+            return null;
+        }
+        return null;
     }
 }

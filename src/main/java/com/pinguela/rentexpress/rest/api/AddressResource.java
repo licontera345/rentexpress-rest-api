@@ -27,8 +27,6 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
 @Path("/address")
-@Secured
-@RolesAllowed({"EMPLOYEE", "USER"})
 @Tag(name = "Addresses", description = "Operations for address management")
 public class AddressResource {
 
@@ -77,6 +75,8 @@ public class AddressResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({"EMPLOYEE", "USER"})
     @Operation(
         operationId = "createAddress",
         summary = "Create address",
@@ -113,6 +113,8 @@ public class AddressResource {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "updateAddress",
         summary = "Update address",
@@ -149,6 +151,8 @@ public class AddressResource {
     @DELETE
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "deleteAddress",
         summary = "Delete address",

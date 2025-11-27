@@ -13,16 +13,21 @@ import jakarta.ws.rs.ext.Provider;
 @Provider
 public class JavaTimeParamConverterProvider implements ParamConverterProvider {
 
-	@Override
-	public <T> ParamConverter<T> getConverter(Class<T> rawType, Type genericType, Annotation[] annotations) {
-		if (LocalDate.class.equals(rawType)) {
-			return (ParamConverter<T>) new LocalDateConverter();
-		}
-		if (LocalDateTime.class.equals(rawType)) {
-			return (ParamConverter<T>) new LocalDateTimeConverter();
-		}
-		return null;
-	}
+        @Override
+        public <T> ParamConverter<T> getConverter(Class<T> rawType, Type genericType, Annotation[] annotations) {
+                if (LocalDate.class.equals(rawType)) {
+                        return castParamConverter(new LocalDateConverter());
+                }
+                if (LocalDateTime.class.equals(rawType)) {
+                        return castParamConverter(new LocalDateTimeConverter());
+                }
+                return null;
+        }
+
+        @SuppressWarnings("unchecked")
+        private <T> ParamConverter<T> castParamConverter(ParamConverter<?> converter) {
+                return (ParamConverter<T>) converter;
+        }
 
 	private static class LocalDateConverter implements ParamConverter<LocalDate> {
 		@Override

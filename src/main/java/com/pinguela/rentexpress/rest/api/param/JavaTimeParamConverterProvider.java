@@ -23,12 +23,17 @@ public class JavaTimeParamConverterProvider implements ParamConverterProvider {
         @Override
         public <T> ParamConverter<T> getConverter(Class<T> rawType, Type genericType, Annotation[] annotations) {
                 if (LocalDate.class.equals(rawType)) {
-                        return (ParamConverter<T>) new LocalDateParamConverter();
+                        return castParamConverter(new LocalDateParamConverter());
                 }
                 if (LocalDateTime.class.equals(rawType)) {
-                        return (ParamConverter<T>) new LocalDateTimeParamConverter();
+                        return castParamConverter(new LocalDateTimeParamConverter());
                 }
                 return null;
+        }
+
+        @SuppressWarnings("unchecked")
+        private <T> ParamConverter<T> castParamConverter(ParamConverter<?> converter) {
+                return (ParamConverter<T>) converter;
         }
 
         private static class LocalDateParamConverter implements ParamConverter<LocalDate> {
