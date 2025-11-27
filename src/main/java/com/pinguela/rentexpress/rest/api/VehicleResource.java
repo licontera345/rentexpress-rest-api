@@ -1,5 +1,7 @@
 package com.pinguela.rentexpress.rest.api;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.logging.Logger;
 
 import com.pinguela.rentexpress.rest.api.auth.filter.Secured;
@@ -228,10 +230,18 @@ public class VehicleResource {
             @QueryParam("activeStatus") Boolean activeStatus,
             @QueryParam("pageNumber") Integer pageNumber,
             @QueryParam("pageSize") Integer pageSize,
-            @QueryParam("createdAtFrom") java.time.LocalDateTime createdAtFrom,
-            @QueryParam("createdAtTo") java.time.LocalDateTime createdAtTo,
-            @QueryParam("updatedAtFrom") java.time.LocalDateTime updatedAtFrom,
-            @QueryParam("updatedAtTo") java.time.LocalDateTime updatedAtTo) {
+            @QueryParam("createdAtFrom") LocalDateTime createdAtFrom,
+            @QueryParam("createdAtTo") LocalDateTime createdAtTo,
+            @QueryParam("updatedAtFrom") LocalDateTime updatedAtFrom,
+            @QueryParam("updatedAtTo") LocalDateTime updatedAtTo) {
+        if (hasInvalidPagination(pageNumber, pageSize)
+                || isInvalidIntegerRange(manufactureYearFrom, manufactureYearTo)
+                || isInvalidIntegerRange(currentMileageMin, currentMileageMax)
+                || isInvalidDecimalRange(dailyPriceMin, dailyPriceMax)
+                || isInvalidDateRange(createdAtFrom, createdAtTo)
+                || isInvalidDateRange(updatedAtFrom, updatedAtTo)) {
+            return Response.status(Status.BAD_REQUEST).entity("Invalid search criteria supplied").build();
+        }
         VehicleCriteria criteria = new VehicleCriteria();
         criteria.setVehicleId(vehicleId);
         criteria.setVehicleStatusId(vehicleStatusId);
@@ -264,5 +274,27 @@ public class VehicleResource {
             logger.warning(e.getMessage());
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
+    }
+
+    private boolean hasInvalidPagination(Integer pageNumber, Integer pageSize) {
+        if (pageNumber != null && pageNumber.intValue() < 0) {
+            return true;
+        }
+        if (pageSize != null && pageSize.intValue() <= 0) {
+            return true;
+        }
+        return pageNumber != null && pageSize == null;
+    }
+
+    private boolean isInvalidIntegerRange(Integer min, Integer max) {
+        return min != null && max != null && min.intValue() > max.intValue();
+    }
+
+    private boolean isInvalidDecimalRange(BigDecimal min, BigDecimal max) {
+        return min != null && max != null && min.compareTo(max) > 0;
+    }
+
+    private boolean isInvalidDateRange(LocalDateTime from, LocalDateTime to) {
+        return from != null && to != null && from.isAfter(to);
     }
 }
