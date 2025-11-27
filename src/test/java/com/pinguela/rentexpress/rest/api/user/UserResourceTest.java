@@ -6,7 +6,9 @@ import static org.mockito.Mockito.when;
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
@@ -21,12 +23,21 @@ import com.pinguela.rentexpres.model.Results;
 import com.pinguela.rentexpres.model.UserDTO;
 import com.pinguela.rentexpres.service.UserService;
 import com.pinguela.rentexpress.rest.api.UserResource;
+import com.pinguela.rentexpress.rest.api.ZOpenUserResource;
+import com.pinguela.rentexpress.rest.api.auth.security.AppSecurityContext;
+import com.pinguela.rentexpress.rest.api.auth.security.UserAuth;
+import com.pinguela.rentexpress.rest.api.auth.util.JwtUtil;
 import com.pinguela.rentexpress.rest.api.support.JavaTimeParamConverterProvider;
 
+import io.jsonwebtoken.Claims;
 import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.Provider;
 
 public class UserResourceTest extends JerseyTest {
 
@@ -40,11 +51,14 @@ public class UserResourceTest extends JerseyTest {
         mocks = MockitoAnnotations.openMocks(this);
 
         UserResource resource = new UserResource();
+        ZOpenUserResource openResource = new ZOpenUserResource();
         injectMock(resource, "userService", userService);
+        injectMock(openResource, "userService", userService);
 
         ResourceConfig rc = new ResourceConfig();
-        rc.registerInstances(resource);
+        rc.registerInstances(resource, openResource);
         rc.register(JavaTimeParamConverterProvider.class);
+        rc.register(TestAuthorizationFilter.class);
 
         return rc;
     }
@@ -65,7 +79,9 @@ public class UserResourceTest extends JerseyTest {
     public void findByIdReturnsOk() throws Exception {
         when(userService.findById(1)).thenReturn(new UserDTO());
 
-        Response response = target("api/user/1").request().get();
+        Response response = target("api/user/1").request()
+                .header(HttpHeaders.AUTHORIZATION, buildUserToken("USER", Integer.valueOf(1)))
+                .get();
 
         assertEquals(200, response.getStatus());
     }
@@ -89,6 +105,7 @@ public class UserResourceTest extends JerseyTest {
         when(userService.findById(1)).thenReturn(user);
 
         Response response = target("api/user/1").request()
+                .header(HttpHeaders.AUTHORIZATION, buildUserToken("USER", Integer.valueOf(1)))
                 .put(Entity.entity(user, MediaType.APPLICATION_JSON));
 
         assertEquals(200, response.getStatus());
@@ -98,7 +115,9 @@ public class UserResourceTest extends JerseyTest {
     public void deleteReturnsOk() throws Exception {
         when(userService.delete(1)).thenReturn(true);
 
-        Response response = target("api/user/1").request().delete();
+        Response response = target("api/user/1").request()
+                .header(HttpHeaders.AUTHORIZATION, buildUserToken("EMPLOYEE", Integer.valueOf(99)))
+                .delete();
 
         assertEquals(200, response.getStatus());
     }
@@ -112,6 +131,7 @@ public class UserResourceTest extends JerseyTest {
         Response response = target("api/user/search")
                 .queryParam("pageNumber", 1)
                 .request()
+                .header(HttpHeaders.AUTHORIZATION, buildUserToken("EMPLOYEE", Integer.valueOf(99)))
                 .get();
 
         assertEquals(200, response.getStatus());
@@ -138,6 +158,7 @@ public class UserResourceTest extends JerseyTest {
 
         Response response = target("api/user/1/activate")
                 .request()
+                .header(HttpHeaders.AUTHORIZATION, buildUserToken("EMPLOYEE", Integer.valueOf(99)))
                 .post(null);
 
         assertEquals(200, response.getStatus());
@@ -150,6 +171,38 @@ public class UserResourceTest extends JerseyTest {
             field.set(target, value);
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private String buildUserToken(String role, Integer userId) {
+        Map<String, Object> claims = new HashMap<String, Object>();
+        claims.put("roles", role);
+        claims.put("userId", userId);
+        String token = JwtUtil.generateToken("testUser", claims);
+        return "Bearer " + token;
+    }
+
+    @Provider
+    public static class TestAuthorizationFilter implements ContainerRequestFilter {
+
+        public void filter(ContainerRequestContext requestContext) {
+            String authorization = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
+            if (authorization == null || !authorization.startsWith("Bearer ")) {
+                return;
+            }
+            String token = authorization.substring("Bearer ".length()).trim();
+            Set<String> roles = new HashSet<String>();
+            try {
+                Claims claims = JwtUtil.parseClaims(token);
+                Object rolesClaim = claims.get("roles");
+                if (rolesClaim != null) {
+                    roles.add(rolesClaim.toString());
+                }
+                UserAuth principal = new UserAuth("testUser", roles);
+                requestContext.setSecurityContext(new AppSecurityContext(principal, false));
+            } catch (Exception e) {
+                // Ignore for tests
+            }
         }
     }
 }
