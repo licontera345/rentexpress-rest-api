@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import com.pinguela.rentexpress.rest.api.auth.dto.UserCredentials;
 import com.pinguela.rentexpress.rest.api.auth.util.JwtUtil;
 import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.EmployeeDTO;
@@ -39,13 +40,13 @@ public class LoginResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response login(Map<String, String> credentials) {
-        if (credentials == null || credentials.isEmpty()) {
-            return Response.status(Status.BAD_REQUEST).entity("Credentials are required").build();
+    public Response login(UserCredentials credentials) {
+        if (credentials == null) {
+            return Response.status(Status.BAD_REQUEST).entity("Login and password are required").build();
         }
 
         String login = extractLogin(credentials);
-        String password = credentials.get("password");
+        String password = credentials.getPassword();
 
         if (login == null || password == null) {
             return Response.status(Status.BAD_REQUEST).entity("Login and password are required").build();
@@ -76,6 +77,7 @@ public class LoginResource {
         claims.put("profile", PROFILE_USER);
         claims.put("userId", user.getUserId());
         claims.put("roleId", user.getRoleId());
+        claims.put("roles", PROFILE_USER);
 
         String token = JwtUtil.generateToken(login, claims);
 
@@ -92,6 +94,7 @@ public class LoginResource {
         claims.put("profile", PROFILE_EMPLOYEE);
         claims.put("employeeId", employee.getId());
         claims.put("roleId", employee.getRoleId());
+        claims.put("roles", PROFILE_EMPLOYEE);
 
         String token = JwtUtil.generateToken(login, claims);
 
@@ -103,15 +106,9 @@ public class LoginResource {
         return response;
     }
 
-    private String extractLogin(Map<String, String> credentials) {
-        if (credentials.containsKey("username")) {
-            return credentials.get("username");
-        }
-        if (credentials.containsKey("email")) {
-            return credentials.get("email");
-        }
-        if (credentials.containsKey("login")) {
-            return credentials.get("login");
+    private String extractLogin(UserCredentials credentials) {
+        if (credentials.getUsername() != null && credentials.getUsername().trim().length() > 0) {
+            return credentials.getUsername();
         }
         return null;
     }
