@@ -17,6 +17,7 @@ import org.mockito.MockitoAnnotations;
 
 import com.pinguela.rentexpres.model.HeadquartersDTO;
 import com.pinguela.rentexpres.service.HeadquartersService;
+import com.pinguela.rentexpress.rest.api.HeadquartersResource;
 import com.pinguela.rentexpress.rest.api.support.JavaTimeParamConverterProvider;
 
 import jakarta.ws.rs.client.Entity;

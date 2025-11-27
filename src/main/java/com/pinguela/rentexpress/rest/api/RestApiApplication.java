@@ -2,25 +2,10 @@ package com.pinguela.rentexpress.rest.api;
 
 import org.glassfish.jersey.server.ResourceConfig;
 
-import com.pinguela.rentexpress.rest.api.address.AddressResource;
 import com.pinguela.rentexpress.rest.api.auth.LoginResource;
 import com.pinguela.rentexpress.rest.api.auth.filter.JwtFilter;
-import com.pinguela.rentexpress.rest.api.city.CityResource;
-import com.pinguela.rentexpress.rest.api.employee.EmployeeResource;
-import com.pinguela.rentexpress.rest.api.file.FileResource;
-import com.pinguela.rentexpress.rest.api.headquarters.HeadquartersResource;
 import com.pinguela.rentexpress.rest.api.param.DateTimeJsonbProvider;
 import com.pinguela.rentexpress.rest.api.param.JavaTimeParamConverterProvider;
-import com.pinguela.rentexpress.rest.api.province.ProvinceResource;
-import com.pinguela.rentexpress.rest.api.rental.RentalResource;
-import com.pinguela.rentexpress.rest.api.rentalstatus.RentalStatusResource;
-import com.pinguela.rentexpress.rest.api.reservation.ReservationResource;
-import com.pinguela.rentexpress.rest.api.reservationstatus.ReservationStatusResource;
-import com.pinguela.rentexpress.rest.api.role.RoleResource;
-import com.pinguela.rentexpress.rest.api.user.UserResource;
-import com.pinguela.rentexpress.rest.api.vehicle.VehicleResource;
-import com.pinguela.rentexpress.rest.api.vehiclecategory.VehicleCategoryResource;
-import com.pinguela.rentexpress.rest.api.vehiclestatus.VehicleStatusResource;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;

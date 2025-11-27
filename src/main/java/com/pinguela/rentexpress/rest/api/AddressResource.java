@@ -1,4 +1,4 @@
-package com.pinguela.rentexpress.rest.api.address;
+package com.pinguela.rentexpress.rest.api;
 
 import java.util.logging.Logger;
 

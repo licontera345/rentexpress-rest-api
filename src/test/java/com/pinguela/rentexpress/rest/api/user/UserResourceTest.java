@@ -20,6 +20,7 @@ import org.mockito.MockitoAnnotations;
 import com.pinguela.rentexpres.model.Results;
 import com.pinguela.rentexpres.model.UserDTO;
 import com.pinguela.rentexpres.service.UserService;
+import com.pinguela.rentexpress.rest.api.UserResource;
 import com.pinguela.rentexpress.rest.api.support.JavaTimeParamConverterProvider;
 
 import jakarta.ws.rs.client.Entity;

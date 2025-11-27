@@ -16,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 
 import com.pinguela.rentexpres.model.RoleDTO;
 import com.pinguela.rentexpres.service.RoleService;
+import com.pinguela.rentexpress.rest.api.RoleResource;
 import com.pinguela.rentexpress.rest.api.support.JavaTimeParamConverterProvider;
 
 import jakarta.ws.rs.core.Application;

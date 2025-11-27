@@ -1,13 +1,13 @@
-package com.pinguela.rentexpress.rest.api.vehiclestatus;
+package com.pinguela.rentexpress.rest.api;
 
 import java.util.List;
 import java.util.logging.Logger;
 
 import com.pinguela.rentexpress.rest.api.auth.filter.Secured;
 import com.pinguela.rentexpres.exception.RentexpresException;
-import com.pinguela.rentexpres.model.VehicleStatusDTO;
-import com.pinguela.rentexpres.service.VehicleStatusService;
-import com.pinguela.rentexpres.service.impl.VehicleStatusServiceImpl;
+import com.pinguela.rentexpres.model.ReservationStatusDTO;
+import com.pinguela.rentexpres.service.ReservationStatusService;
+import com.pinguela.rentexpres.service.impl.ReservationStatusServiceImpl;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -24,35 +24,38 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/vehicle-status")
+/**
+ * REST resource for reservation status reference data.
+ */
+@Path("/reservation-status")
 @Secured
 @RolesAllowed({"EMPLOYEE", "USER"})
-@Tag(name = "Vehicle Statuses", description = "Operations for vehicle status reference data")
-public class VehicleStatusResource {
+@Tag(name = "Reservation Statuses", description = "Operations for reservation status reference data")
+public class ReservationStatusResource {
 
-    private static final Logger logger = Logger.getLogger(VehicleStatusResource.class.getName());
+    private static final Logger logger = Logger.getLogger(ReservationStatusResource.class.getName());
 
-    private final VehicleStatusService vehicleStatusService;
+    private final ReservationStatusService reservationStatusService;
 
-    public VehicleStatusResource() {
-        this.vehicleStatusService = new VehicleStatusServiceImpl();
+    public ReservationStatusResource() {
+        this.reservationStatusService = new ReservationStatusServiceImpl();
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(
-        operationId = "findAllVehicleStatuses",
-        summary = "Find all vehicle statuses",
-        description = "Retrieves every vehicle status translated with the provided isoCode",
+        operationId = "findAllReservationStatuses",
+        summary = "Find all reservation statuses",
+        description = "Retrieves every reservation status translated with the provided isoCode",
         responses = {
             @ApiResponse(
                 responseCode = "200",
-                description = "Vehicle statuses retrieved successfully",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = VehicleStatusDTO[].class))
+                description = "Reservation statuses retrieved successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = ReservationStatusDTO[].class))
             ),
-            @ApiResponse(responseCode = "204", description = "No vehicle statuses found"),
+            @ApiResponse(responseCode = "204", description = "No reservation statuses found"),
             @ApiResponse(responseCode = "400", description = "Missing or invalid isoCode supplied"),
-            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving vehicle statuses")
+            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving reservation statuses")
         }
     )
     public Response findAll(@QueryParam("isoCode") String isoCode) {
@@ -60,7 +63,7 @@ public class VehicleStatusResource {
             return Response.status(Status.BAD_REQUEST).entity("isoCode is required").build();
         }
         try {
-            List<VehicleStatusDTO> statuses = vehicleStatusService.findAll(isoCode);
+            List<ReservationStatusDTO> statuses = reservationStatusService.findAll(isoCode);
             if (statuses == null || statuses.isEmpty()) {
                 return Response.status(Status.NO_CONTENT).build();
             }
@@ -75,26 +78,26 @@ public class VehicleStatusResource {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(
-        operationId = "findVehicleStatusById",
-        summary = "Find vehicle status by ID",
-        description = "Retrieves a vehicle status using its unique identifier and language code",
+        operationId = "findReservationStatusById",
+        summary = "Find reservation status by ID",
+        description = "Retrieves a reservation status using its unique identifier and language code",
         responses = {
             @ApiResponse(
                 responseCode = "200",
-                description = "Vehicle status retrieved successfully",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = VehicleStatusDTO.class))
+                description = "Reservation status retrieved successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = ReservationStatusDTO.class))
             ),
-            @ApiResponse(responseCode = "404", description = "Vehicle status not found"),
-            @ApiResponse(responseCode = "400", description = "Invalid vehicle status identifier or isoCode supplied"),
-            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving the vehicle status")
+            @ApiResponse(responseCode = "404", description = "Reservation status not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid reservation status identifier or isoCode supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving the reservation status")
         }
     )
     public Response findById(@PathParam("id") Integer id, @QueryParam("isoCode") String isoCode) {
         if (id == null || isoCode == null || isoCode.isEmpty()) {
-            return Response.status(Status.BAD_REQUEST).entity("Vehicle status ID and isoCode are required").build();
+            return Response.status(Status.BAD_REQUEST).entity("Reservation status ID and isoCode are required").build();
         }
         try {
-            VehicleStatusDTO status = vehicleStatusService.findById(id, isoCode);
+            ReservationStatusDTO status = reservationStatusService.findById(id, isoCode);
             if (status == null) {
                 return Response.status(Status.NOT_FOUND).build();
             }

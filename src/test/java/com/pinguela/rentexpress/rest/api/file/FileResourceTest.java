@@ -23,6 +23,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
  
 import com.pinguela.rentexpres.service.FileService;
+import com.pinguela.rentexpress.rest.api.FileResource;
 import com.pinguela.rentexpress.rest.api.support.JavaTimeParamConverterProvider;
 
 import jakarta.ws.rs.client.Entity;

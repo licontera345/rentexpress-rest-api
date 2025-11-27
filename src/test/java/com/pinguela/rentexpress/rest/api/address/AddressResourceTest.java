@@ -16,6 +16,7 @@ import org.mockito.MockitoAnnotations;
  
 import com.pinguela.rentexpres.model.AddressDTO;
 import com.pinguela.rentexpres.service.AddressService;
+import com.pinguela.rentexpress.rest.api.AddressResource;
 import com.pinguela.rentexpress.rest.api.support.JavaTimeParamConverterProvider;
 
 import jakarta.ws.rs.client.Entity;

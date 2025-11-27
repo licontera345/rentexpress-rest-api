@@ -16,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 
 import com.pinguela.rentexpres.model.VehicleStatusDTO;
 import com.pinguela.rentexpres.service.VehicleStatusService;
+import com.pinguela.rentexpress.rest.api.VehicleStatusResource;
 import com.pinguela.rentexpress.rest.api.support.JavaTimeParamConverterProvider;
 
 import jakarta.ws.rs.core.Application;
