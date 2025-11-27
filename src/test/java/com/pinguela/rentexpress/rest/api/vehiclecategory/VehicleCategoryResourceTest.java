@@ -16,7 +16,7 @@ import org.mockito.MockitoAnnotations;
 
 import com.pinguela.rentexpres.model.VehicleCategoryDTO;
 import com.pinguela.rentexpres.service.VehicleCategoryService;
-import com.pinguela.rentexpress.rest.api.VehicleCategoryResource;
+import com.pinguela.rentexpress.rest.api.ZOpenVehicleCategoryResource;
 import com.pinguela.rentexpress.rest.api.support.JavaTimeParamConverterProvider;
 
 import jakarta.ws.rs.core.Application;
@@ -33,7 +33,7 @@ public class VehicleCategoryResourceTest extends JerseyTest {
     protected Application configure() {
         mocks = MockitoAnnotations.openMocks(this);
 
-        VehicleCategoryResource resource = new VehicleCategoryResource();
+        ZOpenVehicleCategoryResource resource = new ZOpenVehicleCategoryResource();
         injectMock(resource, "vehicleCategoryService", vehicleCategoryService);
 
         ResourceConfig rc = new ResourceConfig();
