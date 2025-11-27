@@ -28,8 +28,6 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
 @Path("/headquarters")
-@Secured
-@RolesAllowed({"EMPLOYEE", "USER"})
 @Tag(name = "Headquarters", description = "Operations for headquarters management")
 public class HeadquartersResource {
 
@@ -107,6 +105,8 @@ public class HeadquartersResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "createHeadquarters",
         summary = "Create headquarters",
@@ -144,6 +144,8 @@ public class HeadquartersResource {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "updateHeadquarters",
         summary = "Update headquarters",
@@ -180,6 +182,8 @@ public class HeadquartersResource {
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "deleteHeadquarters",
         summary = "Delete headquarters",
