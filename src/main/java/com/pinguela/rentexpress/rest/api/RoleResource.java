@@ -26,7 +26,7 @@ import jakarta.ws.rs.core.Response.Status;
 @Path("/role")
 @Secured
 @RolesAllowed({"EMPLOYEE"})
-@Tag(name = "Roles", description = "Operations for role reference data")
+@Tag(name = "Roles", description = "Protected operations for role reference data (requires employee authentication)")
 public class RoleResource {
 
     private static final Logger logger = Logger.getLogger(RoleResource.class.getName());
@@ -47,7 +47,7 @@ public class RoleResource {
     @Operation(
         operationId = "findAllRoles",
         summary = "Find all roles",
-        description = "Retrieves every role available in the system",
+        description = "Retrieves every role available in the system (requires employee authentication)",
         responses = {
             @ApiResponse(
                 responseCode = "200",
@@ -76,7 +76,7 @@ public class RoleResource {
     @Operation(
         operationId = "findRoleById",
         summary = "Find role by ID",
-        description = "Retrieves a role using its unique identifier",
+        description = "Retrieves a role using its unique identifier (requires employee authentication)",
         responses = {
             @ApiResponse(
                 responseCode = "200",

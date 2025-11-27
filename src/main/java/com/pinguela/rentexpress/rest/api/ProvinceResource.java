@@ -47,7 +47,7 @@ public class ProvinceResource {
     @Operation(
         operationId = "findAllProvinces",
         summary = "Find all provinces",
-        description = "Retrieves every province available in the system",
+        description = "Retrieves every province available in the system (public endpoint, no authentication required)",
         responses = {
             @ApiResponse(
                 responseCode = "200",
@@ -77,7 +77,7 @@ public class ProvinceResource {
     @Operation(
         operationId = "findProvinceById",
         summary = "Find province by ID",
-        description = "Retrieves a province using its unique identifier",
+        description = "Retrieves a province using its unique identifier (public endpoint, no authentication required)",
         responses = {
             @ApiResponse(
                 responseCode = "200",

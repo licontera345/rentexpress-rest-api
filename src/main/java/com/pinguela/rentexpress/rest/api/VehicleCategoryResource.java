@@ -29,7 +29,7 @@ import jakarta.ws.rs.core.Response.Status;
 @Path("/vehicle-category")
 @Secured
 @RolesAllowed({"EMPLOYEE", "USER"})
-@Tag(name = "Vehicle Categories", description = "Operations for vehicle category reference data")
+@Tag(name = "Vehicle Categories", description = "Protected operations for vehicle category reference data (requires authentication)")
 public class VehicleCategoryResource {
 
     private static final Logger logger = Logger.getLogger(VehicleCategoryResource.class.getName());
@@ -45,7 +45,7 @@ public class VehicleCategoryResource {
     @Operation(
         operationId = "findAllVehicleCategories",
         summary = "Find all vehicle categories",
-        description = "Retrieves every vehicle category translated with the provided isoCode",
+        description = "Retrieves every vehicle category translated with the provided isoCode (requires authentication)",
         responses = {
             @ApiResponse(
                 responseCode = "200",
@@ -80,7 +80,7 @@ public class VehicleCategoryResource {
     @Operation(
         operationId = "findVehicleCategoryById",
         summary = "Find vehicle category by ID",
-        description = "Retrieves a vehicle category using its unique identifier and language code",
+        description = "Retrieves a vehicle category using its unique identifier and language code (requires authentication)",
         responses = {
             @ApiResponse(
                 responseCode = "200",

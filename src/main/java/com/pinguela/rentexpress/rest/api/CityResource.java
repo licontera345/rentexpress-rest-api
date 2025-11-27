@@ -48,7 +48,7 @@ public class CityResource {
     @Operation(
         operationId = "findAllCities",
         summary = "Find all cities",
-        description = "Retrieves every city available in the system",
+        description = "Retrieves every city available in the system (public endpoint, no authentication required)",
         responses = {
             @ApiResponse(
                 responseCode = "200",
@@ -78,7 +78,7 @@ public class CityResource {
     @Operation(
         operationId = "findCityById",
         summary = "Find city by ID",
-        description = "Retrieves a city using its unique identifier",
+        description = "Retrieves a city using its unique identifier (public endpoint, no authentication required)",
         responses = {
             @ApiResponse(
                 responseCode = "200",
@@ -112,7 +112,7 @@ public class CityResource {
     @Operation(
         operationId = "findCitiesByProvince",
         summary = "Find cities by province",
-        description = "Retrieves all cities that belong to the provided province",
+        description = "Retrieves all cities that belong to the provided province (public endpoint, no authentication required)",
         responses = {
             @ApiResponse(
                 responseCode = "200",

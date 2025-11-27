@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.Path;
@@ -23,12 +24,15 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import com.pinguela.rentexpress.rest.api.auth.filter.Secured;
 
 /**
  * REST resource for reservation status reference data.
  */
 @Path("/reservation-status")
-@Tag(name = "Reservation Statuses", description = "Operations for reservation status reference data")
+@Secured
+@RolesAllowed({"EMPLOYEE", "USER"})
+@Tag(name = "Reservation Statuses", description = "Protected operations for reservation status reference data (requires authentication)")
 public class ReservationStatusResource {
 
     private static final Logger logger = Logger.getLogger(ReservationStatusResource.class.getName());
@@ -44,7 +48,7 @@ public class ReservationStatusResource {
     @Operation(
         operationId = "findAllReservationStatuses",
         summary = "Find all reservation statuses",
-        description = "Retrieves every reservation status translated with the provided isoCode",
+        description = "Retrieves every reservation status translated with the provided isoCode (requires authentication)",
         responses = {
             @ApiResponse(
                 responseCode = "200",
@@ -79,7 +83,7 @@ public class ReservationStatusResource {
     @Operation(
         operationId = "findReservationStatusById",
         summary = "Find reservation status by ID",
-        description = "Retrieves a reservation status using its unique identifier and language code",
+        description = "Retrieves a reservation status using its unique identifier and language code (requires authentication)",
         responses = {
             @ApiResponse(
                 responseCode = "200",

@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.Path;
@@ -23,9 +24,12 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import com.pinguela.rentexpress.rest.api.auth.filter.Secured;
 
 @Path("/rental-status")
-@Tag(name = "Rental Statuses", description = "Operations for rental status reference data")
+@Secured
+@RolesAllowed({"EMPLOYEE", "USER"})
+@Tag(name = "Rental Statuses", description = "Protected operations for rental status reference data (requires authentication)")
 public class RentalStatusResource {
 
     private static final Logger logger = Logger.getLogger(RentalStatusResource.class.getName());
@@ -41,7 +45,7 @@ public class RentalStatusResource {
     @Operation(
         operationId = "findAllRentalStatuses",
         summary = "Find all rental statuses",
-        description = "Retrieves every rental status translated with the provided isoCode",
+        description = "Retrieves every rental status translated with the provided isoCode (requires authentication)",
         responses = {
             @ApiResponse(
                 responseCode = "200",
@@ -76,7 +80,7 @@ public class RentalStatusResource {
     @Operation(
         operationId = "findRentalStatusById",
         summary = "Find rental status by ID",
-        description = "Retrieves a rental status using its unique identifier and language code",
+        description = "Retrieves a rental status using its unique identifier and language code (requires authentication)",
         responses = {
             @ApiResponse(
                 responseCode = "200",
