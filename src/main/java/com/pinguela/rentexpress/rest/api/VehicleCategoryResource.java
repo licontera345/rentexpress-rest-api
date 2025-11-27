@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import com.pinguela.rentexpress.rest.api.auth.filter.Secured;
-import com.pinguela.rentexpress.rest.api.util.LanguageResolver;
+import com.pinguela.rentexpress.rest.api.auth.util.LanguageResolver;
 import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.VehicleCategoryDTO;
 import com.pinguela.rentexpres.service.VehicleCategoryService;

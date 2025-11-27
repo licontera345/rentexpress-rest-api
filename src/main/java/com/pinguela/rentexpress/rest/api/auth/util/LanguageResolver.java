@@ -1,4 +1,4 @@
-package com.pinguela.rentexpress.rest.api.util;
+package com.pinguela.rentexpress.rest.api.auth.util;
 
 /**
  * Utility class to resolve the requested language iso code from different sources.

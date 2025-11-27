@@ -7,7 +7,7 @@ import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.VehicleCategoryDTO;
 import com.pinguela.rentexpres.service.VehicleCategoryService;
 import com.pinguela.rentexpres.service.impl.VehicleCategoryServiceImpl;
-import com.pinguela.rentexpress.rest.api.util.LanguageResolver;
+import com.pinguela.rentexpress.rest.api.auth.util.LanguageResolver;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
