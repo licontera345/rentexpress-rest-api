@@ -31,8 +31,6 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
 @Path("/employee")
-@Secured
-@RolesAllowed({"EMPLOYEE"})
 @Tag(name = "Employees", description = "Operations for employee management")
 public class EmployeeResource {
 
@@ -47,6 +45,8 @@ public class EmployeeResource {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "findEmployeeById",
         summary = "Find employee by ID",
@@ -81,6 +81,8 @@ public class EmployeeResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "createEmployee",
         summary = "Create employee",
@@ -116,6 +118,8 @@ public class EmployeeResource {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "updateEmployee",
         summary = "Update employee",
@@ -153,6 +157,8 @@ public class EmployeeResource {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "deleteEmployee",
         summary = "Delete employee",
@@ -189,6 +195,8 @@ public class EmployeeResource {
     @GET
     @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "searchEmployees",
         summary = "Search employees by criteria",
@@ -288,6 +296,8 @@ public class EmployeeResource {
 
     @POST
     @Path("/{id}/activate")
+    @Secured
+    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "activateEmployee",
         summary = "Activate employee",
