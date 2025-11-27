@@ -28,8 +28,6 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
 @Path("/city")
-@Secured
-@RolesAllowed({"EMPLOYEE", "USER"})
 @Tag(name = "Cities", description = "Operations for city management")
 public class CityResource {
 
@@ -159,6 +157,8 @@ public class CityResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while creating the city")
         }
     )
+    @Secured
+    @RolesAllowed({"EMPLOYEE"})
     public Response create(CityDTO city) {
         if (city == null) {
             return Response.status(Status.BAD_REQUEST).entity("City data is required").build();
@@ -195,6 +195,8 @@ public class CityResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while updating the city")
         }
     )
+    @Secured
+    @RolesAllowed({"EMPLOYEE"})
     public Response update(@PathParam("id") Integer id, CityDTO city) {
         if (id == null || city == null) {
             return Response.status(Status.BAD_REQUEST).entity("City ID and data are required").build();
@@ -231,6 +233,8 @@ public class CityResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while deleting the city")
         }
     )
+    @Secured
+    @RolesAllowed({"EMPLOYEE"})
     public Response delete(@PathParam("id") Integer id) {
         if (id == null) {
             return Response.status(Status.BAD_REQUEST).entity("City ID and data are required").build();
