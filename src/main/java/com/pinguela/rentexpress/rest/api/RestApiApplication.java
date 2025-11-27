@@ -4,7 +4,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 
 import com.pinguela.rentexpress.rest.api.address.AddressResource;
 import com.pinguela.rentexpress.rest.api.auth.LoginResource;
-import com.pinguela.rentexpress.rest.api.auth.filter.AuthFilter;
+import com.pinguela.rentexpress.rest.api.auth.filter.JwtFilter;
 import com.pinguela.rentexpress.rest.api.city.CityResource;
 import com.pinguela.rentexpress.rest.api.employee.EmployeeResource;
 import com.pinguela.rentexpress.rest.api.file.FileResource;
@@ -28,6 +28,7 @@ import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.servers.Server;
 import jakarta.ws.rs.ApplicationPath;
+import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 
 @OpenAPIDefinition(info = @Info(title = "Rest API", version = "1.0", description = "demo API", contact = @Contact(name = "API Support", email = "support@restapi.local", url = "https://restapi.local"), license = @License(name = "MIT", url = "http://localhost:8080/rentexpress-rest-api/swagger-ui/index.html")), servers = {
 		@Server(url = "http://localhost:8080/rentexpress-rest-api") })
@@ -53,8 +54,11 @@ public class RestApiApplication extends ResourceConfig {
 		register(FileResource.class);
 		register(LoginResource.class);
 
-		// Filtro de autenticación
-		register(AuthFilter.class);
+                // Filtro de autenticación
+                register(JwtFilter.class);
+
+                // RolesAllowed activation
+                register(RolesAllowedDynamicFeature.class);
 
 		// Proveedores y utilidades
 		register(DateTimeJsonbProvider.class);

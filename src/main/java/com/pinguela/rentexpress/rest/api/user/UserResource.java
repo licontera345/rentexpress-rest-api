@@ -3,6 +3,7 @@ package com.pinguela.rentexpress.rest.api.user;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import com.pinguela.rentexpress.rest.api.auth.filter.Secured;
 import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.Results;
 import com.pinguela.rentexpres.model.UserCriteria;
@@ -15,6 +16,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -29,6 +31,8 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
 @Path("/user")
+@Secured
+@RolesAllowed({"EMPLOYEE", "USER"})
 @Tag(name = "Users", description = "Operations for user management")
 public class UserResource {
 

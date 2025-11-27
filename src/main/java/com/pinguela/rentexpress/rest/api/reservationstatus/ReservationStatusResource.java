@@ -3,6 +3,7 @@ package com.pinguela.rentexpress.rest.api.reservationstatus;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.pinguela.rentexpress.rest.api.auth.filter.Secured;
 import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.ReservationStatusDTO;
 import com.pinguela.rentexpres.service.ReservationStatusService;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -26,6 +28,8 @@ import jakarta.ws.rs.core.Response.Status;
  * REST resource for reservation status reference data.
  */
 @Path("/reservation-status")
+@Secured
+@RolesAllowed({"EMPLOYEE", "USER"})
 @Tag(name = "Reservation Statuses", description = "Operations for reservation status reference data")
 public class ReservationStatusResource {
 

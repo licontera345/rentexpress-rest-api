@@ -9,11 +9,13 @@ import java.util.logging.Logger;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
+import com.pinguela.rentexpress.rest.api.auth.filter.Secured;
 import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.service.FileService;
 import com.pinguela.rentexpres.service.impl.FileServiceImpl;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -26,7 +28,9 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
 @Path("/file")
-@Tag(name = "File Management", description = "APIs for managing vehicle images and user/employee avatars")	
+@Secured
+@RolesAllowed({"EMPLOYEE", "USER"})
+@Tag(name = "File Management", description = "APIs for managing vehicle images and user/employee avatars")
 public class FileResource {
 
     private static final Logger logger = Logger.getLogger(FileResource.class.getName());

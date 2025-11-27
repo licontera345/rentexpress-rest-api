@@ -2,6 +2,7 @@ package com.pinguela.rentexpress.rest.api.rental;
 
 import java.util.logging.Logger;
 
+import com.pinguela.rentexpress.rest.api.auth.filter.Secured;
 import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.RentalCriteria;
 import com.pinguela.rentexpres.model.RentalDTO;
@@ -15,6 +16,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -32,6 +34,8 @@ import jakarta.ws.rs.core.Response.Status;
  * Private rental resource.
  */
 @Path("/rental")
+@Secured
+@RolesAllowed({"EMPLOYEE", "USER"})
 @Tag(name = "Rentals", description = "Operations for rental management")
 public class RentalResource {
 

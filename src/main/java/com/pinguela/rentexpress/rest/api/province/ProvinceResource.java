@@ -3,6 +3,7 @@ package com.pinguela.rentexpress.rest.api.province;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.pinguela.rentexpress.rest.api.auth.filter.Secured;
 import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.ProvinceDTO;
 import com.pinguela.rentexpres.service.ProvinceService;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -29,6 +31,8 @@ import jakarta.ws.rs.core.Response.Status;
  * REST resource for province CRUD operations.
  */
 @Path("/province")
+@Secured
+@RolesAllowed({"EMPLOYEE", "USER"})
 @Tag(name = "Provinces", description = "Operations for province management")
 public class ProvinceResource {
 
