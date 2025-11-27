@@ -1,5 +1,6 @@
 package com.pinguela.rentexpress.rest.api;
 
+import java.time.LocalDateTime;
 import java.util.logging.Logger;
 
 import com.pinguela.rentexpress.rest.api.auth.filter.Secured;
@@ -221,17 +222,24 @@ public class ReservationResource {
         @QueryParam("reservationStatusId") Integer reservationStatusId,
         @QueryParam("pickupHeadquartersId") Integer pickupHeadquartersId,
         @QueryParam("returnHeadquartersId") Integer returnHeadquartersId,
-        @QueryParam("startDateFrom") java.time.LocalDateTime startDateFrom,
-        @QueryParam("startDateTo") java.time.LocalDateTime startDateTo,
-        @QueryParam("endDateFrom") java.time.LocalDateTime endDateFrom,
-        @QueryParam("endDateTo") java.time.LocalDateTime endDateTo,
-        @QueryParam("createdAtFrom") java.time.LocalDateTime createdAtFrom,
-        @QueryParam("createdAtTo") java.time.LocalDateTime createdAtTo,
-        @QueryParam("updatedAtFrom") java.time.LocalDateTime updatedAtFrom,
-        @QueryParam("updatedAtTo") java.time.LocalDateTime updatedAtTo,
+        @QueryParam("startDateFrom") LocalDateTime startDateFrom,
+        @QueryParam("startDateTo") LocalDateTime startDateTo,
+        @QueryParam("endDateFrom") LocalDateTime endDateFrom,
+        @QueryParam("endDateTo") LocalDateTime endDateTo,
+        @QueryParam("createdAtFrom") LocalDateTime createdAtFrom,
+        @QueryParam("createdAtTo") LocalDateTime createdAtTo,
+        @QueryParam("updatedAtFrom") LocalDateTime updatedAtFrom,
+        @QueryParam("updatedAtTo") LocalDateTime updatedAtTo,
         @QueryParam("pageNumber") Integer pageNumber,
         @QueryParam("pageSize") Integer pageSize
     ) {
+        if (ResourceValidationUtils.hasInvalidPagination(pageNumber, pageSize)
+                || ResourceValidationUtils.isInvalidDateRange(startDateFrom, startDateTo)
+                || ResourceValidationUtils.isInvalidDateRange(endDateFrom, endDateTo)
+                || ResourceValidationUtils.isInvalidDateRange(createdAtFrom, createdAtTo)
+                || ResourceValidationUtils.isInvalidDateRange(updatedAtFrom, updatedAtTo)) {
+            return Response.status(Status.BAD_REQUEST).entity("Invalid search criteria supplied").build();
+        }
         ReservationCriteria criteria = new ReservationCriteria();
         criteria.setReservationId(reservationId);
         criteria.setVehicleId(vehicleId);

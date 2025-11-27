@@ -234,12 +234,12 @@ public class VehicleResource {
             @QueryParam("createdAtTo") LocalDateTime createdAtTo,
             @QueryParam("updatedAtFrom") LocalDateTime updatedAtFrom,
             @QueryParam("updatedAtTo") LocalDateTime updatedAtTo) {
-        if (hasInvalidPagination(pageNumber, pageSize)
-                || isInvalidIntegerRange(manufactureYearFrom, manufactureYearTo)
-                || isInvalidIntegerRange(currentMileageMin, currentMileageMax)
-                || isInvalidDecimalRange(dailyPriceMin, dailyPriceMax)
-                || isInvalidDateRange(createdAtFrom, createdAtTo)
-                || isInvalidDateRange(updatedAtFrom, updatedAtTo)) {
+        if (ResourceValidationUtils.hasInvalidPagination(pageNumber, pageSize)
+                || ResourceValidationUtils.isInvalidIntegerRange(manufactureYearFrom, manufactureYearTo)
+                || ResourceValidationUtils.isInvalidIntegerRange(currentMileageMin, currentMileageMax)
+                || ResourceValidationUtils.isInvalidDecimalRange(dailyPriceMin, dailyPriceMax)
+                || ResourceValidationUtils.isInvalidDateRange(createdAtFrom, createdAtTo)
+                || ResourceValidationUtils.isInvalidDateRange(updatedAtFrom, updatedAtTo)) {
             return Response.status(Status.BAD_REQUEST).entity("Invalid search criteria supplied").build();
         }
         VehicleCriteria criteria = new VehicleCriteria();
@@ -276,25 +276,4 @@ public class VehicleResource {
         }
     }
 
-    private boolean hasInvalidPagination(Integer pageNumber, Integer pageSize) {
-        if (pageNumber != null && pageNumber.intValue() < 0) {
-            return true;
-        }
-        if (pageSize != null && pageSize.intValue() <= 0) {
-            return true;
-        }
-        return pageNumber != null && pageSize == null;
-    }
-
-    private boolean isInvalidIntegerRange(Integer min, Integer max) {
-        return min != null && max != null && min.intValue() > max.intValue();
-    }
-
-    private boolean isInvalidDecimalRange(BigDecimal min, BigDecimal max) {
-        return min != null && max != null && min.compareTo(max) > 0;
-    }
-
-    private boolean isInvalidDateRange(LocalDateTime from, LocalDateTime to) {
-        return from != null && to != null && from.isAfter(to);
-    }
 }
