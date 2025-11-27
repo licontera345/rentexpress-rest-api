@@ -33,8 +33,6 @@ import jakarta.ws.rs.core.Response.Status;
  * Protected Reservation endpoints.
  */
 @Path("/reservation")
-@Secured
-@RolesAllowed({"EMPLOYEE", "USER"})
 @Tag(name = "Reservations", description = "Operations for reservation management")
 public class ReservationResource {
 
@@ -46,6 +44,8 @@ public class ReservationResource {
         this.reservationService = new ReservationServiceImpl();
     }
 
+    @Secured
+    @RolesAllowed({"EMPLOYEE", "USER"})
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -80,6 +80,8 @@ public class ReservationResource {
         }
     }
 
+    @Secured
+    @RolesAllowed({"EMPLOYEE", "USER"})
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -116,6 +118,8 @@ public class ReservationResource {
         }
     }
 
+    @Secured
+    @RolesAllowed({"EMPLOYEE", "USER"})
     @PUT
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -153,6 +157,8 @@ public class ReservationResource {
         }
     }
 
+    @Secured
+    @RolesAllowed({"EMPLOYEE", "USER"})
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -187,6 +193,8 @@ public class ReservationResource {
         }
     }
 
+    @Secured
+    @RolesAllowed({"EMPLOYEE"})
     @GET
     @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
