@@ -30,7 +30,8 @@ public class RestApiApplication extends ResourceConfig {
 		register(RoleResource.class);
 		register(HeadquartersResource.class);
 		register(VehicleCategoryResource.class);
-		register(VehicleStatusResource.class);
+                register(VehicleStatusResource.class);
+                register(ZOpenVehicleStatusResource.class);
 		register(VehicleResource.class);
 		register(ReservationStatusResource.class);
 		register(ReservationResource.class);
