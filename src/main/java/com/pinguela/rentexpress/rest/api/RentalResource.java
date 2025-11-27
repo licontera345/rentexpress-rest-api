@@ -34,8 +34,6 @@ import jakarta.ws.rs.core.Response.Status;
  * Private rental resource.
  */
 @Path("/rental")
-@Secured
-@RolesAllowed({"EMPLOYEE", "USER"})
 @Tag(name = "Rentals", description = "Operations for rental management")
 public class RentalResource {
 
@@ -50,6 +48,8 @@ public class RentalResource {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({"EMPLOYEE", "USER"})
     @Operation(
         operationId = "findRentalById",
         summary = "Find rental by ID",
@@ -84,6 +84,8 @@ public class RentalResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "createRental",
         summary = "Create rental",
@@ -121,6 +123,8 @@ public class RentalResource {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "updateRental",
         summary = "Update rental",
@@ -157,6 +161,8 @@ public class RentalResource {
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "deleteRental",
         summary = "Delete rental",
@@ -191,6 +197,8 @@ public class RentalResource {
     @GET
     @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "searchRentals",
         summary = "Search rentals by criteria",
@@ -324,6 +332,8 @@ public class RentalResource {
     @POST
     @Path("/from-reservation")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "createRentalFromReservation",
         summary = "Create rental from reservation",
@@ -350,6 +360,8 @@ public class RentalResource {
     @POST
     @Path("/auto-convert")
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "autoConvertReservations",
         summary = "Auto convert reservations into rentals",
