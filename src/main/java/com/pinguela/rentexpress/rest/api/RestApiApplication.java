@@ -15,8 +15,26 @@ import io.swagger.v3.oas.annotations.servers.Server;
 import jakarta.ws.rs.ApplicationPath;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 
-@OpenAPIDefinition(info = @Info(title = "Rest API", version = "1.0", description = "demo API", contact = @Contact(name = "API Support", email = "support@restapi.local", url = "https://restapi.local"), license = @License(name = "MIT", url = "http://localhost:8080/rentexpress-rest-api/swagger-ui/index.html")), servers = {
-		@Server(url = "http://localhost:8080/rentexpress-rest-api") })
+@OpenAPIDefinition(info = @Info(
+		           title = "Rest API", 
+
+                   version = "1.0",
+                   
+                   description = "demo API",
+                   
+                   contact = @Contact(name = "API Support",
+                   
+                   email = "support@restapi.local",
+                   
+                   url = "https://restapi.local"),
+                   
+                   license = @License(name = "MIT",
+                   
+ url = "http://localhost:8080/rentexpress-rest-api/swagger-ui/index.html")), 
+servers = {
+		@Server(
+		        url = "http://localhost:8080/rentexpress-rest-api") })
+
 @ApplicationPath("/api")
 public class RestApiApplication extends ResourceConfig {
 
@@ -30,8 +48,7 @@ public class RestApiApplication extends ResourceConfig {
 		register(RoleResource.class);
 		register(HeadquartersResource.class);
 		register(VehicleCategoryResource.class);
-                register(VehicleStatusResource.class);
-                register(ZOpenVehicleStatusResource.class);
+		register(VehicleStatusResource.class);
 		register(VehicleResource.class);
 		register(ReservationStatusResource.class);
 		register(ReservationResource.class);
@@ -40,11 +57,11 @@ public class RestApiApplication extends ResourceConfig {
 		register(FileResource.class);
 		register(LoginResource.class);
 
-                // Filtro de autenticación
-                register(JwtFilter.class);
+		// Filtro de autenticación
+		register(JwtFilter.class);
 
-                // RolesAllowed activation
-                register(RolesAllowedDynamicFeature.class);
+		// RolesAllowed activation
+		register(RolesAllowedDynamicFeature.class);
 
 		// Proveedores y utilidades
 		register(DateTimeJsonbProvider.class);
