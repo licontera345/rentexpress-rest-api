@@ -37,6 +37,11 @@ public class RoleResource {
         this.roleService = new RoleServiceImpl();
     }
 
+    private Response buildServerErrorResponse(RentexpresException exception) {
+        logger.warning(exception.getMessage());
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity(exception.getMessage()).build();
+    }
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(
@@ -61,8 +66,7 @@ public class RoleResource {
             }
             return Response.ok(roles).build();
         } catch (RentexpresException e) {
-            logger.warning(e.getMessage());
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+            return buildServerErrorResponse(e);
         }
     }
 
@@ -95,8 +99,7 @@ public class RoleResource {
             }
             return Response.ok(role).build();
         } catch (RentexpresException e) {
-            logger.warning(e.getMessage());
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+            return buildServerErrorResponse(e);
         }
     }
 }
