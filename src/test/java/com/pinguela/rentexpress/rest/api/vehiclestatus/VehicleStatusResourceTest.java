@@ -56,7 +56,7 @@ public class VehicleStatusResourceTest extends JerseyTest {
         when(vehicleStatusService.findAll("en"))
                 .thenReturn(Collections.singletonList(new VehicleStatusDTO()));
 
-        Response response = target("api/zopen/vehicle-status")
+        Response response = target("api/open/vehicle-status")
                 .queryParam("isoCode", "en")
                 .request()
                 .get();
@@ -69,7 +69,7 @@ public class VehicleStatusResourceTest extends JerseyTest {
         when(vehicleStatusService.findById(1, "en"))
                 .thenReturn(new VehicleStatusDTO());
 
-        Response response = target("api/zopen/vehicle-status/1")
+        Response response = target("api/open/vehicle-status/1")
                 .queryParam("isoCode", "en")
                 .request()
                 .get();
