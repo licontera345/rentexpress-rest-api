@@ -6,48 +6,41 @@
 	<artifactId>rentexpress-rest-api</artifactId>
 	<packaging>war</packaging>
 	<version>v1.0.1</version>
-	<properties>
-		<jersey.version>4.0.0</jersey.version>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.glassfish.jersey</groupId>
-				<artifactId>jersey-bom</artifactId>
-				<version>${jersey.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-	<dependencies>
-		<!--  Servlet API solo UNA vez  -->
-		<dependency>
-			<groupId>jakarta.servlet</groupId>
+        <properties>
+                <jersey.version>3.1.6</jersey.version>
+                <maven.compiler.source>1.8</maven.compiler.source>
+                <maven.compiler.target>1.8</maven.compiler.target>
+                <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        </properties>
+        <dependencies>
+                <!--  Servlet API solo UNA vez  -->
+                <dependency>
+                        <groupId>jakarta.servlet</groupId>
 			<artifactId>jakarta.servlet-api</artifactId>
 			<version>5.0.0</version>
 			<scope>provided</scope>
 		</dependency>
-		<!--  Jersey básico  -->
-		<dependency>
-			<groupId>org.glassfish.jersey.containers</groupId>
-			<artifactId>jersey-container-servlet</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.glassfish.jersey.inject</groupId>
-			<artifactId>jersey-hk2</artifactId>
-		</dependency>
-		<!--  JSON  -->
-		<dependency>
-			<groupId>org.glassfish.jersey.media</groupId>
-			<artifactId>jersey-media-json-binding</artifactId>
-		</dependency>
+                <!--  Jersey básico  -->
+                <dependency>
+                        <groupId>org.glassfish.jersey.containers</groupId>
+                        <artifactId>jersey-container-servlet</artifactId>
+                        <version>${jersey.version}</version>
+                </dependency>
+                <dependency>
+                        <groupId>org.glassfish.jersey.inject</groupId>
+                        <artifactId>jersey-hk2</artifactId>
+                        <version>${jersey.version}</version>
+                </dependency>
+                <!--  JSON  -->
+                <dependency>
+                        <groupId>org.glassfish.jersey.media</groupId>
+                        <artifactId>jersey-media-json-binding</artifactId>
+                        <version>${jersey.version}</version>
+                </dependency>
                 <dependency>
                         <groupId>org.glassfish.jersey.media</groupId>
                         <artifactId>jersey-media-multipart</artifactId>
+                        <version>${jersey.version}</version>
                 </dependency>
                 <dependency>
                         <groupId>jakarta.activation</groupId>
@@ -155,21 +148,24 @@
 			<scope>test</scope>
 		</dependency>
 		<!-- Jersey Test Framework (usando el BOM de jersey.version=4.0.0) -->
-<dependency>
-    <groupId>org.glassfish.jersey.test-framework</groupId>
-    <artifactId>jersey-test-framework-core</artifactId>
-    <scope>test</scope>
-</dependency>
+                <dependency>
+                        <groupId>org.glassfish.jersey.test-framework</groupId>
+                        <artifactId>jersey-test-framework-core</artifactId>
+                        <version>${jersey.version}</version>
+                        <scope>test</scope>
+                </dependency>
 
-<dependency>
-    <groupId>org.glassfish.jersey.test-framework.providers</groupId>
-    <artifactId>jersey-test-framework-provider-inmemory</artifactId>
-    <scope>test</scope>
-</dependency>
+                <dependency>
+                        <groupId>org.glassfish.jersey.test-framework.providers</groupId>
+                        <artifactId>jersey-test-framework-provider-inmemory</artifactId>
+                        <version>${jersey.version}</version>
+                        <scope>test</scope>
+                </dependency>
 
                 <dependency>
                         <groupId>org.glassfish.jersey.test-framework.providers</groupId>
                         <artifactId>jersey-test-framework-provider-grizzly2</artifactId>
+                        <version>${jersey.version}</version>
                         <scope>test</scope>
                 </dependency>
 
