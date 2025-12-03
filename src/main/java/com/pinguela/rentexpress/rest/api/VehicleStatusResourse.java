@@ -3,6 +3,7 @@ package com.pinguela.rentexpress.rest.api;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.pinguela.rentexpress.rest.api.security.Secured;
 import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.VehicleStatusDTO;
 import com.pinguela.rentexpres.service.VehicleStatusService;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -22,15 +24,17 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/open/vehicle-statuses")
+@Path("/vehicle-statuses")
+@Secured
+@RolesAllowed({ "ADMIN", "EMPLOYEE" })
 @Tag(name = "Vehicle Statuses", description = "Operations for vehicle status reference data")
-public class ZOpenVehicleStatusResourse {
+public class VehicleStatusResourse {
 
-    private static final Logger logger = Logger.getLogger(ZOpenVehicleStatusResourse.class.getName());
+    private static final Logger logger = Logger.getLogger(VehicleStatusResourse.class.getName());
 
     private final VehicleStatusService vehicleStatusService;
 
-    public ZOpenVehicleStatusResourse() {
+    public VehicleStatusResourse() {
         this.vehicleStatusService = new VehicleStatusServiceImpl();
     }
 
