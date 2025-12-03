@@ -3,6 +3,7 @@ package com.pinguela.rentexpress.rest.api;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import com.pinguela.rentexpress.rest.api.security.Secured;
 import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.Results;
 import com.pinguela.rentexpres.model.UserCriteria;
@@ -15,6 +16,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -22,21 +24,23 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/open/users")
+@Path("/users")
 @Tag(name = "Users", description = "Operations for user management")
-public class ZOpenUserResourse {
+@Secured
+@RolesAllowed({ "ADMIN", "EMPLOYEE" })
+public class UserResourse {
 
-    private static final Logger logger = Logger.getLogger(ZOpenUserResourse.class.getName());
+    private static final Logger logger = Logger.getLogger(UserResourse.class.getName());
 
     private final UserService userService;
 
-    public ZOpenUserResourse() {
+    public UserResourse() {
         this.userService = new UserServiceImpl();
     }
 

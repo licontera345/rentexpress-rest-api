@@ -3,6 +3,7 @@ package com.pinguela.rentexpress.rest.api;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import com.pinguela.rentexpress.rest.api.security.Secured;
 import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.EmployeeCriteria;
 import com.pinguela.rentexpres.model.EmployeeDTO;
@@ -15,6 +16,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -22,21 +24,23 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/open/employees")
+@Path("/employees")
 @Tag(name = "Employees", description = "Operations for employee management")
-public class ZOpenEmployeeResourse {
+@Secured
+@RolesAllowed({ "ADMIN", "EMPLOYEE" })
+public class EmployeeResourse {
 
-    private static final Logger logger = Logger.getLogger(ZOpenEmployeeResourse.class.getName());
+    private static final Logger logger = Logger.getLogger(EmployeeResourse.class.getName());
 
     private final EmployeeService employeeService;
 
-    public ZOpenEmployeeResourse() {
+    public EmployeeResourse() {
         this.employeeService = new EmployeeServiceImpl();
     }
 
