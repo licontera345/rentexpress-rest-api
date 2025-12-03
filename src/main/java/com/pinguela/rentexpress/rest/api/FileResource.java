@@ -27,6 +27,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
 import com.pinguela.rentexpress.rest.api.security.Secured;
+import com.pinguela.rentexpress.rest.api.security.RelationshipCheck;
 
 @Path("/file")
 @Tag(name = "File Management", description = "APIs for managing vehicle images and user/employee avatars")	
@@ -43,6 +44,8 @@ public class FileResource {
     @GET
     @Path("/vehicle/{vehicleId}")
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     public Response listVehicleImages(@PathParam("vehicleId") Integer vehicleId) {
         if (vehicleId == null) {
             return Response.status(Status.BAD_REQUEST).entity("Vehicle ID is required").build();
@@ -59,6 +62,8 @@ public class FileResource {
     @GET
     @Path("/vehicle/{vehicleId}/{imageName}")
     @Produces({ "image/jpeg", "image/png", "image/gif", MediaType.APPLICATION_OCTET_STREAM })
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     public Response getVehicleImage(@PathParam("vehicleId") Integer vehicleId, @PathParam("imageName") String imageName) {
         try {
             byte[] data = fileService.getVehicleImage(vehicleId, imageName);
@@ -126,6 +131,9 @@ public class FileResource {
     @GET
     @Path("/user-avatar/{userId}")
     @Produces({ "image/jpeg", "image/png", MediaType.APPLICATION_OCTET_STREAM })
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE", "CLIENT" })
+    @RelationshipCheck(pathParamName = "userId", relatedEntity = "CLIENT_MATCH")
     public Response getUserAvatar(@PathParam("userId") Integer userId) {
         try {
             byte[] data = fileService.getUserAvatar(userId);
@@ -142,10 +150,11 @@ public class FileResource {
 
     @POST
     @Secured
-    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
+    @RolesAllowed({ "ADMIN", "EMPLOYEE", "CLIENT" })
     @Path("/user-avatar/{userId}")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
+    @RelationshipCheck(pathParamName = "userId", relatedEntity = "CLIENT_MATCH")
     public Response uploadUserAvatar(@PathParam("userId") Integer userId,
             @FormDataParam("file") InputStream fileInputStream) {
 
@@ -170,6 +179,9 @@ public class FileResource {
     @GET
     @Path("/employee-avatar/{employeeId}")
     @Produces({ "image/jpeg", "image/png", MediaType.APPLICATION_OCTET_STREAM })
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
+    @RelationshipCheck(pathParamName = "employeeId", relatedEntity = "EMPLOYEE_MATCH")
     public Response getEmployeeAvatar(@PathParam("employeeId") Integer employeeId) {
         try {
             byte[] data = fileService.getEmployeeAvatar(employeeId);
@@ -190,6 +202,7 @@ public class FileResource {
     @Path("/employee-avatar/{employeeId}")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
+    @RelationshipCheck(pathParamName = "employeeId", relatedEntity = "EMPLOYEE_MATCH")
     public Response uploadEmployeeAvatar(@PathParam("employeeId") Integer employeeId,
             @FormDataParam("file") InputStream fileInputStream) {
 

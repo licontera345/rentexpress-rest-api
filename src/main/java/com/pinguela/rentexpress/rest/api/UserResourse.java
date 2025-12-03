@@ -3,6 +3,7 @@ package com.pinguela.rentexpress.rest.api;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import com.pinguela.rentexpress.rest.api.security.RelationshipCheck;
 import com.pinguela.rentexpress.rest.api.security.Secured;
 import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.Results;
@@ -48,6 +49,7 @@ public class UserResourse {
     @Produces(MediaType.APPLICATION_JSON)
     @Secured
     @RolesAllowed({ "ADMIN", "EMPLOYEE", "CLIENT" })
+    @RelationshipCheck(pathParamName = "id", relatedEntity = "CLIENT_MATCH")
     @Operation(
         operationId = "findUserById",
         summary = "Find user by ID",
@@ -120,6 +122,7 @@ public class UserResourse {
     @Produces(MediaType.APPLICATION_JSON)
     @Secured
     @RolesAllowed({ "ADMIN", "EMPLOYEE", "CLIENT" })
+    @RelationshipCheck(pathParamName = "id", relatedEntity = "CLIENT_MATCH")
     @Operation(
         operationId = "updateUser",
         summary = "Update user",
@@ -158,6 +161,7 @@ public class UserResourse {
     @Produces(MediaType.APPLICATION_JSON)
     @Secured
     @RolesAllowed({ "ADMIN", "EMPLOYEE", "CLIENT" })
+    @RelationshipCheck(pathParamName = "id", relatedEntity = "CLIENT_MATCH")
     @Operation(
         operationId = "deleteUser",
         summary = "Delete user",

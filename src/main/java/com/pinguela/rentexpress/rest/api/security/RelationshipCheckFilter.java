@@ -35,6 +35,15 @@ public class RelationshipCheckFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         RelationshipCheck annotation = resourceInfo.getResourceMethod().getAnnotation(RelationshipCheck.class);
+        if (annotation == null) {
+            return;
+        }
+
+        jakarta.ws.rs.core.SecurityContext securityContext = requestContext.getSecurityContext();
+        if (securityContext.isUserInRole("ADMIN") || securityContext.isUserInRole("EMPLOYEE")) {
+            return;
+        }
+
         String pathParamName = annotation.pathParamName();
         String relatedEntity = annotation.relatedEntity();
 
