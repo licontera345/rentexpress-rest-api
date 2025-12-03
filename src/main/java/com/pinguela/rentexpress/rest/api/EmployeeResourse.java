@@ -3,6 +3,7 @@ package com.pinguela.rentexpress.rest.api;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import com.pinguela.rentexpress.rest.api.security.JwtUtil;
 import com.pinguela.rentexpress.rest.api.security.Secured;
 import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.EmployeeCriteria;
@@ -287,7 +288,8 @@ public class EmployeeResourse {
             if (employee == null) {
                 return Response.status(Status.UNAUTHORIZED).entity("Invalid credentials").build();
             }
-            return Response.ok(employee).build();
+            String token = JwtUtil.generateEmployeeToken(employee.getId());
+            return Response.ok("{\"token\" : \"" + token + "\"}").build();
         } catch (RentexpresException e) {
             logger.warning(e.getMessage());
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();

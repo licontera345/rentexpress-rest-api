@@ -14,12 +14,15 @@ public class JwtUtil {
     }
 
     public static String generateToken(String userId) {
-        return Jwts.builder()
-                .subject(userId)
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 3600 * 1000))
-                .signWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()))
-                .compact();
+        return generateTokenWithSubject(userId);
+    }
+
+    public static String generateUserToken(Integer userId) {
+        return generateTokenWithSubject("USER:" + userId);
+    }
+
+    public static String generateEmployeeToken(Integer employeeId) {
+        return generateTokenWithSubject("EMPLOYEE:" + employeeId);
     }
 
     public static String validateToken(String token) {
@@ -29,5 +32,14 @@ public class JwtUtil {
                 .parseSignedClaims(token)
                 .getPayload()
                 .getSubject();
+    }
+
+    private static String generateTokenWithSubject(String subject) {
+        return Jwts.builder()
+                .subject(subject)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 3600 * 1000))
+                .signWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()))
+                .compact();
     }
 }

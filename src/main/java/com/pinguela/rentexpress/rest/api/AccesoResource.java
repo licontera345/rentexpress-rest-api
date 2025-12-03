@@ -40,7 +40,7 @@ public class AccesoResource {
         try {
             UserDTO user = userService.authenticate(cred.getUsername(), cred.getPassword());
             if (user != null) {
-                String token = JwtUtil.generateToken(user.getUserId().toString());
+                String token = JwtUtil.generateUserToken(user.getUserId());
                 return Response.status(Status.OK).entity("{\"token\" : \"" + token + "\"}").build();
             }
             return Response.status(Response.Status.UNAUTHORIZED).build();
