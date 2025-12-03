@@ -2,6 +2,7 @@ package com.pinguela.rentexpress.rest.api;
 
 import java.util.logging.Logger;
 
+import com.pinguela.rentexpress.rest.api.security.Secured;
 import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.AddressDTO;
 import com.pinguela.rentexpres.service.AddressService;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -24,15 +26,17 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/open/addresses")
+@Path("/addresses")
 @Tag(name = "Addresses", description = "Operations for address management")
-public class ZOpenAddressResourse {
+@Secured
+@RolesAllowed({ "ADMIN", "EMPLOYEE" })
+public class AddressResourse {
 
-    private static final Logger logger = Logger.getLogger(ZOpenAddressResourse.class.getName());
+    private static final Logger logger = Logger.getLogger(AddressResourse.class.getName());
 
     private final AddressService addressService;
 
-    public ZOpenAddressResourse() {
+    public AddressResourse() {
         this.addressService = new AddressServiceImpl();
     }
 

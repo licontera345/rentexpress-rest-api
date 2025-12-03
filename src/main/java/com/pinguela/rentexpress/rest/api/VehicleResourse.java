@@ -2,6 +2,7 @@ package com.pinguela.rentexpress.rest.api;
 
 import java.util.logging.Logger;
 
+import com.pinguela.rentexpress.rest.api.security.Secured;
 import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.Results;
 import com.pinguela.rentexpres.model.VehicleCriteria;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -27,14 +29,16 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/open/vehicles")
+@Path("/vehicles")
 @Tag(name = "Vehicles", description = "Operations for vehicle management")
-public class ZOpenVehicleResourse {
+@Secured
+@RolesAllowed({ "ADMIN", "EMPLOYEE" })
+public class VehicleResourse {
 
-    private static final Logger logger = Logger.getLogger(ZOpenVehicleResourse.class.getName());
+    private static final Logger logger = Logger.getLogger(VehicleResourse.class.getName());
 
     private final VehicleService vehicleService;
-    public ZOpenVehicleResourse() {
+    public VehicleResourse() {
         this.vehicleService = new VehicleServiceImpl();
     }
 

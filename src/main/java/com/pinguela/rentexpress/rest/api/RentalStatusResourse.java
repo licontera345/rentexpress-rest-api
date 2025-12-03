@@ -3,6 +3,7 @@ package com.pinguela.rentexpress.rest.api;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.pinguela.rentexpress.rest.api.security.Secured;
 import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.RentalStatusDTO;
 import com.pinguela.rentexpres.service.RentalStatusService;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -22,15 +24,17 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/open/rental-statuses")
+@Path("/rental-statuses")
 @Tag(name = "Rental Statuses", description = "Operations for rental status reference data")
-public class ZOpenRentalStatusResourse {
+@Secured
+@RolesAllowed({ "ADMIN", "EMPLOYEE" })
+public class RentalStatusResourse {
 
-    private static final Logger logger = Logger.getLogger(ZOpenRentalStatusResourse.class.getName());
+    private static final Logger logger = Logger.getLogger(RentalStatusResourse.class.getName());
 
     private final RentalStatusService rentalStatusService;
 
-    public ZOpenRentalStatusResourse() {
+    public RentalStatusResourse() {
         this.rentalStatusService = new RentalStatusServiceImpl();
     }
 
