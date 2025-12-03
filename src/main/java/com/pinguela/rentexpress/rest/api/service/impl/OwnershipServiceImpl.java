@@ -9,6 +9,8 @@ public class OwnershipServiceImpl implements OwnershipService {
         switch (entityName) {
         case "CLIENT_MATCH":
             return resourceId != null && resourceId.equals(ownerId);
+        case "EMPLOYEE_MATCH":
+            return resourceId != null && resourceId.equals(ownerId);
         default:
             return false;
         }
