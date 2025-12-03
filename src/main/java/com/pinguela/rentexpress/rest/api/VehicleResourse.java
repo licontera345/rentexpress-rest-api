@@ -31,8 +31,6 @@ import jakarta.ws.rs.core.Response.Status;
 
 @Path("/vehicles")
 @Tag(name = "Vehicles", description = "Operations for vehicle management")
-@Secured
-@RolesAllowed({ "ADMIN", "EMPLOYEE" })
 public class VehicleResourse {
 
     private static final Logger logger = Logger.getLogger(VehicleResourse.class.getName());
@@ -45,6 +43,8 @@ public class VehicleResourse {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     @Operation(
         operationId = "findVehicleById",
         summary = "Find vehicle by ID",
@@ -91,6 +91,8 @@ public class VehicleResourse {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     @Operation(
         operationId = "createVehicle",
         summary = "Create a new vehicle",
@@ -135,6 +137,8 @@ public class VehicleResourse {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     @Operation(
         operationId = "updateVehicle",
         summary = "Update an existing vehicle",
@@ -182,6 +186,8 @@ public class VehicleResourse {
 
     @DELETE
     @Path("/{id}")
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     @Operation(
         operationId = "deleteVehicle",
         summary = "Delete a vehicle",
@@ -222,7 +228,7 @@ public class VehicleResourse {
     }
 
     @GET
-    @Path("/search")
+    @Path("/open/search")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(
         operationId = "findVehiclesByCriteria",
