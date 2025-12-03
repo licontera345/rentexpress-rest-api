@@ -21,7 +21,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/roles")
+@Path("/open/roles")
 @Tag(name = "Roles", description = "Operations for role reference data")
 public class ZOpenRoleResourse {
 

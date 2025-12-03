@@ -1,0 +1,52 @@
+package com.pinguela.rentexpress.rest.api;
+
+import java.util.logging.Logger;
+
+import com.pinguela.rentexpress.rest.api.dto.UserCredentials;
+import com.pinguela.rentexpress.rest.api.security.JwtUtil;
+import com.pinguela.rentexpres.exception.RentexpresException;
+import com.pinguela.rentexpres.model.UserDTO;
+import com.pinguela.rentexpres.service.UserService;
+import com.pinguela.rentexpres.service.impl.UserServiceImpl;
+
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
+
+@Path("")
+public class AccesoResource {
+
+    private static final Logger logger = Logger.getLogger(AccesoResource.class.getName());
+
+    private final UserService userService;
+
+    public AccesoResource() {
+        super();
+        this.userService = new UserServiceImpl();
+    }
+
+    @POST
+    @Path("/login")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response login(UserCredentials cred) {
+        if (cred == null || cred.getUsername() == null || cred.getPassword() == null) {
+            return Response.status(Status.BAD_REQUEST).entity("Username and password are required").build();
+        }
+        try {
+            UserDTO user = userService.authenticate(cred.getUsername(), cred.getPassword());
+            if (user != null) {
+                String token = JwtUtil.generateToken(user.getUserId().toString());
+                return Response.status(Status.OK).entity("{\"token\" : \"" + token + "\"}").build();
+            }
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        } catch (RentexpresException e) {
+            logger.warning(e.getMessage());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
+    }
+}

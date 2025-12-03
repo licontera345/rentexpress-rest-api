@@ -27,7 +27,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/reservations")
+@Path("/open/reservations")
 @Tag(name = "Reservations", description = "Operations for reservation management")
 public class ZOpenReservationResourse {
 

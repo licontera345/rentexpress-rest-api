@@ -27,7 +27,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/vehicles")
+@Path("/open/vehicles")
 @Tag(name = "Vehicles", description = "Operations for vehicle management")
 public class ZOpenVehicleResourse {
 

@@ -28,7 +28,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/users")
+@Path("/open/users")
 @Tag(name = "Users", description = "Operations for user management")
 public class ZOpenUserResourse {
 
