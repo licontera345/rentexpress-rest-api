@@ -47,7 +47,7 @@ public class UserResourse {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Secured
-    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
+    @RolesAllowed({ "ADMIN", "EMPLOYEE", "CLIENT" })
     @Operation(
         operationId = "findUserById",
         summary = "Find user by ID",
@@ -80,10 +80,9 @@ public class UserResourse {
     }
 
     @POST
+    @Path("/open")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Secured
-    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     @Operation(
         operationId = "createUser",
         summary = "Create user",
@@ -120,7 +119,7 @@ public class UserResourse {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Secured
-    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
+    @RolesAllowed({ "ADMIN", "EMPLOYEE", "CLIENT" })
     @Operation(
         operationId = "updateUser",
         summary = "Update user",
@@ -158,7 +157,7 @@ public class UserResourse {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Secured
-    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
+    @RolesAllowed({ "ADMIN", "EMPLOYEE", "CLIENT" })
     @Operation(
         operationId = "deleteUser",
         summary = "Delete user",
@@ -194,7 +193,7 @@ public class UserResourse {
     @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
     @Secured
-    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
+    @RolesAllowed({ "ADMIN", "EMPLOYEE", "CLIENT" })
     @Operation(
         operationId = "searchUsers",
         summary = "Search users by criteria",
