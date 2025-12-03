@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import com.pinguela.rentexpress.rest.api.security.Secured;
-import com.pinguela.rentexpres.exception.RentexpresException;
+import com.pinguela.rentexpres.exception.DataException;
 import com.pinguela.rentexpres.model.HeadquartersDTO;
 import com.pinguela.rentexpres.service.HeadquartersService;
 import com.pinguela.rentexpres.service.impl.HeadquartersServiceImpl;
@@ -64,7 +64,7 @@ public class HeadquartersResource {
                 return Response.status(Status.NO_CONTENT).build();
             }
             return Response.ok(headquarters).build();
-        } catch (RentexpresException e) {
+        } catch (DataException e) {
             logger.warning(e.getMessage());
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
@@ -98,7 +98,7 @@ public class HeadquartersResource {
                 return Response.status(Status.NOT_FOUND).build();
             }
             return Response.ok(headquarters).build();
-        } catch (RentexpresException e) {
+        } catch (DataException e) {
             logger.warning(e.getMessage());
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
@@ -134,7 +134,7 @@ public class HeadquartersResource {
                     ? headquartersService.findById(headquarters.getId())
                     : headquarters;
             return Response.status(Status.CREATED).entity(createdHeadquarters).build();
-        } catch (RentexpresException e) {
+        } catch (DataException e) {
             logger.warning(e.getMessage());
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
@@ -171,7 +171,7 @@ public class HeadquartersResource {
             }
             HeadquartersDTO updatedHeadquarters = headquartersService.findById(headquarters.getId());
             return Response.ok(updatedHeadquarters).build();
-        } catch (RentexpresException e) {
+        } catch (DataException e) {
             logger.warning(e.getMessage());
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
@@ -205,7 +205,7 @@ public class HeadquartersResource {
                 return Response.status(Status.NOT_FOUND).entity("Headquarters not found").build();
             }
             return Response.ok().entity("Headquarters deleted successfully").build();
-        } catch (RentexpresException e) {
+        } catch (DataException e) {
             logger.warning(e.getMessage());
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
