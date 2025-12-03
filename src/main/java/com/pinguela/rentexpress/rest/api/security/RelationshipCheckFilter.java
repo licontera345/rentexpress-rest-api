@@ -64,8 +64,9 @@ public class RelationshipCheckFilter implements ContainerRequestFilter {
         String authenticatedOwnerId = requestContext.getSecurityContext().getUserPrincipal().getName();
         boolean isOwned = ownershipService.checkOwnership(relatedEntity, resourceId, authenticatedOwnerId);
 
-        logger.fine(() -> "Ownership check for entity " + relatedEntity + " with resource " + resourceId
-                + " and owner " + authenticatedOwnerId + " => " + isOwned);
+        String logMessage = "Ownership check for entity " + relatedEntity + " with resource " + resourceId
+                + " and owner " + authenticatedOwnerId + " => " + isOwned;
+        logger.fine(logMessage);
 
         if (!isOwned) {
             requestContext.abortWith(Response.status(Response.Status.FORBIDDEN)

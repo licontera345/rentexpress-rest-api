@@ -99,7 +99,7 @@ public class JwtFilter implements ContainerRequestFilter {
             String rawId = prefix.isEmpty() ? subject : subject.substring(prefix.length());
             return Integer.valueOf(rawId);
         } catch (NumberFormatException e) {
-            logger.fine(() -> "Invalid token subject format: " + subject);
+            logger.fine("Invalid token subject format: " + subject);
             return null;
         }
     }
@@ -116,7 +116,7 @@ public class JwtFilter implements ContainerRequestFilter {
                 roles.add(role.getRoleName());
             }
         } catch (RentexpresException e) {
-            logger.fine(() -> "Could not resolve role name for roleId=" + roleId);
+            logger.fine("Could not resolve role name for roleId=" + roleId);
         }
         return roles;
     }
