@@ -7,7 +7,6 @@ import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.RentalStatusDTO;
 import com.pinguela.rentexpres.service.RentalStatusService;
 import com.pinguela.rentexpres.service.impl.RentalStatusServiceImpl;
-import com.pinguela.rentexpress.rest.api.auth.util.LanguageResolver;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,7 +14,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.GET;
-import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -24,15 +22,15 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/rental-status")
+@Path("/rental-statuses")
 @Tag(name = "Rental Statuses", description = "Operations for rental status reference data")
-public class RentalStatusResource {
+public class ZOpenRentalStatusResourse {
 
-    private static final Logger logger = Logger.getLogger(RentalStatusResource.class.getName());
+    private static final Logger logger = Logger.getLogger(ZOpenRentalStatusResourse.class.getName());
 
     private final RentalStatusService rentalStatusService;
 
-    public RentalStatusResource() {
+    public ZOpenRentalStatusResourse() {
         this.rentalStatusService = new RentalStatusServiceImpl();
     }
 
@@ -53,13 +51,12 @@ public class RentalStatusResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving rental statuses")
         }
     )
-    public Response findAll(@QueryParam("isoCode") String isoCode, @HeaderParam("Accept-Language") String acceptLanguage) {
-        String resolvedIsoCode = LanguageResolver.resolveIsoCode(isoCode, acceptLanguage);
-        if (resolvedIsoCode == null) {
-            return Response.status(Status.BAD_REQUEST).entity("isoCode or Accept-Language header is required").build();
+    public Response findAll(@QueryParam("isoCode") String isoCode) {
+        if (isoCode == null || isoCode.isEmpty()) {
+            return Response.status(Status.BAD_REQUEST).entity("isoCode is required").build();
         }
         try {
-            List<RentalStatusDTO> statuses = rentalStatusService.findAll(resolvedIsoCode);
+            List<RentalStatusDTO> statuses = rentalStatusService.findAll(isoCode);
             if (statuses == null || statuses.isEmpty()) {
                 return Response.status(Status.NO_CONTENT).build();
             }
@@ -88,13 +85,12 @@ public class RentalStatusResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving the rental status")
         }
     )
-    public Response findById(@PathParam("id") Integer id, @QueryParam("isoCode") String isoCode, @HeaderParam("Accept-Language") String acceptLanguage) {
-        String resolvedIsoCode = LanguageResolver.resolveIsoCode(isoCode, acceptLanguage);
-        if (id == null || resolvedIsoCode == null) {
-            return Response.status(Status.BAD_REQUEST).entity("Rental status ID and isoCode or Accept-Language header are required").build();
+    public Response findById(@PathParam("id") Integer id, @QueryParam("isoCode") String isoCode) {
+        if (id == null || isoCode == null || isoCode.isEmpty()) {
+            return Response.status(Status.BAD_REQUEST).entity("Rental status ID and isoCode are required").build();
         }
         try {
-            RentalStatusDTO status = rentalStatusService.findById(id, resolvedIsoCode);
+            RentalStatusDTO status = rentalStatusService.findById(id, isoCode);
             if (status == null) {
                 return Response.status(Status.NOT_FOUND).build();
             }

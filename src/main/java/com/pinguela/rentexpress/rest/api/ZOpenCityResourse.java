@@ -3,7 +3,6 @@ package com.pinguela.rentexpress.rest.api;
 import java.util.List;
 import java.util.logging.Logger;
 
-import com.pinguela.rentexpress.rest.api.auth.filter.Secured;
 import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.CityDTO;
 import com.pinguela.rentexpres.service.CityService;
@@ -14,7 +13,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -27,20 +25,16 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/city")
+@Path("/cities")
 @Tag(name = "Cities", description = "Operations for city management")
-public class CityResource {
+public class ZOpenCityResourse {
 
-    private static final Logger logger = Logger.getLogger(CityResource.class.getName());
+    private static final Logger logger = Logger.getLogger(ZOpenCityResourse.class.getName());
 
     private final CityService cityService;
 
-    public CityResource() {
-        this(new CityServiceImpl());
-    }
-
-    public CityResource(CityService cityService) {
-        this.cityService = cityService;
+    public ZOpenCityResourse() {
+        this.cityService = new CityServiceImpl();
     }
 
     @GET
@@ -157,8 +151,6 @@ public class CityResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while creating the city")
         }
     )
-    @Secured
-    @RolesAllowed({"EMPLOYEE"})
     public Response create(CityDTO city) {
         if (city == null) {
             return Response.status(Status.BAD_REQUEST).entity("City data is required").build();
@@ -195,8 +187,6 @@ public class CityResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while updating the city")
         }
     )
-    @Secured
-    @RolesAllowed({"EMPLOYEE"})
     public Response update(@PathParam("id") Integer id, CityDTO city) {
         if (id == null || city == null) {
             return Response.status(Status.BAD_REQUEST).entity("City ID and data are required").build();
@@ -233,8 +223,6 @@ public class CityResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while deleting the city")
         }
     )
-    @Secured
-    @RolesAllowed({"EMPLOYEE"})
     public Response delete(@PathParam("id") Integer id) {
         if (id == null) {
             return Response.status(Status.BAD_REQUEST).entity("City ID and data are required").build();

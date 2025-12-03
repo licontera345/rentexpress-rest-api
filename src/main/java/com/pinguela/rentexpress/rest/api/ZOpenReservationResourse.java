@@ -2,7 +2,6 @@ package com.pinguela.rentexpress.rest.api;
 
 import java.util.logging.Logger;
 
-import com.pinguela.rentexpress.rest.api.auth.filter.Secured;
 import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.ReservationCriteria;
 import com.pinguela.rentexpres.model.ReservationDTO;
@@ -15,7 +14,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -29,23 +27,19 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-/**
- * Protected Reservation endpoints.
- */
-@Path("/reservation")
+@Path("/reservations")
 @Tag(name = "Reservations", description = "Operations for reservation management")
-public class ReservationResource {
+public class ZOpenReservationResourse {
 
-    private static final Logger logger = Logger.getLogger(ReservationResource.class.getName());
+    private static final Logger logger = Logger.getLogger(ZOpenReservationResourse.class.getName());
 
     private final ReservationService reservationService;
 
-    public ReservationResource() {
+    public ZOpenReservationResourse() {
         this.reservationService = new ReservationServiceImpl();
     }
+    
 
-    @Secured
-    @RolesAllowed({"EMPLOYEE", "USER"})
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -80,8 +74,6 @@ public class ReservationResource {
         }
     }
 
-    @Secured
-    @RolesAllowed({"EMPLOYEE", "USER"})
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -118,8 +110,6 @@ public class ReservationResource {
         }
     }
 
-    @Secured
-    @RolesAllowed({"EMPLOYEE", "USER"})
     @PUT
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -157,8 +147,6 @@ public class ReservationResource {
         }
     }
 
-    @Secured
-    @RolesAllowed({"EMPLOYEE", "USER"})
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -193,8 +181,6 @@ public class ReservationResource {
         }
     }
 
-    @Secured
-    @RolesAllowed({"EMPLOYEE"})
     @GET
     @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)

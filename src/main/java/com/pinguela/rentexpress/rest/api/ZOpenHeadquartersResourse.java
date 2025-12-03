@@ -3,7 +3,6 @@ package com.pinguela.rentexpress.rest.api;
 import java.util.List;
 import java.util.logging.Logger;
 
-import com.pinguela.rentexpress.rest.api.auth.filter.Secured;
 import com.pinguela.rentexpres.exception.DataException;
 import com.pinguela.rentexpres.model.HeadquartersDTO;
 import com.pinguela.rentexpres.service.HeadquartersService;
@@ -14,7 +13,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -29,13 +27,13 @@ import jakarta.ws.rs.core.Response.Status;
 
 @Path("/headquarters")
 @Tag(name = "Headquarters", description = "Operations for headquarters management")
-public class HeadquartersResource {
+public class ZOpenHeadquartersResourse {
 
-    private static final Logger logger = Logger.getLogger(HeadquartersResource.class.getName());
+    private static final Logger logger = Logger.getLogger(ZOpenHeadquartersResourse.class.getName());
 
     private final HeadquartersService headquartersService;
 
-    public HeadquartersResource() {
+    public ZOpenHeadquartersResourse() {
         this.headquartersService = new HeadquartersServiceImpl();
     }
 
@@ -105,8 +103,6 @@ public class HeadquartersResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Secured
-    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "createHeadquarters",
         summary = "Create headquarters",
@@ -144,8 +140,6 @@ public class HeadquartersResource {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Secured
-    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "updateHeadquarters",
         summary = "Update headquarters",
@@ -182,8 +176,6 @@ public class HeadquartersResource {
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Secured
-    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "deleteHeadquarters",
         summary = "Delete headquarters",

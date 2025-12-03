@@ -3,7 +3,6 @@ package com.pinguela.rentexpress.rest.api;
 import java.util.List;
 import java.util.logging.Logger;
 
-import com.pinguela.rentexpress.rest.api.auth.filter.Secured;
 import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.RoleDTO;
 import com.pinguela.rentexpres.service.RoleService;
@@ -14,7 +13,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -23,23 +21,16 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/role")
-@Secured
-@RolesAllowed({"EMPLOYEE"})
+@Path("/roles")
 @Tag(name = "Roles", description = "Operations for role reference data")
-public class RoleResource {
+public class ZOpenRoleResourse {
 
-    private static final Logger logger = Logger.getLogger(RoleResource.class.getName());
+    private static final Logger logger = Logger.getLogger(ZOpenRoleResourse.class.getName());
 
     private final RoleService roleService;
 
-    public RoleResource() {
+    public ZOpenRoleResourse() {
         this.roleService = new RoleServiceImpl();
-    }
-
-    private Response buildServerErrorResponse(RentexpresException exception) {
-        logger.warning(exception.getMessage());
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity(exception.getMessage()).build();
     }
 
     @GET
@@ -66,7 +57,8 @@ public class RoleResource {
             }
             return Response.ok(roles).build();
         } catch (RentexpresException e) {
-            return buildServerErrorResponse(e);
+            logger.warning(e.getMessage());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
 
@@ -99,7 +91,8 @@ public class RoleResource {
             }
             return Response.ok(role).build();
         } catch (RentexpresException e) {
-            return buildServerErrorResponse(e);
+            logger.warning(e.getMessage());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
 }

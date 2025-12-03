@@ -2,7 +2,6 @@ package com.pinguela.rentexpress.rest.api;
 
 import java.util.logging.Logger;
 
-import com.pinguela.rentexpress.rest.api.auth.filter.Secured;
 import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.RentalCriteria;
 import com.pinguela.rentexpres.model.RentalDTO;
@@ -16,40 +15,35 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-/**
- * Private rental resource.
- */
-@Path("/rental")
+@Path("/rentals")
 @Tag(name = "Rentals", description = "Operations for rental management")
-public class RentalResource {
+public class ZOpenRentalResourse {
 
-    private static final Logger logger = Logger.getLogger(RentalResource.class.getName());
+    private static final Logger logger = Logger.getLogger(ZOpenRentalResourse.class.getName());
 
     private final RentalService rentalService;
 
-    public RentalResource() {
+    public ZOpenRentalResourse() {
         this.rentalService = new RentalServiceImpl();
     }
+
 
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Secured
-    @RolesAllowed({"EMPLOYEE", "USER"})
     @Operation(
         operationId = "findRentalById",
         summary = "Find rental by ID",
@@ -84,8 +78,6 @@ public class RentalResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Secured
-    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "createRental",
         summary = "Create rental",
@@ -123,8 +115,6 @@ public class RentalResource {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Secured
-    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "updateRental",
         summary = "Update rental",
@@ -161,8 +151,6 @@ public class RentalResource {
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Secured
-    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "deleteRental",
         summary = "Delete rental",
@@ -197,8 +185,6 @@ public class RentalResource {
     @GET
     @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
-    @Secured
-    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "searchRentals",
         summary = "Search rentals by criteria",
@@ -332,8 +318,6 @@ public class RentalResource {
     @POST
     @Path("/from-reservation")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Secured
-    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "createRentalFromReservation",
         summary = "Create rental from reservation",
@@ -360,8 +344,6 @@ public class RentalResource {
     @POST
     @Path("/auto-convert")
     @Produces(MediaType.APPLICATION_JSON)
-    @Secured
-    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "autoConvertReservations",
         summary = "Auto convert reservations into rentals",

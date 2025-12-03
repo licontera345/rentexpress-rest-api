@@ -6,47 +6,47 @@
 	<artifactId>rentexpress-rest-api</artifactId>
 	<packaging>war</packaging>
 	<version>v1.0.1</version>
-        <properties>
-                <jersey.version>3.1.6</jersey.version>
-                <maven.compiler.source>1.8</maven.compiler.source>
-                <maven.compiler.target>1.8</maven.compiler.target>
-                <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        </properties>
-        <dependencies>
-                <!--  Servlet API solo UNA vez  -->
-                <dependency>
-                        <groupId>jakarta.servlet</groupId>
+	<properties>
+		<jersey.version>3.1.6</jersey.version>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<dependencies>
+		<!--  Servlet API solo UNA vez  -->
+		<dependency>
+			<groupId>jakarta.servlet</groupId>
 			<artifactId>jakarta.servlet-api</artifactId>
 			<version>5.0.0</version>
 			<scope>provided</scope>
 		</dependency>
-                <!--  Jersey básico  -->
-                <dependency>
-                        <groupId>org.glassfish.jersey.containers</groupId>
-                        <artifactId>jersey-container-servlet</artifactId>
-                        <version>${jersey.version}</version>
-                </dependency>
-                <dependency>
-                        <groupId>org.glassfish.jersey.inject</groupId>
-                        <artifactId>jersey-hk2</artifactId>
-                        <version>${jersey.version}</version>
-                </dependency>
-                <!--  JSON  -->
-                <dependency>
-                        <groupId>org.glassfish.jersey.media</groupId>
-                        <artifactId>jersey-media-json-binding</artifactId>
-                        <version>${jersey.version}</version>
-                </dependency>
-                <dependency>
-                        <groupId>org.glassfish.jersey.media</groupId>
-                        <artifactId>jersey-media-multipart</artifactId>
-                        <version>${jersey.version}</version>
-                </dependency>
-                <dependency>
-                        <groupId>jakarta.activation</groupId>
-                        <artifactId>jakarta.activation-api</artifactId>
-                        <version>2.1.2</version>
-                </dependency>
+		<!--  Jersey básico  -->
+		<dependency>
+			<groupId>org.glassfish.jersey.containers</groupId>
+			<artifactId>jersey-container-servlet</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.inject</groupId>
+			<artifactId>jersey-hk2</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+		<!--  JSON  -->
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-json-binding</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-multipart</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.activation</groupId>
+			<artifactId>jakarta.activation-api</artifactId>
+			<version>2.1.2</version>
+		</dependency>
 		<!--  Swagger  -->
 		<dependency>
 			<groupId>io.swagger.core.v3</groupId>
@@ -118,64 +118,64 @@
 			<artifactId>jasypt</artifactId>
 			<version>1.9.3</version>
 		</dependency>
-                <dependency>
-                        <groupId>org.mindrot</groupId>
-                        <artifactId>jbcrypt</artifactId>
-                        <version>0.4</version>
-                </dependency>
-<dependency>
-<groupId>io.jsonwebtoken</groupId>
-<artifactId>jjwt-api</artifactId>
-<version>0.12.3</version>
-</dependency>
-<dependency>
-<groupId>io.jsonwebtoken</groupId>
-<artifactId>jjwt-impl</artifactId>
-<version>0.12.3</version>
-<scope>runtime</scope>
-</dependency>
-<dependency>
-<groupId>io.jsonwebtoken</groupId>
-<artifactId>jjwt-jackson</artifactId>
-<version>0.12.3</version>
-<scope>runtime</scope>
-</dependency>
-                <!--  Tests  -->
-                <dependency>
-                        <groupId>junit</groupId>
-                        <artifactId>junit</artifactId>
+		<dependency>
+			<groupId>org.mindrot</groupId>
+			<artifactId>jbcrypt</artifactId>
+			<version>0.4</version>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-api</artifactId>
+			<version>0.12.3</version>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-impl</artifactId>
+			<version>0.12.3</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-jackson</artifactId>
+			<version>0.12.3</version>
+			<scope>runtime</scope>
+		</dependency>
+		<!--  Tests  -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
 			<version>4.13.2</version>
 			<scope>test</scope>
 		</dependency>
 		<!-- Jersey Test Framework (usando el BOM de jersey.version=4.0.0) -->
-                <dependency>
-                        <groupId>org.glassfish.jersey.test-framework</groupId>
-                        <artifactId>jersey-test-framework-core</artifactId>
-                        <version>${jersey.version}</version>
-                        <scope>test</scope>
-                </dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.test-framework</groupId>
+			<artifactId>jersey-test-framework-core</artifactId>
+			<version>${jersey.version}</version>
+			<scope>test</scope>
+		</dependency>
 
-                <dependency>
-                        <groupId>org.glassfish.jersey.test-framework.providers</groupId>
-                        <artifactId>jersey-test-framework-provider-inmemory</artifactId>
-                        <version>${jersey.version}</version>
-                        <scope>test</scope>
-                </dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.test-framework.providers</groupId>
+			<artifactId>jersey-test-framework-provider-inmemory</artifactId>
+			<version>${jersey.version}</version>
+			<scope>test</scope>
+		</dependency>
 
-                <dependency>
-                        <groupId>org.glassfish.jersey.test-framework.providers</groupId>
-                        <artifactId>jersey-test-framework-provider-grizzly2</artifactId>
-                        <version>${jersey.version}</version>
-                        <scope>test</scope>
-                </dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.test-framework.providers</groupId>
+			<artifactId>jersey-test-framework-provider-grizzly2</artifactId>
+			<version>${jersey.version}</version>
+			<scope>test</scope>
+		</dependency>
 
-<!-- Mockito para los tests -->
-<dependency>
-    <groupId>org.mockito</groupId>
-    <artifactId>mockito-core</artifactId>
-    <version>5.11.0</version>
-    <scope>test</scope>
-</dependency>
+		<!-- Mockito para los tests -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>5.11.0</version>
+			<scope>test</scope>
+		</dependency>
 
 	</dependencies>
 	<build>
@@ -190,11 +190,11 @@
 					<target>${maven.compiler.target}</target>
 				</configuration>
 			</plugin>
-                        <plugin>
-                                <groupId>org.apache.maven.plugins</groupId>
-                                <artifactId>maven-war-plugin</artifactId>
-                                <version>3.4.0</version>
-                        </plugin>
-                </plugins>
-        </build>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>3.4.0</version>
+			</plugin>
+		</plugins>
+	</build>
 </project>

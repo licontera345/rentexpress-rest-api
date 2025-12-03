@@ -3,7 +3,6 @@ package com.pinguela.rentexpress.rest.api;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import com.pinguela.rentexpress.rest.api.auth.filter.Secured;
 import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.EmployeeCriteria;
 import com.pinguela.rentexpres.model.EmployeeDTO;
@@ -16,7 +15,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -30,23 +28,21 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/employee")
+@Path("/employees")
 @Tag(name = "Employees", description = "Operations for employee management")
-public class EmployeeResource {
+public class ZOpenEmployeeResourse {
 
-    private static final Logger logger = Logger.getLogger(EmployeeResource.class.getName());
+    private static final Logger logger = Logger.getLogger(ZOpenEmployeeResourse.class.getName());
 
     private final EmployeeService employeeService;
 
-    public EmployeeResource() {
+    public ZOpenEmployeeResourse() {
         this.employeeService = new EmployeeServiceImpl();
     }
 
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Secured
-    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "findEmployeeById",
         summary = "Find employee by ID",
@@ -81,8 +77,6 @@ public class EmployeeResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Secured
-    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "createEmployee",
         summary = "Create employee",
@@ -118,8 +112,6 @@ public class EmployeeResource {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Secured
-    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "updateEmployee",
         summary = "Update employee",
@@ -157,8 +149,6 @@ public class EmployeeResource {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Secured
-    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "deleteEmployee",
         summary = "Delete employee",
@@ -195,8 +185,6 @@ public class EmployeeResource {
     @GET
     @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
-    @Secured
-    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "searchEmployees",
         summary = "Search employees by criteria",
@@ -296,8 +284,6 @@ public class EmployeeResource {
 
     @POST
     @Path("/{id}/activate")
-    @Secured
-    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "activateEmployee",
         summary = "Activate employee",

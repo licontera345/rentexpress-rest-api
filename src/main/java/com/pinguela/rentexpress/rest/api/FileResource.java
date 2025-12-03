@@ -9,13 +9,11 @@ import java.util.logging.Logger;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
-import com.pinguela.rentexpress.rest.api.auth.filter.Secured;
 import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.service.FileService;
 import com.pinguela.rentexpres.service.impl.FileServiceImpl;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -28,7 +26,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
 @Path("/file")
-@Tag(name = "File Management", description = "APIs for managing vehicle images and user/employee avatars")
+@Tag(name = "File Management", description = "APIs for managing vehicle images and user/employee avatars")	
 public class FileResource {
 
     private static final Logger logger = Logger.getLogger(FileResource.class.getName());
@@ -76,8 +74,6 @@ public class FileResource {
 
     @POST
     @Path("/vehicle/{vehicleId}")
-    @Secured
-    @RolesAllowed({"EMPLOYEE"})
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     public Response uploadVehicleImage(@PathParam("vehicleId") Integer vehicleId,
@@ -106,8 +102,6 @@ public class FileResource {
 
     @DELETE
     @Path("/vehicle/{vehicleId}/{imageName}")
-    @Secured
-    @RolesAllowed({"EMPLOYEE"})
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteVehicleImage(@PathParam("vehicleId") Integer vehicleId,
             @PathParam("imageName") String imageName) {
@@ -143,8 +137,6 @@ public class FileResource {
     @Path("/user-avatar/{userId}")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    @Secured
-    @RolesAllowed({"USER", "EMPLOYEE"})
     public Response uploadUserAvatar(@PathParam("userId") Integer userId,
             @FormDataParam("file") InputStream fileInputStream) {
 
@@ -168,8 +160,6 @@ public class FileResource {
 
     @GET
     @Path("/employee-avatar/{employeeId}")
-    @Secured
-    @RolesAllowed({"EMPLOYEE"})
     @Produces({ "image/jpeg", "image/png", MediaType.APPLICATION_OCTET_STREAM })
     public Response getEmployeeAvatar(@PathParam("employeeId") Integer employeeId) {
         try {
@@ -187,8 +177,6 @@ public class FileResource {
 
     @POST
     @Path("/employee-avatar/{employeeId}")
-    @Secured
-    @RolesAllowed({"EMPLOYEE"})
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     public Response uploadEmployeeAvatar(@PathParam("employeeId") Integer employeeId,

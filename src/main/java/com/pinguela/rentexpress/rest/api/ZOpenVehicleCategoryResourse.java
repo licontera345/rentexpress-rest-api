@@ -7,7 +7,6 @@ import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.VehicleCategoryDTO;
 import com.pinguela.rentexpres.service.VehicleCategoryService;
 import com.pinguela.rentexpres.service.impl.VehicleCategoryServiceImpl;
-import com.pinguela.rentexpress.rest.api.auth.util.LanguageResolver;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,7 +14,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.GET;
-import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -24,15 +22,15 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/open/vehicle-category")
+@Path("/vehicle-categories")
 @Tag(name = "Vehicle Categories", description = "Operations for vehicle category reference data")
-public class ZOpenVehicleCategoryResource {
+public class ZOpenVehicleCategoryResourse {
 
-    private static final Logger logger = Logger.getLogger(ZOpenVehicleCategoryResource.class.getName());
+    private static final Logger logger = Logger.getLogger(ZOpenVehicleCategoryResourse.class.getName());
 
     private final VehicleCategoryService vehicleCategoryService;
 
-    public ZOpenVehicleCategoryResource() {
+    public ZOpenVehicleCategoryResourse() {
         this.vehicleCategoryService = new VehicleCategoryServiceImpl();
     }
 
@@ -53,13 +51,12 @@ public class ZOpenVehicleCategoryResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving vehicle categories")
         }
     )
-    public Response findAll(@QueryParam("isoCode") String isoCode, @HeaderParam("Accept-Language") String acceptLanguage) {
-        String resolvedIsoCode = LanguageResolver.resolveIsoCode(isoCode, acceptLanguage);
-        if (resolvedIsoCode == null) {
-            return Response.status(Status.BAD_REQUEST).entity("isoCode or Accept-Language header is required").build();
+    public Response findAll(@QueryParam("isoCode") String isoCode) {
+        if (isoCode == null || isoCode.isEmpty()) {
+            return Response.status(Status.BAD_REQUEST).entity("isoCode is required").build();
         }
         try {
-            List<VehicleCategoryDTO> categories = vehicleCategoryService.findAll(resolvedIsoCode);
+            List<VehicleCategoryDTO> categories = vehicleCategoryService.findAll(isoCode);
             if (categories == null || categories.isEmpty()) {
                 return Response.status(Status.NO_CONTENT).build();
             }
@@ -88,13 +85,12 @@ public class ZOpenVehicleCategoryResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving the vehicle category")
         }
     )
-    public Response findById(@PathParam("id") Integer id, @QueryParam("isoCode") String isoCode, @HeaderParam("Accept-Language") String acceptLanguage) {
-        String resolvedIsoCode = LanguageResolver.resolveIsoCode(isoCode, acceptLanguage);
-        if (id == null || resolvedIsoCode == null) {
-            return Response.status(Status.BAD_REQUEST).entity("Category ID and isoCode or Accept-Language header are required").build();
+    public Response findById(@PathParam("id") Integer id, @QueryParam("isoCode") String isoCode) {
+        if (id == null || isoCode == null || isoCode.isEmpty()) {
+            return Response.status(Status.BAD_REQUEST).entity("Category ID and isoCode are required").build();
         }
         try {
-            VehicleCategoryDTO category = vehicleCategoryService.findById(id, resolvedIsoCode);
+            VehicleCategoryDTO category = vehicleCategoryService.findById(id, isoCode);
             if (category == null) {
                 return Response.status(Status.NOT_FOUND).build();
             }

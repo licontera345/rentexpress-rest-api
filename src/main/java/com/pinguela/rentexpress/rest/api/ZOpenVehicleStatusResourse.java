@@ -7,7 +7,6 @@ import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.VehicleStatusDTO;
 import com.pinguela.rentexpres.service.VehicleStatusService;
 import com.pinguela.rentexpres.service.impl.VehicleStatusServiceImpl;
-import com.pinguela.rentexpress.rest.api.auth.util.LanguageResolver;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,7 +14,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.GET;
-import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -24,20 +22,16 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/open/vehicle-status")
+@Path("/vehicle-statuses")
 @Tag(name = "Vehicle Statuses", description = "Operations for vehicle status reference data")
-public class ZOpenVehicleStatusResource {
+public class ZOpenVehicleStatusResourse {
 
-    private static final Logger logger = Logger.getLogger(ZOpenVehicleStatusResource.class.getName());
+    private static final Logger logger = Logger.getLogger(ZOpenVehicleStatusResourse.class.getName());
 
     private final VehicleStatusService vehicleStatusService;
 
-    public ZOpenVehicleStatusResource() {
-        this(new VehicleStatusServiceImpl());
-    }
-
-    public ZOpenVehicleStatusResource(VehicleStatusService vehicleStatusService) {
-        this.vehicleStatusService = vehicleStatusService;
+    public ZOpenVehicleStatusResourse() {
+        this.vehicleStatusService = new VehicleStatusServiceImpl();
     }
 
     @GET
@@ -57,13 +51,12 @@ public class ZOpenVehicleStatusResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving vehicle statuses")
         }
     )
-    public Response findAll(@QueryParam("isoCode") String isoCode, @HeaderParam("Accept-Language") String acceptLanguage) {
-        String resolvedIsoCode = LanguageResolver.resolveIsoCode(isoCode, acceptLanguage);
-        if (resolvedIsoCode == null) {
-            return Response.status(Status.BAD_REQUEST).entity("isoCode or Accept-Language header is required").build();
+    public Response findAll(@QueryParam("isoCode") String isoCode) {
+        if (isoCode == null || isoCode.isEmpty()) {
+            return Response.status(Status.BAD_REQUEST).entity("isoCode is required").build();
         }
         try {
-            List<VehicleStatusDTO> statuses = vehicleStatusService.findAll(resolvedIsoCode);
+            List<VehicleStatusDTO> statuses = vehicleStatusService.findAll(isoCode);
             if (statuses == null || statuses.isEmpty()) {
                 return Response.status(Status.NO_CONTENT).build();
             }
@@ -92,13 +85,12 @@ public class ZOpenVehicleStatusResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving the vehicle status")
         }
     )
-    public Response findById(@PathParam("id") Integer id, @QueryParam("isoCode") String isoCode, @HeaderParam("Accept-Language") String acceptLanguage) {
-        String resolvedIsoCode = LanguageResolver.resolveIsoCode(isoCode, acceptLanguage);
-        if (id == null || resolvedIsoCode == null) {
-            return Response.status(Status.BAD_REQUEST).entity("Vehicle status ID and isoCode or Accept-Language header are required").build();
+    public Response findById(@PathParam("id") Integer id, @QueryParam("isoCode") String isoCode) {
+        if (id == null || isoCode == null || isoCode.isEmpty()) {
+            return Response.status(Status.BAD_REQUEST).entity("Vehicle status ID and isoCode are required").build();
         }
         try {
-            VehicleStatusDTO status = vehicleStatusService.findById(id, resolvedIsoCode);
+            VehicleStatusDTO status = vehicleStatusService.findById(id, isoCode);
             if (status == null) {
                 return Response.status(Status.NOT_FOUND).build();
             }

@@ -7,7 +7,6 @@ import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.ReservationStatusDTO;
 import com.pinguela.rentexpres.service.ReservationStatusService;
 import com.pinguela.rentexpres.service.impl.ReservationStatusServiceImpl;
-import com.pinguela.rentexpress.rest.api.auth.util.LanguageResolver;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,7 +14,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.GET;
-import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -24,18 +22,15 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-/**
- * REST resource for reservation status reference data.
- */
-@Path("/reservation-status")
+@Path("/reservation-statuses")
 @Tag(name = "Reservation Statuses", description = "Operations for reservation status reference data")
-public class ReservationStatusResource {
+public class ZOpenReservationStatusResourse {
 
-    private static final Logger logger = Logger.getLogger(ReservationStatusResource.class.getName());
+    private static final Logger logger = Logger.getLogger(ZOpenReservationStatusResourse.class.getName());
 
     private final ReservationStatusService reservationStatusService;
 
-    public ReservationStatusResource() {
+    public ZOpenReservationStatusResourse() {
         this.reservationStatusService = new ReservationStatusServiceImpl();
     }
 
@@ -56,13 +51,12 @@ public class ReservationStatusResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving reservation statuses")
         }
     )
-    public Response findAll(@QueryParam("isoCode") String isoCode, @HeaderParam("Accept-Language") String acceptLanguage) {
-        String resolvedIsoCode = LanguageResolver.resolveIsoCode(isoCode, acceptLanguage);
-        if (resolvedIsoCode == null) {
-            return Response.status(Status.BAD_REQUEST).entity("isoCode or Accept-Language header is required").build();
+    public Response findAll(@QueryParam("isoCode") String isoCode) {
+        if (isoCode == null || isoCode.isEmpty()) {
+            return Response.status(Status.BAD_REQUEST).entity("isoCode is required").build();
         }
         try {
-            List<ReservationStatusDTO> statuses = reservationStatusService.findAll(resolvedIsoCode);
+            List<ReservationStatusDTO> statuses = reservationStatusService.findAll(isoCode);
             if (statuses == null || statuses.isEmpty()) {
                 return Response.status(Status.NO_CONTENT).build();
             }
@@ -91,13 +85,12 @@ public class ReservationStatusResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving the reservation status")
         }
     )
-    public Response findById(@PathParam("id") Integer id, @QueryParam("isoCode") String isoCode, @HeaderParam("Accept-Language") String acceptLanguage) {
-        String resolvedIsoCode = LanguageResolver.resolveIsoCode(isoCode, acceptLanguage);
-        if (id == null || resolvedIsoCode == null) {
-            return Response.status(Status.BAD_REQUEST).entity("Reservation status ID and isoCode or Accept-Language header are required").build();
+    public Response findById(@PathParam("id") Integer id, @QueryParam("isoCode") String isoCode) {
+        if (id == null || isoCode == null || isoCode.isEmpty()) {
+            return Response.status(Status.BAD_REQUEST).entity("Reservation status ID and isoCode are required").build();
         }
         try {
-            ReservationStatusDTO status = reservationStatusService.findById(id, resolvedIsoCode);
+            ReservationStatusDTO status = reservationStatusService.findById(id, isoCode);
             if (status == null) {
                 return Response.status(Status.NOT_FOUND).build();
             }

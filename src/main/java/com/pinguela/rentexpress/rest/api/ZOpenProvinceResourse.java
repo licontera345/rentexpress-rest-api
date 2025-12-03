@@ -3,7 +3,6 @@ package com.pinguela.rentexpress.rest.api;
 import java.util.List;
 import java.util.logging.Logger;
 
-import com.pinguela.rentexpress.rest.api.auth.filter.Secured;
 import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.ProvinceDTO;
 import com.pinguela.rentexpres.service.ProvinceService;
@@ -14,7 +13,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -27,18 +25,15 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-/**
- * REST resource for province CRUD operations.
- */
-@Path("/province")
+@Path("/provinces")
 @Tag(name = "Provinces", description = "Operations for province management")
-public class ProvinceResource {
+public class ZOpenProvinceResourse {
 
-    private static final Logger logger = Logger.getLogger(ProvinceResource.class.getName());
+    private static final Logger logger = Logger.getLogger(ZOpenProvinceResourse.class.getName());
 
     private final ProvinceService provinceService;
 
-    public ProvinceResource() {
+    public ZOpenProvinceResourse() {
         this.provinceService = new ProvinceServiceImpl();
     }
 
@@ -108,8 +103,6 @@ public class ProvinceResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Secured
-    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "createProvince",
         summary = "Create province",
@@ -147,8 +140,6 @@ public class ProvinceResource {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Secured
-    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "updateProvince",
         summary = "Update province",
@@ -185,8 +176,6 @@ public class ProvinceResource {
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Secured
-    @RolesAllowed({"EMPLOYEE"})
     @Operation(
         operationId = "deleteProvince",
         summary = "Delete province",
