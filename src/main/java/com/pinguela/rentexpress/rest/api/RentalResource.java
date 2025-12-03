@@ -34,13 +34,13 @@ import jakarta.ws.rs.core.Response.Status;
 @Tag(name = "Rentals", description = "Operations for rental management")
 @Secured
 @RolesAllowed({ "ADMIN", "EMPLOYEE" })
-public class RentalResourse {
+public class RentalResource {
 
-    private static final Logger logger = Logger.getLogger(RentalResourse.class.getName());
+    private static final Logger logger = Logger.getLogger(RentalResource.class.getName());
 
     private final RentalService rentalService;
 
-    public RentalResourse() {
+    public RentalResource() {
         this.rentalService = new RentalServiceImpl();
     }
 

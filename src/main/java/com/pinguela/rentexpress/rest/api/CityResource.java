@@ -31,13 +31,13 @@ import jakarta.ws.rs.core.Response.Status;
 @Tag(name = "Cities", description = "Operations for city management")
 @Secured
 @RolesAllowed({ "ADMIN", "EMPLOYEE" })
-public class CityResourse {
+public class CityResource {
 
-    private static final Logger logger = Logger.getLogger(CityResourse.class.getName());
+    private static final Logger logger = Logger.getLogger(CityResource.class.getName());
 
     private final CityService cityService;
 
-    public CityResourse() {
+    public CityResource() {
         this.cityService = new CityServiceImpl();
     }
 
@@ -229,7 +229,7 @@ public class CityResourse {
     )
     public Response delete(@PathParam("id") Integer id) {
         if (id == null) {
-            return Response.status(Status.BAD_REQUEST).entity("City ID and data are required").build();
+            return Response.status(Status.BAD_REQUEST).entity("City ID is required").build();
         }
         try {
             CityDTO city = new CityDTO();

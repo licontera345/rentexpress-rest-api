@@ -24,13 +24,13 @@ import jakarta.ws.rs.core.Response.Status;
 
 @Path("/open/vehicle-statuses")
 @Tag(name = "Vehicle Statuses", description = "Operations for vehicle status reference data")
-public class ZOpenVehicleStatusResourse {
+public class ZOpenVehicleStatusResource {
 
-    private static final Logger logger = Logger.getLogger(ZOpenVehicleStatusResourse.class.getName());
+    private static final Logger logger = Logger.getLogger(ZOpenVehicleStatusResource.class.getName());
 
     private final VehicleStatusService vehicleStatusService;
 
-    public ZOpenVehicleStatusResourse() {
+    public ZOpenVehicleStatusResource() {
         this.vehicleStatusService = new VehicleStatusServiceImpl();
     }
 

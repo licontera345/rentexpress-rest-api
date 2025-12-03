@@ -28,13 +28,13 @@ import jakarta.ws.rs.core.Response.Status;
 @Tag(name = "Reservation Statuses", description = "Operations for reservation status reference data")
 @Secured
 @RolesAllowed({ "ADMIN", "EMPLOYEE" })
-public class ReservationStatusResourse {
+public class ReservationStatusResource {
 
-    private static final Logger logger = Logger.getLogger(ReservationStatusResourse.class.getName());
+    private static final Logger logger = Logger.getLogger(ReservationStatusResource.class.getName());
 
     private final ReservationStatusService reservationStatusService;
 
-    public ReservationStatusResourse() {
+    public ReservationStatusResource() {
         this.reservationStatusService = new ReservationStatusServiceImpl();
     }
 

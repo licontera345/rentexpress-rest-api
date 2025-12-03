@@ -33,13 +33,13 @@ import jakarta.ws.rs.core.Response.Status;
 
 @Path("/users")
 @Tag(name = "Users", description = "Operations for user management")
-public class UserResourse {
+public class UserResource {
 
-    private static final Logger logger = Logger.getLogger(UserResourse.class.getName());
+    private static final Logger logger = Logger.getLogger(UserResource.class.getName());
 
     private final UserService userService;
 
-    public UserResourse() {
+    public UserResource() {
         this.userService = new UserServiceImpl();
     }
 

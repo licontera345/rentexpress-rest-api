@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import com.pinguela.rentexpress.rest.api.security.Secured;
-import com.pinguela.rentexpres.exception.DataException;
+import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.HeadquartersDTO;
 import com.pinguela.rentexpres.service.HeadquartersService;
 import com.pinguela.rentexpres.service.impl.HeadquartersServiceImpl;
@@ -31,13 +31,13 @@ import jakarta.ws.rs.core.Response.Status;
 @Tag(name = "Headquarters", description = "Operations for headquarters management")
 @Secured
 @RolesAllowed({ "ADMIN", "EMPLOYEE" })
-public class HeadquartersResourse {
+public class HeadquartersResource {
 
-    private static final Logger logger = Logger.getLogger(HeadquartersResourse.class.getName());
+    private static final Logger logger = Logger.getLogger(HeadquartersResource.class.getName());
 
     private final HeadquartersService headquartersService;
 
-    public HeadquartersResourse() {
+    public HeadquartersResource() {
         this.headquartersService = new HeadquartersServiceImpl();
     }
 
@@ -64,7 +64,7 @@ public class HeadquartersResourse {
                 return Response.status(Status.NO_CONTENT).build();
             }
             return Response.ok(headquarters).build();
-        } catch (DataException e) {
+        } catch (RentexpresException e) {
             logger.warning(e.getMessage());
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
@@ -98,7 +98,7 @@ public class HeadquartersResourse {
                 return Response.status(Status.NOT_FOUND).build();
             }
             return Response.ok(headquarters).build();
-        } catch (DataException e) {
+        } catch (RentexpresException e) {
             logger.warning(e.getMessage());
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
@@ -134,7 +134,7 @@ public class HeadquartersResourse {
                     ? headquartersService.findById(headquarters.getId())
                     : headquarters;
             return Response.status(Status.CREATED).entity(createdHeadquarters).build();
-        } catch (DataException e) {
+        } catch (RentexpresException e) {
             logger.warning(e.getMessage());
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
@@ -171,7 +171,7 @@ public class HeadquartersResourse {
             }
             HeadquartersDTO updatedHeadquarters = headquartersService.findById(headquarters.getId());
             return Response.ok(updatedHeadquarters).build();
-        } catch (DataException e) {
+        } catch (RentexpresException e) {
             logger.warning(e.getMessage());
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
@@ -205,7 +205,7 @@ public class HeadquartersResourse {
                 return Response.status(Status.NOT_FOUND).entity("Headquarters not found").build();
             }
             return Response.ok().entity("Headquarters deleted successfully").build();
-        } catch (DataException e) {
+        } catch (RentexpresException e) {
             logger.warning(e.getMessage());
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }

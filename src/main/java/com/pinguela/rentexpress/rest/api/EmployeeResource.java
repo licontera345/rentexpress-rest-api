@@ -33,13 +33,13 @@ import jakarta.ws.rs.core.Response.Status;
 
 @Path("/employees")
 @Tag(name = "Employees", description = "Operations for employee management")
-public class EmployeeResourse {
+public class EmployeeResource {
 
-    private static final Logger logger = Logger.getLogger(EmployeeResourse.class.getName());
+    private static final Logger logger = Logger.getLogger(EmployeeResource.class.getName());
 
     private final EmployeeService employeeService;
 
-    public EmployeeResourse() {
+    public EmployeeResource() {
         this.employeeService = new EmployeeServiceImpl();
     }
 
@@ -156,7 +156,6 @@ public class EmployeeResourse {
 
     @DELETE
     @Path("/{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Secured
     @RolesAllowed({ "ADMIN", "EMPLOYEE" })
@@ -175,9 +174,9 @@ public class EmployeeResourse {
             @ApiResponse(responseCode = "500", description = "Unexpected error while deleting the employee")
         }
     )
-    public Response delete(@PathParam("id") Integer id, EmployeeDTO employee) {
+    public Response delete(@PathParam("id") Integer id) {
         if (id == null) {
-            return Response.status(Status.BAD_REQUEST).entity("Employee ID and data are required").build();
+            return Response.status(Status.BAD_REQUEST).entity("Employee ID is required").build();
         }
         try {
             EmployeeDTO employeeToDelete = new EmployeeDTO();
