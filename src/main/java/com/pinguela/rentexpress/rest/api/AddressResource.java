@@ -30,13 +30,13 @@ import jakarta.ws.rs.core.Response.Status;
 @Tag(name = "Addresses", description = "Operations for address management")
 @Secured
 @RolesAllowed({ "ADMIN", "EMPLOYEE" })
-public class AddressResourse {
+public class AddressResource {
 
-    private static final Logger logger = Logger.getLogger(AddressResourse.class.getName());
+    private static final Logger logger = Logger.getLogger(AddressResource.class.getName());
 
     private final AddressService addressService;
 
-    public AddressResourse() {
+    public AddressResource() {
         this.addressService = new AddressServiceImpl();
     }
 
@@ -165,7 +165,7 @@ public class AddressResourse {
     )
     public Response delete(@PathParam("id") Integer id) {
         if (id == null) {
-            return Response.status(Status.BAD_REQUEST).entity("Address ID and data are required").build();
+            return Response.status(Status.BAD_REQUEST).entity("Address ID is required").build();
         }
         try {
             AddressDTO address = new AddressDTO();

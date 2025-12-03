@@ -31,12 +31,12 @@ import jakarta.ws.rs.core.Response.Status;
 
 @Path("/vehicles")
 @Tag(name = "Vehicles", description = "Operations for vehicle management")
-public class VehicleResourse {
+public class VehicleResource {
 
-    private static final Logger logger = Logger.getLogger(VehicleResourse.class.getName());
+    private static final Logger logger = Logger.getLogger(VehicleResource.class.getName());
 
     private final VehicleService vehicleService;
-    public VehicleResourse() {
+    public VehicleResource() {
         this.vehicleService = new VehicleServiceImpl();
     }
 

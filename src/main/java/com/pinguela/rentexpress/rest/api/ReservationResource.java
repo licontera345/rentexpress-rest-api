@@ -33,13 +33,13 @@ import jakarta.ws.rs.core.Response.Status;
 @Tag(name = "Reservations", description = "Operations for reservation management")
 @Secured
 @RolesAllowed({ "ADMIN", "EMPLOYEE", "CLIENT" })
-public class ReservationResourse {
+public class ReservationResource {
 
-    private static final Logger logger = Logger.getLogger(ReservationResourse.class.getName());
+    private static final Logger logger = Logger.getLogger(ReservationResource.class.getName());
 
     private final ReservationService reservationService;
 
-    public ReservationResourse() {
+    public ReservationResource() {
         this.reservationService = new ReservationServiceImpl();
     }
     

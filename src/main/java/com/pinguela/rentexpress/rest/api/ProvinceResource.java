@@ -31,13 +31,13 @@ import jakarta.ws.rs.core.Response.Status;
 @Tag(name = "Provinces", description = "Operations for province management")
 @Secured
 @RolesAllowed({ "ADMIN", "EMPLOYEE" })
-public class ProvinceResourse {
+public class ProvinceResource {
 
-    private static final Logger logger = Logger.getLogger(ProvinceResourse.class.getName());
+    private static final Logger logger = Logger.getLogger(ProvinceResource.class.getName());
 
     private final ProvinceService provinceService;
 
-    public ProvinceResourse() {
+    public ProvinceResource() {
         this.provinceService = new ProvinceServiceImpl();
     }
 

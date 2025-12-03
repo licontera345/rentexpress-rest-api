@@ -27,13 +27,13 @@ import jakarta.ws.rs.core.Response.Status;
 @Tag(name = "Roles", description = "Operations for role reference data")
 @Secured
 @RolesAllowed({ "ADMIN", "EMPLOYEE", "CLIENT" })
-public class RoleResourse {
+public class RoleResource {
 
-    private static final Logger logger = Logger.getLogger(RoleResourse.class.getName());
+    private static final Logger logger = Logger.getLogger(RoleResource.class.getName());
 
     private final RoleService roleService;
 
-    public RoleResourse() {
+    public RoleResource() {
         this.roleService = new RoleServiceImpl();
     }
 
