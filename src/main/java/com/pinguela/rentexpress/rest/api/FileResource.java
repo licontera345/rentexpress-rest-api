@@ -25,6 +25,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.SecurityContext;
 
 import com.pinguela.rentexpress.rest.api.security.Secured;
 
@@ -36,6 +37,9 @@ public class FileResource {
 
     private final FileService fileService;
 
+    @jakarta.ws.rs.core.Context
+    private SecurityContext securityContext;
+
     public FileResource() {
         this.fileService = new FileServiceImpl();
     }
@@ -43,6 +47,8 @@ public class FileResource {
     @GET
     @Path("/vehicle/{vehicleId}")
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     public Response listVehicleImages(@PathParam("vehicleId") Integer vehicleId) {
         if (vehicleId == null) {
             return Response.status(Status.BAD_REQUEST).entity("Vehicle ID is required").build();
@@ -59,6 +65,8 @@ public class FileResource {
     @GET
     @Path("/vehicle/{vehicleId}/{imageName}")
     @Produces({ "image/jpeg", "image/png", "image/gif", MediaType.APPLICATION_OCTET_STREAM })
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     public Response getVehicleImage(@PathParam("vehicleId") Integer vehicleId, @PathParam("imageName") String imageName) {
         try {
             byte[] data = fileService.getVehicleImage(vehicleId, imageName);
@@ -126,7 +134,13 @@ public class FileResource {
     @GET
     @Path("/user-avatar/{userId}")
     @Produces({ "image/jpeg", "image/png", MediaType.APPLICATION_OCTET_STREAM })
+    @Secured
+    @RolesAllowed({ "ADMIN", "CLIENT" })
     public Response getUserAvatar(@PathParam("userId") Integer userId) {
+        Response ownershipCheck = validateClientOwnership(userId);
+        if (ownershipCheck != null) {
+            return ownershipCheck;
+        }
         try {
             byte[] data = fileService.getUserAvatar(userId);
             if (data == null) {
@@ -142,7 +156,7 @@ public class FileResource {
 
     @POST
     @Secured
-    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
+    @RolesAllowed({ "ADMIN", "CLIENT" })
     @Path("/user-avatar/{userId}")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
@@ -151,6 +165,11 @@ public class FileResource {
 
         if (fileInputStream == null) {
             return Response.status(Status.BAD_REQUEST).entity("File is required").build();
+        }
+
+        Response ownershipCheck = validateClientOwnership(userId);
+        if (ownershipCheck != null) {
+            return ownershipCheck;
         }
 
         try {
@@ -170,7 +189,13 @@ public class FileResource {
     @GET
     @Path("/employee-avatar/{employeeId}")
     @Produces({ "image/jpeg", "image/png", MediaType.APPLICATION_OCTET_STREAM })
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     public Response getEmployeeAvatar(@PathParam("employeeId") Integer employeeId) {
+        Response ownershipCheck = validateEmployeeOwnership(employeeId);
+        if (ownershipCheck != null) {
+            return ownershipCheck;
+        }
         try {
             byte[] data = fileService.getEmployeeAvatar(employeeId);
             if (data == null) {
@@ -197,6 +222,11 @@ public class FileResource {
             return Response.status(Status.BAD_REQUEST).entity("File is required").build();
         }
 
+        Response ownershipCheck = validateEmployeeOwnership(employeeId);
+        if (ownershipCheck != null) {
+            return ownershipCheck;
+        }
+
         try {
             byte[] data = toByteArray(fileInputStream);
             fileService.saveEmployeeAvatar(employeeId, data);
@@ -219,6 +249,33 @@ public class FileResource {
             buffer.write(data, 0, nRead);
         }
         return buffer.toByteArray();
+    }
+
+    private Response validateClientOwnership(Integer userId) {
+        if (securityContext != null && securityContext.isUserInRole("CLIENT")) {
+            String principalId = securityContext.getUserPrincipal() != null
+                    ? securityContext.getUserPrincipal().getName()
+                    : null;
+            if (principalId == null || userId == null || !principalId.equals(String.valueOf(userId))) {
+                return Response.status(Status.FORBIDDEN)
+                        .entity("Clients can only manage their own avatar").build();
+            }
+        }
+        return null;
+    }
+
+    private Response validateEmployeeOwnership(Integer employeeId) {
+        if (securityContext != null && securityContext.isUserInRole("EMPLOYEE")
+                && !securityContext.isUserInRole("ADMIN")) {
+            String principalId = securityContext.getUserPrincipal() != null
+                    ? securityContext.getUserPrincipal().getName()
+                    : null;
+            if (principalId == null || employeeId == null || !principalId.equals(String.valueOf(employeeId))) {
+                return Response.status(Status.FORBIDDEN)
+                        .entity("Employees can only manage their own avatar").build();
+            }
+        }
+        return null;
     }
 
     private String resolveMediaType(String imageName) {

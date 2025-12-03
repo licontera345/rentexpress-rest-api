@@ -29,6 +29,7 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.SecurityContext;
 
 @Path("/users")
 @Tag(name = "Users", description = "Operations for user management")
@@ -37,6 +38,9 @@ public class UserResourse {
     private static final Logger logger = Logger.getLogger(UserResourse.class.getName());
 
     private final UserService userService;
+
+    @jakarta.ws.rs.core.Context
+    private SecurityContext securityContext;
 
     public UserResourse() {
         this.userService = new UserServiceImpl();
@@ -47,7 +51,7 @@ public class UserResourse {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Secured
-    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
+    @RolesAllowed({ "ADMIN", "EMPLOYEE", "CLIENT" })
     @Operation(
         operationId = "findUserById",
         summary = "Find user by ID",
@@ -66,6 +70,10 @@ public class UserResourse {
     public Response findById(@PathParam("id") Integer id) {
         if (id == null) {
             return Response.status(Status.BAD_REQUEST).entity("User ID is required").build();
+        }
+        Response ownershipCheck = validateClientOwnership(id);
+        if (ownershipCheck != null) {
+            return ownershipCheck;
         }
         try {
             UserDTO user = userService.findById(id);
@@ -120,7 +128,7 @@ public class UserResourse {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Secured
-    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
+    @RolesAllowed({ "ADMIN", "EMPLOYEE", "CLIENT" })
     @Operation(
         operationId = "updateUser",
         summary = "Update user",
@@ -141,6 +149,10 @@ public class UserResourse {
             return Response.status(Status.BAD_REQUEST).entity("User ID and data are required").build();
         }
         user.setUserId(id);
+        Response ownershipCheck = validateClientOwnership(id);
+        if (ownershipCheck != null) {
+            return ownershipCheck;
+        }
         try {
             boolean updated = userService.update(user);
             if (!updated) {
@@ -158,7 +170,7 @@ public class UserResourse {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Secured
-    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
+    @RolesAllowed({ "ADMIN", "EMPLOYEE", "CLIENT" })
     @Operation(
         operationId = "deleteUser",
         summary = "Delete user",
@@ -177,6 +189,10 @@ public class UserResourse {
     public Response delete(@PathParam("id") Integer id) {
         if (id == null) {
             return Response.status(Status.BAD_REQUEST).entity("User ID is required").build();
+        }
+        Response ownershipCheck = validateClientOwnership(id);
+        if (ownershipCheck != null) {
+            return ownershipCheck;
         }
         try {
             boolean deleted = userService.delete(id);
@@ -299,7 +315,7 @@ public class UserResourse {
     @POST
     @Path("/{id}/activate")
     @Secured
-    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
+    @RolesAllowed({ "ADMIN" })
     @Operation(
         operationId = "activateUser",
         summary = "Activate user",
@@ -329,5 +345,53 @@ public class UserResourse {
             logger.warning(e.getMessage());
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
+    }
+
+    @POST
+    @Path("/open")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(
+        operationId = "registerUser",
+        summary = "Register user",
+        description = "Creates a new user account without requiring authentication",
+        responses = {
+            @ApiResponse(
+                responseCode = "201",
+                description = "User registered successfully",
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = UserDTO.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "Invalid user data supplied"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error while registering the user")
+        }
+    )
+    public Response register(UserDTO user) {
+        if (user == null) {
+            return Response.status(Status.BAD_REQUEST).entity("User data is required").build();
+        }
+        try {
+            boolean created = userService.create(user);
+            if (!created) {
+                return Response.status(Status.BAD_REQUEST).entity("User could not be created").build();
+            }
+            UserDTO createdUser = user.getUserId() != null ? userService.findById(user.getUserId()) : user;
+            return Response.status(Status.CREATED).entity(createdUser).build();
+        } catch (RentexpresException e) {
+            logger.warning(e.getMessage());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
+    }
+
+    private Response validateClientOwnership(Integer id) {
+        if (securityContext != null && securityContext.isUserInRole("CLIENT")) {
+            String principalId = securityContext.getUserPrincipal() != null
+                    ? securityContext.getUserPrincipal().getName()
+                    : null;
+            if (principalId == null || id == null || !principalId.equals(String.valueOf(id))) {
+                return Response.status(Status.FORBIDDEN)
+                        .entity("Clients can only access their own user information").build();
+            }
+        }
+        return null;
     }
 }
