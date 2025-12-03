@@ -3,6 +3,7 @@ package com.pinguela.rentexpress.rest.api;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import com.pinguela.rentexpress.rest.api.security.JwtUtil;
 import com.pinguela.rentexpress.rest.api.security.RelationshipCheck;
 import com.pinguela.rentexpress.rest.api.security.Secured;
 import com.pinguela.rentexpres.exception.RentexpresException;
@@ -271,12 +272,12 @@ public class UserResource {
     @Operation(
         operationId = "authenticateUser",
         summary = "Authenticate user",
-        description = "Authenticates a user using login credentials",
+        description = "Authenticates a user using login credentials and returns an access token",
         responses = {
             @ApiResponse(
                 responseCode = "200",
                 description = "User authenticated successfully",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = UserDTO.class))
+                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = String.class))
             ),
             @ApiResponse(responseCode = "401", description = "Invalid credentials"),
             @ApiResponse(responseCode = "400", description = "Login and password are required"),
@@ -292,7 +293,8 @@ public class UserResource {
             if (user == null) {
                 return Response.status(Status.UNAUTHORIZED).entity("Invalid credentials").build();
             }
-            return Response.ok(user).build();
+            String token = JwtUtil.generateUserToken(user.getUserId());
+            return Response.ok("{\"token\" : \"" + token + "\"}").build();
         } catch (RentexpresException e) {
             logger.warning(e.getMessage());
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
