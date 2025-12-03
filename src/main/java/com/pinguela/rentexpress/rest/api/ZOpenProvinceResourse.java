@@ -25,7 +25,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/provinces")
+@Path("/open/provinces")
 @Tag(name = "Provinces", description = "Operations for province management")
 public class ZOpenProvinceResourse {
 

@@ -22,7 +22,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/vehicle-categories")
+@Path("/open/vehicle-categories")
 @Tag(name = "Vehicle Categories", description = "Operations for vehicle category reference data")
 public class ZOpenVehicleCategoryResourse {
 

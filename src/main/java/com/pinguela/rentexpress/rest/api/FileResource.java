@@ -14,6 +14,7 @@ import com.pinguela.rentexpres.service.FileService;
 import com.pinguela.rentexpres.service.impl.FileServiceImpl;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -24,6 +25,8 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+
+import com.pinguela.rentexpress.rest.api.security.Secured;
 
 @Path("/file")
 @Tag(name = "File Management", description = "APIs for managing vehicle images and user/employee avatars")	
@@ -73,6 +76,8 @@ public class FileResource {
     }
 
     @POST
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     @Path("/vehicle/{vehicleId}")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
@@ -101,6 +106,8 @@ public class FileResource {
     }
 
     @DELETE
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     @Path("/vehicle/{vehicleId}/{imageName}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteVehicleImage(@PathParam("vehicleId") Integer vehicleId,
@@ -134,6 +141,8 @@ public class FileResource {
     }
 
     @POST
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     @Path("/user-avatar/{userId}")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
@@ -176,6 +185,8 @@ public class FileResource {
     }
 
     @POST
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     @Path("/employee-avatar/{employeeId}")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
