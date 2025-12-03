@@ -17,7 +17,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("")
+@Path("/open")
 public class AccesoResource {
 
     private static final Logger logger = Logger.getLogger(AccesoResource.class.getName());

@@ -32,8 +32,6 @@ import jakarta.ws.rs.core.Response.Status;
 
 @Path("/users")
 @Tag(name = "Users", description = "Operations for user management")
-@Secured
-@RolesAllowed({ "ADMIN", "EMPLOYEE" })
 public class UserResourse {
 
     private static final Logger logger = Logger.getLogger(UserResourse.class.getName());
@@ -48,6 +46,8 @@ public class UserResourse {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     @Operation(
         operationId = "findUserById",
         summary = "Find user by ID",
@@ -82,6 +82,8 @@ public class UserResourse {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     @Operation(
         operationId = "createUser",
         summary = "Create user",
@@ -117,6 +119,8 @@ public class UserResourse {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     @Operation(
         operationId = "updateUser",
         summary = "Update user",
@@ -153,6 +157,8 @@ public class UserResourse {
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     @Operation(
         operationId = "deleteUser",
         summary = "Delete user",
@@ -187,6 +193,8 @@ public class UserResourse {
     @GET
     @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     @Operation(
         operationId = "searchUsers",
         summary = "Search users by criteria",
@@ -254,7 +262,7 @@ public class UserResourse {
     }
 
     @POST
-    @Path("/authenticate")
+    @Path("/open/authenticate")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(
@@ -290,6 +298,8 @@ public class UserResourse {
 
     @POST
     @Path("/{id}/activate")
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     @Operation(
         operationId = "activateUser",
         summary = "Activate user",

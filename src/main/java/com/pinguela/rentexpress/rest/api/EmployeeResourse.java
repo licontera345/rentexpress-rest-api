@@ -32,8 +32,6 @@ import jakarta.ws.rs.core.Response.Status;
 
 @Path("/employees")
 @Tag(name = "Employees", description = "Operations for employee management")
-@Secured
-@RolesAllowed({ "ADMIN", "EMPLOYEE" })
 public class EmployeeResourse {
 
     private static final Logger logger = Logger.getLogger(EmployeeResourse.class.getName());
@@ -47,6 +45,8 @@ public class EmployeeResourse {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     @Operation(
         operationId = "findEmployeeById",
         summary = "Find employee by ID",
@@ -81,6 +81,8 @@ public class EmployeeResourse {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     @Operation(
         operationId = "createEmployee",
         summary = "Create employee",
@@ -116,6 +118,8 @@ public class EmployeeResourse {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     @Operation(
         operationId = "updateEmployee",
         summary = "Update employee",
@@ -153,6 +157,8 @@ public class EmployeeResourse {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     @Operation(
         operationId = "deleteEmployee",
         summary = "Delete employee",
@@ -189,6 +195,8 @@ public class EmployeeResourse {
     @GET
     @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     @Operation(
         operationId = "searchEmployees",
         summary = "Search employees by criteria",
@@ -252,7 +260,7 @@ public class EmployeeResourse {
     }
 
     @POST
-    @Path("/authenticate")
+    @Path("/open/authenticate")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(
@@ -288,6 +296,8 @@ public class EmployeeResourse {
 
     @POST
     @Path("/{id}/activate")
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     @Operation(
         operationId = "activateEmployee",
         summary = "Activate employee",
