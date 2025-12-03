@@ -3,6 +3,7 @@ package com.pinguela.rentexpress.rest.api;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.pinguela.rentexpress.rest.api.security.Secured;
 import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.CityDTO;
 import com.pinguela.rentexpres.service.CityService;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -25,15 +27,17 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/open/cities")
+@Path("/cities")
 @Tag(name = "Cities", description = "Operations for city management")
-public class ZOpenCityResourse {
+@Secured
+@RolesAllowed({ "ADMIN", "EMPLOYEE" })
+public class CityResourse {
 
-    private static final Logger logger = Logger.getLogger(ZOpenCityResourse.class.getName());
+    private static final Logger logger = Logger.getLogger(CityResourse.class.getName());
 
     private final CityService cityService;
 
-    public ZOpenCityResourse() {
+    public CityResourse() {
         this.cityService = new CityServiceImpl();
     }
 

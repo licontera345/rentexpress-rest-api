@@ -2,6 +2,7 @@ package com.pinguela.rentexpress.rest.api;
 
 import java.util.logging.Logger;
 
+import com.pinguela.rentexpress.rest.api.security.Secured;
 import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.RentalCriteria;
 import com.pinguela.rentexpres.model.RentalDTO;
@@ -15,6 +16,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -28,15 +30,17 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/open/rentals")
+@Path("/rentals")
 @Tag(name = "Rentals", description = "Operations for rental management")
-public class ZOpenRentalResourse {
+@Secured
+@RolesAllowed({ "ADMIN", "EMPLOYEE" })
+public class RentalResourse {
 
-    private static final Logger logger = Logger.getLogger(ZOpenRentalResourse.class.getName());
+    private static final Logger logger = Logger.getLogger(RentalResourse.class.getName());
 
     private final RentalService rentalService;
 
-    public ZOpenRentalResourse() {
+    public RentalResourse() {
         this.rentalService = new RentalServiceImpl();
     }
 
