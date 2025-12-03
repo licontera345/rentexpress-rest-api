@@ -10,8 +10,11 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import com.pinguela.rentexpres.exception.RentexpresException;
+import com.pinguela.rentexpres.model.VehicleDTO;
 import com.pinguela.rentexpres.service.FileService;
+import com.pinguela.rentexpres.service.VehicleService;
 import com.pinguela.rentexpres.service.impl.FileServiceImpl;
+import com.pinguela.rentexpres.service.impl.VehicleServiceImpl;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.security.RolesAllowed;
@@ -36,9 +39,11 @@ public class FileResource {
     private static final Logger logger = Logger.getLogger(FileResource.class.getName());
 
     private final FileService fileService;
+    private final VehicleService vehicleService;
 
     public FileResource() {
         this.fileService = new FileServiceImpl();
+        this.vehicleService = new VehicleServiceImpl();
     }
 
     @GET
@@ -51,6 +56,9 @@ public class FileResource {
             return Response.status(Status.BAD_REQUEST).entity("Vehicle ID is required").build();
         }
         try {
+            if (!vehicleExists(vehicleId)) {
+                return Response.status(Status.NOT_FOUND).entity("Vehicle not found").build();
+            }
             List<String> images = fileService.listVehicleImages(vehicleId);
             return Response.ok(images).build();
         } catch (RentexpresException e) {
@@ -65,7 +73,13 @@ public class FileResource {
     @Secured
     @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     public Response getVehicleImage(@PathParam("vehicleId") Integer vehicleId, @PathParam("imageName") String imageName) {
+        if (vehicleId == null) {
+            return Response.status(Status.BAD_REQUEST).entity("Vehicle ID is required").build();
+        }
         try {
+            if (!vehicleExists(vehicleId)) {
+                return Response.status(Status.NOT_FOUND).entity("Vehicle not found").build();
+            }
             byte[] data = fileService.getVehicleImage(vehicleId, imageName);
             return Response.ok(data).type(resolveMediaType(imageName)).build();
         } catch (RentexpresException e) {
@@ -90,12 +104,19 @@ public class FileResource {
             @FormDataParam("file") InputStream fileInputStream,
             @FormDataParam("file") FormDataContentDisposition fileDetail) {
 
+        if (vehicleId == null) {
+            return Response.status(Status.BAD_REQUEST).entity("Vehicle ID is required").build();
+        }
+
         if (fileInputStream == null || fileDetail == null || fileDetail.getFileName() == null
                 || fileDetail.getFileName().isEmpty()) {
             return Response.status(Status.BAD_REQUEST).entity("File is required").build();
         }
 
         try {
+            if (!vehicleExists(vehicleId)) {
+                return Response.status(Status.NOT_FOUND).entity("Vehicle not found").build();
+            }
             byte[] data = toByteArray(fileInputStream);
             fileService.saveVehicleImage(vehicleId, fileDetail.getFileName(), data);
             return Response.status(Status.CREATED).entity("Image uploaded successfully").build();
@@ -117,7 +138,13 @@ public class FileResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteVehicleImage(@PathParam("vehicleId") Integer vehicleId,
             @PathParam("imageName") String imageName) {
+        if (vehicleId == null) {
+            return Response.status(Status.BAD_REQUEST).entity("Vehicle ID is required").build();
+        }
         try {
+            if (!vehicleExists(vehicleId)) {
+                return Response.status(Status.NOT_FOUND).entity("Vehicle not found").build();
+            }
             fileService.deleteVehicleImage(vehicleId, imageName);
             return Response.ok("Image deleted").build();
         } catch (RentexpresException e) {
@@ -174,6 +201,11 @@ public class FileResource {
             logger.warning(e.getMessage());
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Error processing file").build();
         }
+    }
+
+    private boolean vehicleExists(Integer vehicleId) throws RentexpresException {
+        VehicleDTO vehicle = vehicleService.findById(vehicleId);
+        return vehicle != null;
     }
 
     @GET
