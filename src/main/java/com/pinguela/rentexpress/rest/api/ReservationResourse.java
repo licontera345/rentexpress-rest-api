@@ -188,6 +188,7 @@ public class ReservationResourse {
     @GET
     @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     @Operation(
         operationId = "searchReservations",
         summary = "Search reservations by criteria",

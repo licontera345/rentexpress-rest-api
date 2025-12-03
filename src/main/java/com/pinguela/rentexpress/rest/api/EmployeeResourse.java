@@ -197,7 +197,7 @@ public class EmployeeResourse {
     @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
     @Secured
-    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
+    @RolesAllowed({ "ADMIN" })
     @Operation(
         operationId = "searchEmployees",
         summary = "Search employees by criteria",
