@@ -36,10 +36,18 @@ public class RelationshipCheckFilter implements ContainerRequestFilter {
     public void filter(ContainerRequestContext requestContext) throws IOException {
         RelationshipCheck annotation = resourceInfo.getResourceMethod().getAnnotation(RelationshipCheck.class);
         if (annotation == null) {
+            annotation = resourceInfo.getResourceClass().getAnnotation(RelationshipCheck.class);
+        }
+        if (annotation == null) {
             return;
         }
 
         jakarta.ws.rs.core.SecurityContext securityContext = requestContext.getSecurityContext();
+        if (securityContext == null || securityContext.getUserPrincipal() == null) {
+            abortUnauthorized(requestContext);
+            return;
+        }
+
         if (securityContext.isUserInRole("ADMIN") || securityContext.isUserInRole("EMPLOYEE")) {
             return;
         }
@@ -65,5 +73,11 @@ public class RelationshipCheckFilter implements ContainerRequestFilter {
                             + ").")
                     .build());
         }
+    }
+
+    private void abortUnauthorized(ContainerRequestContext requestContext) {
+        requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
+                .entity("Authentication required to perform ownership checks.")
+                .build());
     }
 }
