@@ -28,7 +28,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/employees")
+@Path("/zopen/employees")
 @Tag(name = "Employees", description = "Operations for employee management")
 public class ZOpenEmployeeResourse {
 
