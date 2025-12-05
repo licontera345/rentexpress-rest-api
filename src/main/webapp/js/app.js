@@ -1,17 +1,15 @@
-import controlador
+import CatalogVehicleController from "./controllers/catalogVehicleController.js";
 
+const App = (function () {
+    function init() {
+        CatalogVehicleController.init();
+    }
 
+    return {
+        init: init
+    };
+})();
 
-const App 
-
-
-init
-
-
-setEvents
-
-
-// Inicia la aplicación al cargar la página
-$(function () {
-   App.init();
+window.addEventListener("DOMContentLoaded", function () {
+    App.init();
 });
