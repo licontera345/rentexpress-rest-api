@@ -1,41 +1,22 @@
-const HomeView = (function () {
-    var container = null;
+const HomeView = {
 
-    /**
-     * Inicializa la referencia al contenedor donde se insertará la introducción.
-     */
-    function init() {
-        container = document.getElementById("home-view");
-    }
+    container: "#home-view",
 
-    /**
-     * Renderiza un bloque de introducción sencillo para la página principal.
-     */
-    function render() {
-        if (!container) {
+    render() {
+        var c = document.querySelector(this.container);
+        if (!c) {
             return;
         }
 
-        container.innerHTML = "";
+        var html = `
+            <div class="home-intro">
+                <h2>Bienvenido a RentExpress</h2>
+                <p>Consulta el catálogo público de vehículos disponibles.</p>
+            </div>
+        `;
 
-        var intro = document.createElement("div");
-        intro.className = "home-intro";
-
-        var title = document.createElement("h2");
-        title.textContent = "Bienvenido a RentExpress";
-
-        var description = document.createElement("p");
-        description.textContent = "Consulta el catálogo público de vehículos disponibles.";
-
-        intro.appendChild(title);
-        intro.appendChild(description);
-        container.appendChild(intro);
+        c.innerHTML = html;
     }
-
-    return {
-        init: init,
-        render: render
-    };
-})();
+};
 
 export default HomeView;

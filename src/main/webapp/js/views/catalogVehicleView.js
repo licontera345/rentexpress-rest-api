@@ -1,87 +1,56 @@
-const CatalogVehicleView = (function () {
-    var listElement = null;
-    var countElement = null;
-    var statusElement = null;
+const CatalogVehicleView = {
 
-    function init() {
-        listElement = document.getElementById("vehicle-list");
-        countElement = document.getElementById("vehicle-count");
-        statusElement = document.getElementById("catalog-status");
-    }
+    container: "#vehicle-list",
+    count: "#vehicle-count",
+    status: "#catalog-status",
 
-    function renderLoading() {
-        if (statusElement) {
-            statusElement.textContent = "Cargando catálogo...";
-        }
-        if (listElement) {
-            listElement.innerHTML = "";
-        }
-        if (countElement) {
-            countElement.textContent = "";
-        }
-    }
-
-    function renderError(message) {
-        if (statusElement) {
-            statusElement.textContent = message;
-        }
-        if (countElement) {
-            countElement.textContent = "";
-        }
-        if (listElement) {
-            listElement.innerHTML = "";
-        }
-    }
-
-    function renderVehicles(vehicles) {
-        if (statusElement) {
-            statusElement.textContent = "";
-        }
-        if (countElement) {
-            countElement.textContent = "Vehículos encontrados: " + vehicles.length;
-        }
-        if (!listElement) {
-            return;
-        }
-
-        if (vehicles.length === 0) {
-            listElement.innerHTML = "<li class=\"catalog-empty\">No se encontraron vehículos.</li>";
-            return;
-        }
-
+    render(vehicles) {
         var html = "";
-        for (var i = 0; i < vehicles.length; i++) {
-            var vehicle = vehicles[i];
-            var label = buildVehicleName(vehicle);
-            html = html + "<li class=\"catalog-item\">" + label + "</li>";
-        }
-        listElement.innerHTML = html;
-    }
+        
+        if (Array.isArray(vehicles) && vehicles.length > 0) {
+            for (var i = 0; i < vehicles.length; i++) {
+                var v = vehicles[i];
+                var name = "";
 
-    function buildVehicleName(vehicle) {
-        var hasBrand = vehicle && vehicle.brand;
-        var hasModel = vehicle && vehicle.model;
-        if (hasBrand && hasModel) {
-            return vehicle.brand + " " + vehicle.model;
-        }
-        if (hasBrand) {
-            return vehicle.brand;
-        }
-        if (hasModel) {
-            return vehicle.model;
-        }
-        if (vehicle && vehicle.licensePlate) {
-            return "Vehículo " + vehicle.licensePlate;
-        }
-        return "Vehículo sin nombre";
-    }
+                if (v.brand && v.model) {
+                    name = v.brand + " " + v.model;
+                } else if (v.brand) {
+                    name = v.brand;
+                } else if (v.model) {
+                    name = v.model;
+                } else if (v.licensePlate) {
+                    name = "Vehículo " + v.licensePlate;
+                } else {
+                    name = "Vehículo sin nombre";
+                }
 
-    return {
-        init: init,
-        renderLoading: renderLoading,
-        renderError: renderError,
-        renderVehicles: renderVehicles
-    };
-})();
+                html = html + "<li class='catalog-item'>" + name + "</li>";
+            }
+
+            document.querySelector(this.container).innerHTML = html;
+            document.querySelector(this.count).textContent = 
+                "Vehículos encontrados: " + vehicles.length;
+            document.querySelector(this.status).textContent = "";
+
+        } else {
+            document.querySelector(this.container).innerHTML = 
+                "<li class='catalog-empty'>No se encontraron vehículos.</li>";
+            document.querySelector(this.count).textContent = "";
+            document.querySelector(this.status).textContent = "";
+        }
+    },
+
+    renderLoading() {
+        document.querySelector(this.status).textContent = "Cargando catálogo...";
+        document.querySelector(this.container).innerHTML = "";
+        document.querySelector(this.count).textContent = "";
+    },
+
+    renderError(msg) {
+        document.querySelector(this.status).textContent = msg;
+        document.querySelector(this.container).innerHTML = "";
+        document.querySelector(this.count).textContent = "";
+    }
+};
 
 export default CatalogVehicleView;
