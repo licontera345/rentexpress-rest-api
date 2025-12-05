@@ -24,13 +24,13 @@ import jakarta.ws.rs.core.Response.Status;
 
 @Path("/open/vehicle-categories")
 @Tag(name = "Vehicle Categories", description = "Operations for vehicle category reference data")
-public class ZOpenVehicleCategoryResource {
+public class VehicleCategoryResource {
 
-    private static final Logger logger = Logger.getLogger(ZOpenVehicleCategoryResource.class.getName());
+    private static final Logger logger = Logger.getLogger(VehicleCategoryResource.class.getName());
 
     private final VehicleCategoryService vehicleCategoryService;
 
-    public ZOpenVehicleCategoryResource() {
+    public VehicleCategoryResource() {
         this.vehicleCategoryService = new VehicleCategoryServiceImpl();
     }
 
