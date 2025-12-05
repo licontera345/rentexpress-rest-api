@@ -1,17 +1,18 @@
-import controlador
+import CatalogVehicleController from "./controllers/catalogVehicleController.js";
+import HomeView from "./views/homeView.js";
 
+const App = (function () {
+    function init() {
+        HomeView.init();
+        HomeView.render();
+        CatalogVehicleController.init();
+    }
 
+    return {
+        init: init
+    };
+})();
 
-const App 
-
-
-init
-
-
-setEvents
-
-
-// Inicia la aplicación al cargar la página
-$(function () {
-   App.init();
+window.addEventListener("DOMContentLoaded", function () {
+    App.init();
 });
