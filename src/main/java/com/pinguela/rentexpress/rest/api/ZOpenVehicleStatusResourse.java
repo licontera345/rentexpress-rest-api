@@ -22,7 +22,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/vehicle-statuses")
+@Path("/zopen/vehicle-statuses")
 @Tag(name = "Vehicle Statuses", description = "Operations for vehicle status reference data")
 public class ZOpenVehicleStatusResourse {
 
