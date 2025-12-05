@@ -1,7 +1,10 @@
 import CatalogVehicleController from "./controllers/catalogVehicleController.js";
+import HomeView from "./views/homeView.js";
 
 const App = (function () {
     function init() {
+        HomeView.init();
+        HomeView.render();
         CatalogVehicleController.init();
     }
 
