@@ -22,7 +22,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/reservation-statuses")
+@Path("/zopen/reservation-statuses")
 @Tag(name = "Reservation Statuses", description = "Operations for reservation status reference data")
 public class ZOpenReservationStatusResourse {
 
