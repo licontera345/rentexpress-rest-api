@@ -1,40 +1,23 @@
 import CatalogVehicleService from "../services/catalogVehicleService.js";
 import CatalogVehicleView from "../views/catalogVehicleView.js";
 
-const CatalogVehicleController = (function () {
-    function init() {
-        CatalogVehicleView.init();
-        loadCatalog();
-    }
+const CatalogVehicleController = {
 
-    function loadCatalog() {
+    init() {
         CatalogVehicleView.renderLoading();
+        this.loadCatalog();
+    },
+
+    loadCatalog() {
         CatalogVehicleService.getVehicles()
-            .then(function (data) {
-                var vehicles = normalizeVehicles(data);
-                CatalogVehicleView.renderVehicles(vehicles);
+            .then(function (vehicles) {
+                CatalogVehicleView.render(vehicles);
             })
-            .catch(function (error) {
-                CatalogVehicleView.renderError(error.message);
+            .catch(function () {
+                CatalogVehicleView.renderError("No se pudo cargar el catálogo");
             });
     }
 
-    function normalizeVehicles(data) {
-        if (Array.isArray(data)) {
-            return data;
-        }
-        if (data && Array.isArray(data.content)) {
-            return data.content;
-        }
-        if (data && Array.isArray(data.vehicles)) {
-            return data.vehicles;
-        }
-        return [];
-    }
-
-    return {
-        init: init
-    };
-})();
+};
 
 export default CatalogVehicleController;
