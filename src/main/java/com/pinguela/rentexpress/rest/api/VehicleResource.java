@@ -304,8 +304,11 @@ public class VehicleResource {
         criteria.setUpdatedAtTo(updatedAtTo);
         try {
             Results<VehicleDTO> results = vehicleService.findByCriteria(criteria);
-            if (results == null || results.getResults() == null || results.getResults().isEmpty()) {
-                return Response.status(Status.NO_CONTENT).build();
+            if (results == null) {
+                results = new Results<VehicleDTO>();
+                results.setResults(new java.util.ArrayList<VehicleDTO>());
+            } else if (results.getResults() == null) {
+                results.setResults(new java.util.ArrayList<VehicleDTO>());
             }
             return Response.ok(results).build();
         } catch (RentexpresException e) {
