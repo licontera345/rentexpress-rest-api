@@ -1,6 +1,5 @@
 package com.pinguela.rentexpress.rest.api;
 
-import org.glassfish.jersey.internal.JaxrsProviders;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import com.pinguela.rentexpress.rest.api.param.DateTimeJsonbProvider;
@@ -13,24 +12,15 @@ import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.servers.Server;
 import jakarta.ws.rs.ApplicationPath;
 
-@OpenAPIDefinition(info = @Info(title = "Rest API",
-version = "1.0", description = "demo API",
-contact = @Contact(name = "API Support",
-email = "support@restapi.local",
-url = "https://restapi.local"),
-license = @License(name = "MIT",
-url = "http://localhost:8080/rentexpress-rest-api/swagger-ui/index.html")), servers = {
-                @Server(url = "http://localhost:8080/rentexpress-rest-api") })
+@OpenAPIDefinition(info = @Info(title = "Rest API", version = "1.0", description = "demo API", contact = @Contact(name = "API Support", email = "[support@restapi.local](mailto:support@restapi.local)", url = "[https://restapi.local](https://restapi.local)"), license = @License(name = "MIT", url = "[http://localhost:8080/rentexpress-rest-api/swagger-ui/index.html](http://localhost:8080/rentexpress-rest-api/swagger-ui/index.html)")), servers = {
+		@Server(url = "[http://localhost:8080/rentexpress-rest-api](http://localhost:8080/rentexpress-rest-api)") })
 @ApplicationPath("/api")
 public class RestApiApplication extends ResourceConfig {
 
-        public RestApiApplication() {
-                packages(RestApiApplication.class.getPackage().getName());
-                packages("com.pinguela.rentexpress.rest.api");
-                register(JaxrsProviders.class);
-                register(DateTimeJsonbProvider.class);
-                // jersey-media-multipart se autodetecta; no se registra manualmente para evitar duplicados.
-                register(JavaTimeParamConverterProvider.class);
-                register(io.swagger.v3.jaxrs2.integration.resources.OpenApiResource.class);
-        }
+	public RestApiApplication() {
+		packages("com.pinguela.rentexpress.rest.api");
+		register(DateTimeJsonbProvider.class);
+		register(JavaTimeParamConverterProvider.class);
+		register(io.swagger.v3.jaxrs2.integration.resources.OpenApiResource.class);
+	}
 }

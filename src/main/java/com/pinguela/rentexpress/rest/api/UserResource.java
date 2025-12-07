@@ -247,8 +247,12 @@ public class UserResource {
         criteria.setBirthDateFrom(birthDateFrom);
         criteria.setBirthDateTo(birthDateTo);
         criteria.setActiveStatus(activeStatus);
-        criteria.setPageNumber(pageNumber);
-        criteria.setPageSize(pageSize);
+        int defaultPageNumber = 1;
+        int defaultPageSize = 10;
+
+        criteria.setPageNumber(pageNumber != null && pageNumber > 0 ? pageNumber : defaultPageNumber);
+        criteria.setPageSize(pageSize != null && pageSize > 0 ? pageSize : defaultPageSize);
+
         criteria.setCreatedAtFrom(createdAtFrom);
         criteria.setCreatedAtTo(createdAtTo);
         criteria.setUpdatedAtFrom(updatedAtFrom);
