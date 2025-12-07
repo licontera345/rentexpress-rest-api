@@ -28,8 +28,6 @@ import jakarta.ws.rs.core.Response.Status;
 
 @Path("/addresses")
 @Tag(name = "Addresses", description = "Operations for address management")
-@Secured
-@RolesAllowed({ "ADMIN", "EMPLOYEE" })
 public class AddressResource {
 
     private static final Logger logger = Logger.getLogger(AddressResource.class.getName());
@@ -43,6 +41,8 @@ public class AddressResource {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE"})
     @Operation(
         operationId = "findAddressById",
         summary = "Find address by ID",
@@ -77,6 +77,8 @@ public class AddressResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE","CLIENT"})
     @Operation(
         operationId = "createAddress",
         summary = "Create address",
@@ -112,6 +114,8 @@ public class AddressResource {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE","CLIENT" })
     @Operation(
         operationId = "updateAddress",
         summary = "Update address",
@@ -148,6 +152,8 @@ public class AddressResource {
     @DELETE
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE","CLIENT" })
     @Operation(
         operationId = "deleteAddress",
         summary = "Delete address",

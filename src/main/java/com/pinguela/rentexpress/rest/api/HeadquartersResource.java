@@ -29,8 +29,6 @@ import jakarta.ws.rs.core.Response.Status;
 
 @Path("/headquarters")
 @Tag(name = "Headquarters", description = "Operations for headquarters management")
-@Secured
-@RolesAllowed({ "ADMIN", "EMPLOYEE" })
 public class HeadquartersResource {
 
     private static final Logger logger = Logger.getLogger(HeadquartersResource.class.getName());
@@ -73,6 +71,8 @@ public class HeadquartersResource {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     @Operation(
         operationId = "findHeadquartersById",
         summary = "Find headquarters by ID",
@@ -107,6 +107,8 @@ public class HeadquartersResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     @Operation(
         operationId = "createHeadquarters",
         summary = "Create headquarters",
@@ -144,6 +146,8 @@ public class HeadquartersResource {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     @Operation(
         operationId = "updateHeadquarters",
         summary = "Update headquarters",
@@ -180,6 +184,8 @@ public class HeadquartersResource {
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     @Operation(
         operationId = "deleteHeadquarters",
         summary = "Delete headquarters",

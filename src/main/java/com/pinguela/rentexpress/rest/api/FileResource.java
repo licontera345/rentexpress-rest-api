@@ -10,14 +10,10 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import com.pinguela.rentexpres.exception.RentexpresException;
-import com.pinguela.rentexpres.model.VehicleDTO;
 import com.pinguela.rentexpres.service.FileService;
-import com.pinguela.rentexpres.service.VehicleService;
 import com.pinguela.rentexpres.service.impl.FileServiceImpl;
-import com.pinguela.rentexpres.service.impl.VehicleServiceImpl;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -29,36 +25,26 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-import com.pinguela.rentexpress.rest.api.security.Secured;
-import com.pinguela.rentexpress.rest.api.security.RelationshipCheck;
-
-@Path("/file")
+@Path("open/file")
 @Tag(name = "File Management", description = "APIs for managing vehicle images and user/employee avatars")	
 public class FileResource {
 
     private static final Logger logger = Logger.getLogger(FileResource.class.getName());
 
     private final FileService fileService;
-    private final VehicleService vehicleService;
 
     public FileResource() {
         this.fileService = new FileServiceImpl();
-        this.vehicleService = new VehicleServiceImpl();
     }
 
     @GET
     @Path("/vehicle/{vehicleId}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Secured
-    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     public Response listVehicleImages(@PathParam("vehicleId") Integer vehicleId) {
         if (vehicleId == null) {
             return Response.status(Status.BAD_REQUEST).entity("Vehicle ID is required").build();
         }
         try {
-            if (!vehicleExists(vehicleId)) {
-                return Response.status(Status.NOT_FOUND).entity("Vehicle not found").build();
-            }
             List<String> images = fileService.listVehicleImages(vehicleId);
             return Response.ok(images).build();
         } catch (RentexpresException e) {
@@ -70,16 +56,8 @@ public class FileResource {
     @GET
     @Path("/vehicle/{vehicleId}/{imageName}")
     @Produces({ "image/jpeg", "image/png", "image/gif", MediaType.APPLICATION_OCTET_STREAM })
-    @Secured
-    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     public Response getVehicleImage(@PathParam("vehicleId") Integer vehicleId, @PathParam("imageName") String imageName) {
-        if (vehicleId == null) {
-            return Response.status(Status.BAD_REQUEST).entity("Vehicle ID is required").build();
-        }
         try {
-            if (!vehicleExists(vehicleId)) {
-                return Response.status(Status.NOT_FOUND).entity("Vehicle not found").build();
-            }
             byte[] data = fileService.getVehicleImage(vehicleId, imageName);
             return Response.ok(data).type(resolveMediaType(imageName)).build();
         } catch (RentexpresException e) {
@@ -95,8 +73,6 @@ public class FileResource {
     }
 
     @POST
-    @Secured
-    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     @Path("/vehicle/{vehicleId}")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
@@ -104,19 +80,12 @@ public class FileResource {
             @FormDataParam("file") InputStream fileInputStream,
             @FormDataParam("file") FormDataContentDisposition fileDetail) {
 
-        if (vehicleId == null) {
-            return Response.status(Status.BAD_REQUEST).entity("Vehicle ID is required").build();
-        }
-
         if (fileInputStream == null || fileDetail == null || fileDetail.getFileName() == null
                 || fileDetail.getFileName().isEmpty()) {
             return Response.status(Status.BAD_REQUEST).entity("File is required").build();
         }
 
         try {
-            if (!vehicleExists(vehicleId)) {
-                return Response.status(Status.NOT_FOUND).entity("Vehicle not found").build();
-            }
             byte[] data = toByteArray(fileInputStream);
             fileService.saveVehicleImage(vehicleId, fileDetail.getFileName(), data);
             return Response.status(Status.CREATED).entity("Image uploaded successfully").build();
@@ -132,19 +101,11 @@ public class FileResource {
     }
 
     @DELETE
-    @Secured
-    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     @Path("/vehicle/{vehicleId}/{imageName}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteVehicleImage(@PathParam("vehicleId") Integer vehicleId,
             @PathParam("imageName") String imageName) {
-        if (vehicleId == null) {
-            return Response.status(Status.BAD_REQUEST).entity("Vehicle ID is required").build();
-        }
         try {
-            if (!vehicleExists(vehicleId)) {
-                return Response.status(Status.NOT_FOUND).entity("Vehicle not found").build();
-            }
             fileService.deleteVehicleImage(vehicleId, imageName);
             return Response.ok("Image deleted").build();
         } catch (RentexpresException e) {
@@ -158,9 +119,6 @@ public class FileResource {
     @GET
     @Path("/user-avatar/{userId}")
     @Produces({ "image/jpeg", "image/png", MediaType.APPLICATION_OCTET_STREAM })
-    @Secured
-    @RolesAllowed({ "ADMIN", "EMPLOYEE", "CLIENT" })
-    @RelationshipCheck(pathParamName = "userId", relatedEntity = "CLIENT_MATCH")
     public Response getUserAvatar(@PathParam("userId") Integer userId) {
         try {
             byte[] data = fileService.getUserAvatar(userId);
@@ -176,12 +134,9 @@ public class FileResource {
     }
 
     @POST
-    @Secured
-    @RolesAllowed({ "ADMIN", "EMPLOYEE", "CLIENT" })
     @Path("/user-avatar/{userId}")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    @RelationshipCheck(pathParamName = "userId", relatedEntity = "CLIENT_MATCH")
     public Response uploadUserAvatar(@PathParam("userId") Integer userId,
             @FormDataParam("file") InputStream fileInputStream) {
 
@@ -203,17 +158,9 @@ public class FileResource {
         }
     }
 
-    private boolean vehicleExists(Integer vehicleId) throws RentexpresException {
-        VehicleDTO vehicle = vehicleService.findById(vehicleId);
-        return vehicle != null;
-    }
-
     @GET
     @Path("/employee-avatar/{employeeId}")
     @Produces({ "image/jpeg", "image/png", MediaType.APPLICATION_OCTET_STREAM })
-    @Secured
-    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
-    @RelationshipCheck(pathParamName = "employeeId", relatedEntity = "EMPLOYEE_MATCH")
     public Response getEmployeeAvatar(@PathParam("employeeId") Integer employeeId) {
         try {
             byte[] data = fileService.getEmployeeAvatar(employeeId);
@@ -229,12 +176,9 @@ public class FileResource {
     }
 
     @POST
-    @Secured
-    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     @Path("/employee-avatar/{employeeId}")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    @RelationshipCheck(pathParamName = "employeeId", relatedEntity = "EMPLOYEE_MATCH")
     public Response uploadEmployeeAvatar(@PathParam("employeeId") Integer employeeId,
             @FormDataParam("file") InputStream fileInputStream) {
 

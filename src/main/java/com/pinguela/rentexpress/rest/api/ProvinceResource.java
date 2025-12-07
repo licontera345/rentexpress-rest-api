@@ -29,8 +29,6 @@ import jakarta.ws.rs.core.Response.Status;
 
 @Path("/provinces")
 @Tag(name = "Provinces", description = "Operations for province management")
-@Secured
-@RolesAllowed({ "ADMIN", "EMPLOYEE" })
 public class ProvinceResource {
 
     private static final Logger logger = Logger.getLogger(ProvinceResource.class.getName());
@@ -107,6 +105,8 @@ public class ProvinceResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     @Operation(
         operationId = "createProvince",
         summary = "Create province",
@@ -144,6 +144,8 @@ public class ProvinceResource {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     @Operation(
         operationId = "updateProvince",
         summary = "Update province",
@@ -180,6 +182,8 @@ public class ProvinceResource {
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({ "ADMIN", "EMPLOYEE" })
     @Operation(
         operationId = "deleteProvince",
         summary = "Delete province",

@@ -277,6 +277,12 @@ public class RentalResource {
         criteria.setModel(model);
         criteria.setPageNumber(pageNumber);
         criteria.setPageSize(pageSize);
+        int defaultPageNumber = 1;
+        int defaultPageSize = 10;
+
+        criteria.setPageNumber(pageNumber != null && pageNumber > 0 ? pageNumber : defaultPageNumber);
+        criteria.setPageSize(pageSize != null && pageSize > 0 ? pageSize : defaultPageSize);
+
         try {
             Results<RentalDTO> results = rentalService.findByCriteria(criteria);
             if (results == null || results.getResults() == null || results.getResults().isEmpty()) {

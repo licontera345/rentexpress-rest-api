@@ -198,66 +198,73 @@ public class EmployeeResource {
     @Secured
     @RolesAllowed({ "ADMIN" })
     @Operation(
-        operationId = "searchEmployees",
-        summary = "Search employees by criteria",
-        description = "Retrieves employees that match the provided search criteria",
-        responses = {
-            @ApiResponse(
-                responseCode = "200",
-                description = "Employees retrieved successfully",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Results.class))
-            ),
-            @ApiResponse(responseCode = "204", description = "No employees found for the provided criteria"),
-            @ApiResponse(responseCode = "400", description = "Invalid search criteria supplied"),
-            @ApiResponse(responseCode = "500", description = "Unexpected error while searching for employees")
-        }
+    operationId = "searchEmployees",
+    summary = "Search employees by criteria",
+    description = "Retrieves employees that match the provided search criteria",
+    responses = {
+    @ApiResponse(
+    responseCode = "200",
+    description = "Employees retrieved successfully",
+    content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Results.class))
+    ),
+    @ApiResponse(responseCode = "204", description = "No employees found for the provided criteria"),
+    @ApiResponse(responseCode = "400", description = "Invalid search criteria supplied"),
+    @ApiResponse(responseCode = "500", description = "Unexpected error while searching for employees")
+    }
     )
     public Response findByCriteria(
-        @QueryParam("employeeId") Integer employeeId,
-        @QueryParam("employeeName") String employeeName,
-        @QueryParam("roleId") Integer roleId,
-        @QueryParam("headquartersId") Integer headquartersId,
-        @QueryParam("firstName") String firstName,
-        @QueryParam("lastName1") String lastName1,
-        @QueryParam("lastName2") String lastName2,
-        @QueryParam("email") String email,
-        @QueryParam("phone") String phone,
-        @QueryParam("activeStatus") Boolean activeStatus,
-        @QueryParam("pageNumber") Integer pageNumber,
-        @QueryParam("pageSize") Integer pageSize,
-        @QueryParam("createdAtFrom") java.time.LocalDateTime createdAtFrom,
-        @QueryParam("createdAtTo") java.time.LocalDateTime createdAtTo,
-        @QueryParam("updatedAtFrom") java.time.LocalDateTime updatedAtFrom,
-        @QueryParam("updatedAtTo") java.time.LocalDateTime updatedAtTo
+    @QueryParam("employeeId") Integer employeeId,
+    @QueryParam("employeeName") String employeeName,
+    @QueryParam("roleId") Integer roleId,
+    @QueryParam("headquartersId") Integer headquartersId,
+    @QueryParam("firstName") String firstName,
+    @QueryParam("lastName1") String lastName1,
+    @QueryParam("lastName2") String lastName2,
+    @QueryParam("email") String email,
+    @QueryParam("phone") String phone,
+    @QueryParam("activeStatus") Boolean activeStatus,
+    @QueryParam("pageNumber") Integer pageNumber,
+    @QueryParam("pageSize") Integer pageSize,
+    @QueryParam("createdAtFrom") java.time.LocalDateTime createdAtFrom,
+    @QueryParam("createdAtTo") java.time.LocalDateTime createdAtTo,
+    @QueryParam("updatedAtFrom") java.time.LocalDateTime updatedAtFrom,
+    @QueryParam("updatedAtTo") java.time.LocalDateTime updatedAtTo
     ) {
-        EmployeeCriteria criteria = new EmployeeCriteria();
-        criteria.setEmployeeId(employeeId);
-        criteria.setEmployeeName(employeeName);
-        criteria.setRoleId(roleId);
-        criteria.setHeadquartersId(headquartersId);
-        criteria.setFirstName(firstName);
-        criteria.setLastName1(lastName1);
-        criteria.setLastName2(lastName2);
-        criteria.setEmail(email);
-        criteria.setPhone(phone);
-        criteria.setActiveStatus(activeStatus);
-        criteria.setPageNumber(pageNumber);
-        criteria.setPageSize(pageSize);
-        criteria.setCreatedAtFrom(createdAtFrom);
-        criteria.setCreatedAtTo(createdAtTo);
-        criteria.setUpdatedAtFrom(updatedAtFrom);
-        criteria.setUpdatedAtTo(updatedAtTo);
-        try {
-            Results<EmployeeDTO> results = employeeService.findByCriteria(criteria);
-            if (results == null || results.getResults() == null || results.getResults().isEmpty()) {
-                return Response.status(Status.NO_CONTENT).build();
-            }
-            return Response.ok(results).build();
-        } catch (RentexpresException e) {
-            logger.warning(e.getMessage());
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    EmployeeCriteria criteria = new EmployeeCriteria();
+    criteria.setEmployeeId(employeeId);
+    criteria.setEmployeeName(employeeName);
+    criteria.setRoleId(roleId);
+    criteria.setHeadquartersId(headquartersId);
+    criteria.setFirstName(firstName);
+    criteria.setLastName1(lastName1);
+    criteria.setLastName2(lastName2);
+    criteria.setEmail(email);
+    criteria.setPhone(phone);
+    criteria.setActiveStatus(activeStatus);
+    int defaultPageNumber = 1;
+    int defaultPageSize = 10;
+
+    criteria.setPageNumber(pageNumber != null && pageNumber > 0 ? pageNumber : defaultPageNumber);
+    criteria.setPageSize(pageSize != null && pageSize > 0 ? pageSize : defaultPageSize);
+
+    criteria.setCreatedAtFrom(createdAtFrom);
+    criteria.setCreatedAtTo(createdAtTo);
+    criteria.setUpdatedAtFrom(updatedAtFrom);
+    criteria.setUpdatedAtTo(updatedAtTo);
+
+    try {
+        Results<EmployeeDTO> results = employeeService.findByCriteria(criteria);
+        if (results == null || results.getResults() == null || results.getResults().isEmpty()) {
+            return Response.status(Status.NO_CONTENT).build();
         }
+        return Response.ok(results).build();
+    } catch (RentexpresException e) {
+        logger.warning(e.getMessage());
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
+
+    }
+
 
     @POST
     @Path("/open/authenticate")
