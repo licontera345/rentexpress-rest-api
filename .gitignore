@@ -1,0 +1,10 @@
+/target
+/bin
+/.settings
+.project
+.classpath
+/.apt_generated/
+/.apt_generated_tests/
+
+# No subir archivos con secretos/credenciales
+**/config.properties
