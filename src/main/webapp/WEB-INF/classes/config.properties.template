@@ -1,0 +1,35 @@
+﻿##########################
+## Configuracion global de la aplicacion RentExpress
+##########################
+
+# Configuracion de la base de datos
+#db.url=jdbc:mysql://localhost:3306/rentexpres?useSSL=false&useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&serverTimezone=UTC
+#db.user=root
+#db.password=abc123.
+#db.driver=com.mysql.cj.jdbc.Driver
+
+# Configuracion de envio de correo
+mail.email=rentexpressw1@gmail.com
+mail.password=envx hipd mtif nwqp  
+mail.smtp.server.name=smtp.gmail.com
+mail.smtp.server.port=587
+
+# Cloudinary
+cloudinary.cloud.name=dy9jjex3v
+cloudinary.api.key
+cloudinary.api.secret
+
+# Limite por archivo en bytes (2 MB)
+base.image.max.bytes=2097152
+
+# Weather API (proxy - oculta proveedor al frontend)
+weather.api.key
+weather.api.url=https://api.openweathermap.org/data/2.5/weather
+
+# AI Recommendation API (proxy - oculta proveedor al frontend)
+groq.api.key
+groq.api.url=https://api.groq.com/openai/v1/chat/completions
+groq.model=llama-3.3-70b-versatile
+
+
+
