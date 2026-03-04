@@ -352,6 +352,7 @@ public class VehicleResource {
         if (availableFrom != null && availableTo != null) {
             criteria.setAvailableFrom(availableFrom);
             criteria.setAvailableTo(availableTo);
+            
         }
         try {
             String cacheKey = "vehicles:"
