@@ -5,7 +5,10 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.logging.Logger;
+import java.io.IOException;
+import java.io.InputStream;
 
 import com.google.gson.reflect.TypeToken;
 import com.pinguela.rentexpres.exception.RentexpresException;
@@ -47,6 +50,25 @@ public class UserResource {
     private static final Logger logger = Logger.getLogger(UserResource.class.getName());
     private static final int MIN_AGE_FOR_REGISTER = 18;
     private static final int MIN_PASSWORD_LENGTH = 6;
+
+    /** URL base del frontend para enlaces en emails (recuperar contraseña). Origen: FRONTEND_URL, rentexpress.frontend.url, config.properties frontend.url, o default localhost. */
+    private static String getFrontendBaseUrl() {
+        String url = System.getenv("FRONTEND_URL");
+        if (url != null && !url.isEmpty()) return url.trim();
+        url = System.getProperty("rentexpress.frontend.url");
+        if (url != null && !url.isEmpty()) return url.trim();
+        try (InputStream is = UserResource.class.getResourceAsStream("/config.properties")) {
+            if (is != null) {
+                Properties p = new Properties();
+                p.load(is);
+                url = p.getProperty("frontend.url");
+                if (url != null && !url.trim().isEmpty()) return url.trim();
+            }
+        } catch (IOException e) {
+            logger.fine("Could not load config.properties for frontend.url: " + e.getMessage());
+        }
+        return "http://localhost:5173";
+    }
 
     private final UserService userService;
 
@@ -343,10 +365,7 @@ public class UserResource {
             UserDTO user = userService.findByEmail(email);
             if (user != null) {
                 String token = JwtUtil.generatePasswordResetToken(user.getUserId());
-                String baseUrl = System.getenv("FRONTEND_URL");
-                if (baseUrl == null || baseUrl.isEmpty()) {
-                    baseUrl = System.getProperty("rentexpress.frontend.url", "http://localhost:5173");
-                }
+                String baseUrl = getFrontendBaseUrl();
                 String resetLink = baseUrl.replaceAll("/$", "") + "/reset-password?token=" + token;
                 String subject = MailContent.passwordResetSubject();
                 String textBody = MailContent.passwordResetBody(resetLink);
