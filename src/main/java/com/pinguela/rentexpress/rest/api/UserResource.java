@@ -51,7 +51,7 @@ public class UserResource {
     private static final int MIN_AGE_FOR_REGISTER = 18;
     private static final int MIN_PASSWORD_LENGTH = 6;
 
-    /** URL base del frontend para enlaces en emails (recuperar contraseña). Origen: FRONTEND_URL, rentexpress.frontend.url, config.properties frontend.url, o default localhost. */
+    /** URL base del frontend para enlaces en emails (recuperar contraseña). Origen: FRONTEND_URL, rentexpress.frontend.url, config.properties frontend.url, o default producción. */
     private static String getFrontendBaseUrl() {
         String url = System.getenv("FRONTEND_URL");
         if (url != null && !url.isEmpty()) return url.trim();
@@ -67,7 +67,7 @@ public class UserResource {
         } catch (IOException e) {
             logger.fine("Could not load config.properties for frontend.url: " + e.getMessage());
         }
-        return "http://localhost:5173";
+        return "http://94.130.104.92:8081";
     }
 
     private final UserService userService;
