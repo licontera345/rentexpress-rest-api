@@ -81,7 +81,6 @@ public class AccesoResource {
 		}
 	}
 	
-	/** Límite de tamaño en bytes (5 MB). Tipos MIME permitidos para imagen de perfil/vehículo (F9/F10). */
 	private static final long IMAGE_MAX_SIZE_BYTES = 5L * 1024 * 1024;
 	private static final List<String> IMAGE_ALLOWED_MIME_TYPES = List.of("image/jpeg", "image/png", "image/webp");
 
@@ -92,7 +91,7 @@ public class AccesoResource {
 		return Response.ok(new ImageUploadConfigDTO(IMAGE_MAX_SIZE_BYTES, IMAGE_ALLOWED_MIME_TYPES)).build();
 	}
 
-	/** Rangos por defecto para filtros de vehículos (F12); año, km y precio. */
+
 	private static final int FILTER_YEAR_MIN = 1990;
 	private static final int FILTER_KM_MAX = 200_000;
 	private static final int FILTER_PRICE_MAX = 500;

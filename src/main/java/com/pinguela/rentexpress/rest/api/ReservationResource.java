@@ -2,6 +2,7 @@ package com.pinguela.rentexpress.rest.api;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.pinguela.rentexpres.exception.RentexpresException;
@@ -17,6 +18,7 @@ import java.lang.reflect.Type;
 import com.pinguela.rentexpres.service.impl.ReservationServiceImpl;
 import com.pinguela.rentexpress.rest.api.dto.PickupCodeResponseDTO;
 import com.pinguela.rentexpress.rest.api.security.Secured;
+import com.pinguela.rentexpress.rest.api.dto.ErrorResponseDTO;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -125,6 +127,13 @@ public class ReservationResource {
 			return Response.status(Status.CREATED).entity(createdReservation).build();
 		} catch (RentexpresException e) {
 			return RentexpresExceptionMapper.toResponse(e);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "Unexpected error creating reservation: " + e.getMessage(), e);
+			String detail = e.getMessage() != null ? e.getMessage() : "An unexpected error occurred";
+			return Response.status(Status.INTERNAL_SERVER_ERROR)
+					.type(MediaType.APPLICATION_JSON)
+					.entity(new ErrorResponseDTO("INTERNAL", detail))
+					.build();
 		}
 	}
 
