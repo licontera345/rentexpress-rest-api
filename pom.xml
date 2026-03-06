@@ -194,6 +194,12 @@
 			<version>5.11.0</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.google.api-client</groupId>
+			<artifactId>google-api-client</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+
 
 	</dependencies>
 	<build>
@@ -213,7 +219,8 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<version>3.4.0</version>
 			</plugin>
-			<!-- Salta deploy si no hay distributionManagement; usar -Dmaven.deploy.skip=false cuando tengas repositorio -->
+			<!-- Salta deploy si no hay distributionManagement; usar
+			-Dmaven.deploy.skip=false cuando tengas repositorio -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
