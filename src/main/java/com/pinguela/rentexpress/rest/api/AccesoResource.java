@@ -1,10 +1,14 @@
 package com.pinguela.rentexpress.rest.api;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
-import com.pinguela.rentexpress.rest.api.dto.FilterRangesConfigDTO;
-import com.pinguela.rentexpress.rest.api.dto.ImageUploadConfigDTO;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
 import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.CloudinarySignatureDTO;
 import com.pinguela.rentexpres.model.EmployeeDTO;
@@ -15,6 +19,10 @@ import com.pinguela.rentexpres.service.UserService;
 import com.pinguela.rentexpres.service.impl.CloudinaryServiceImpl;
 import com.pinguela.rentexpres.service.impl.EmployeeServiceImpl;
 import com.pinguela.rentexpres.service.impl.UserServiceImpl;
+import com.pinguela.rentexpress.rest.api.dto.FilterRangesConfigDTO;
+import com.pinguela.rentexpress.rest.api.dto.GoogleAuthResponse;
+import com.pinguela.rentexpress.rest.api.dto.ImageUploadConfigDTO;
+import com.pinguela.rentexpress.rest.api.dto.Token;
 import com.pinguela.rentexpress.rest.api.dto.UserCredentials;
 import com.pinguela.rentexpress.rest.api.util.JwtUtil;
 
@@ -43,6 +51,64 @@ public class AccesoResource {
 		this.cloudinaryService = new CloudinaryServiceImpl();
 	}
 
+	
+	
+	@POST
+	@Path("/auth/google")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response googleAuth(Token tokenRequestGoogle) {
+	    
+	    GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
+	            new NetHttpTransport(),
+	            GsonFactory.getDefaultInstance()) // Use this instead
+	            .setAudience(Collections.singletonList("983385335826-4gcf6skskeh4votp94gbdeo5se6us97g.apps.googleusercontent.com"))
+	            .build();
+
+	    GoogleIdToken idToken;
+		try {
+			idToken = verifier.verify(tokenRequestGoogle.getToken());
+			logger.info("idToken:"+idToken);
+		    if (idToken != null) {
+		        Payload payload = idToken.getPayload();
+
+		        String email = payload.getEmail();
+		        String name = (String) payload.get("name");
+
+		        logger.info("verificado: "+ email);        
+		        
+		        // Crear ou buscar usuario na tua BD
+		        UserDTO user = userService.findByEmail(email);
+//		        if (user ==null) {
+//		        	// Rexistrar usuario tamén como usuario propio
+//		        	Set<String> roleBasic = new HashSet();
+//		        	roleBasic.add("BASIC");   	
+//		        	User newUser = new User();
+//		        	newUser.setId(null);
+//		        	newUser.setEmail(email);
+//		        	newUser.setGoogle_id(payload.getSubject());
+//		        	newUser.setRoles(roleBasic);
+//		        	user = userService.create(newUser);
+//		        }
+		        // Generar JWT de usuario (mismo formato que login clásico para el filtro)
+		        String myTokenValue = JwtUtil.generateUserToken(user.getUserId());
+		        return Response.ok(new GoogleAuthResponse(myTokenValue, user)).build();
+		    } else {
+		        return Response.status(401).build();
+		    }
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+		}
+
+
+	}
+	
+	
+	
+	
+	
 	@POST
 	@Path("/login")
 	@Consumes(MediaType.APPLICATION_JSON)
