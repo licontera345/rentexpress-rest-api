@@ -1,7 +1,10 @@
 package com.pinguela.rentexpress.rest.api;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
@@ -51,58 +54,75 @@ public class AccesoResource {
 		this.cloudinaryService = new CloudinaryServiceImpl();
 	}
 
-	
+	/** Google OAuth client ID: GOOGLE_CLIENT_ID, rentexpress.google.clientId, config.properties google.clientId, o valor por defecto. */
+	private static String getGoogleClientId() {
+		String clientId = System.getenv("GOOGLE_CLIENT_ID");
+		if (clientId != null && !clientId.isEmpty()) return clientId.trim();
+		clientId = System.getProperty("rentexpress.google.clientId");
+		if (clientId != null && !clientId.isEmpty()) return clientId.trim();
+		try (InputStream is = AccesoResource.class.getResourceAsStream("/config.properties")) {
+			if (is != null) {
+				Properties p = new Properties();
+				p.load(is);
+				clientId = p.getProperty("google.clientId");
+				if (clientId != null && !clientId.trim().isEmpty()) return clientId.trim();
+			}
+		} catch (IOException e) {
+			logger.fine("Could not load config.properties for google.clientId: " + e.getMessage());
+		}
+		return "983385335826-4gcf6skskeh4votp94gbdeo5se6us97g.apps.googleusercontent.com";
+	}
+
 	
 	@POST
 	@Path("/auth/google")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response googleAuth(Token tokenRequestGoogle) {
-	    
-	    GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
-	            new NetHttpTransport(),
-	            GsonFactory.getDefaultInstance()) // Use this instead
-	            .setAudience(Collections.singletonList("983385335826-4gcf6skskeh4votp94gbdeo5se6us97g.apps.googleusercontent.com"))
-	            .build();
+		if (tokenRequestGoogle == null || tokenRequestGoogle.getToken() == null || tokenRequestGoogle.getToken().isEmpty()) {
+			return Response.status(Status.BAD_REQUEST).entity("Token is required").build();
+		}
+		String googleClientId = getGoogleClientId();
+		GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
+				new NetHttpTransport(),
+				GsonFactory.getDefaultInstance())
+				.setAudience(Collections.singletonList(googleClientId))
+				.build();
 
-	    GoogleIdToken idToken;
 		try {
-			idToken = verifier.verify(tokenRequestGoogle.getToken());
-			logger.info("idToken:"+idToken);
-		    if (idToken != null) {
-		        Payload payload = idToken.getPayload();
+			GoogleIdToken idToken = verifier.verify(tokenRequestGoogle.getToken());
+			if (idToken == null) {
+				return Response.status(Status.UNAUTHORIZED).build();
+			}
+			Payload payload = idToken.getPayload();
+			String email = payload.getEmail();
+			String name = (String) payload.get("name");
+			// Identificador único estable de Google (claim "sub" del JWT). Ej: "109876543210987654321"
+			String googleId = payload.getSubject();
+			if (email == null || email.isEmpty() || googleId == null || googleId.isEmpty()) {
+				return Response.status(Status.BAD_REQUEST).entity("Invalid Google token payload").build();
+			}
 
-		        String email = payload.getEmail();
-		        String name = (String) payload.get("name");
+			// Usuario existente: por google_id (prioritario) o por email
+			UserDTO user = userService.findByGoogleId(googleId);
+			if (user == null) {
+				user = userService.findByEmail(email);
+			}
 
-		        logger.info("verificado: "+ email);        
-		        
-		        // Crear ou buscar usuario na tua BD
-		        UserDTO user = userService.findByEmail(email);
-//		        if (user ==null) {
-//		        	// Rexistrar usuario tamén como usuario propio
-//		        	Set<String> roleBasic = new HashSet();
-//		        	roleBasic.add("BASIC");   	
-//		        	User newUser = new User();
-//		        	newUser.setId(null);
-//		        	newUser.setEmail(email);
-//		        	newUser.setGoogle_id(payload.getSubject());
-//		        	newUser.setRoles(roleBasic);
-//		        	user = userService.create(newUser);
-//		        }
-		        // Generar JWT de usuario (mismo formato que login clásico para el filtro)
-		        String myTokenValue = JwtUtil.generateUserToken(user.getUserId());
-		        return Response.ok(new GoogleAuthResponse(myTokenValue, user)).build();
-		    } else {
-		        return Response.status(401).build();
-		    }
+			if (user != null) {
+				String myTokenValue = JwtUtil.generateUserToken(user.getUserId());
+				logger.info("Google login OK: " + email);
+				return Response.ok(new GoogleAuthResponse(myTokenValue, user)).build();
+			}
+
+			// Usuario no existe: indicar que debe completar registro (frontend redirige a /auth/register con googlePayload)
+			logger.info("Google user not registered, needsRegistration: " + email);
+			return Response.ok(GoogleAuthResponse.needsRegistration(email, name != null ? name : email, googleId)).build();
+
 		} catch (Exception e) {
-			
-			e.printStackTrace();
+			logger.warning("Google auth error: " + e.getMessage());
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
-
-
 	}
 	
 	
