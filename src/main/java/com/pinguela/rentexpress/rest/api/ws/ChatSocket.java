@@ -119,6 +119,7 @@ public class ChatSocket {
             dto.setSenderId(Integer.parseInt(senderIdStr));
             dto.setBody(body);
             messageService.create(dto);
+            conversationService.incrementUnreadForRecipient(conversationId, senderType);
             MessageDTO created = messageService.findById(dto.getMessageId());
             String payload = created != null ? toJson(created) : messageJson;
             Set<Session> roomSessions = rooms.get(conversationIdParam);
