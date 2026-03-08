@@ -112,6 +112,10 @@ public class ChatSocket {
         String body = extractBody(messageJson);
         if (body == null || body.trim().isEmpty()) return;
         body = body.trim();
+        if (body.length() > 2000) {
+            sendError(session, "Mensaje demasiado largo (máximo 2000 caracteres)");
+            return;
+        }
         try {
             MessageDTO dto = new MessageDTO();
             dto.setConversationId(conversationId);

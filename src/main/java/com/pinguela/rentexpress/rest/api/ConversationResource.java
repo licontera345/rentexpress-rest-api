@@ -198,6 +198,38 @@ public class ConversationResource {
     }
 
     @PUT
+    @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Secured
+    @RolesAllowed({ "CLIENT", "ADMIN", "EMPLOYEE" })
+    @Operation(summary = "Actualizar conversación", description = "Actualiza estado (OPEN, IN_PROGRESS, CLOSED). Solo empleados/admin pueden poner CLOSED. Body: { \"status\": \"CLOSED\" }.")
+    public Response update(@PathParam("id") Integer id, java.util.Map<String, Object> body, @Context SecurityContext securityContext) {
+        if (id == null) return Response.status(Status.BAD_REQUEST).build();
+        String principalId = getPrincipalId(securityContext);
+        if (principalId == null) return Response.status(Status.UNAUTHORIZED).build();
+        try {
+            ConversationDTO dto = conversationService.findById(id);
+            if (dto == null) return Response.status(Status.NOT_FOUND).build();
+            Integer pid = Integer.valueOf(principalId);
+            boolean isOwner = dto.getUserId().equals(pid) || (dto.getEmployeeId() != null && dto.getEmployeeId().equals(pid));
+            if (!isOwner && !isEmployee(securityContext)) return Response.status(Status.FORBIDDEN).build();
+            String status = body != null && body.get("status") != null ? body.get("status").toString().trim() : null;
+            if (status != null && !status.isEmpty()) {
+                if ("CLOSED".equals(status) && !isEmployee(securityContext)) return Response.status(Status.FORBIDDEN).build();
+                if ("OPEN".equals(status) || "IN_PROGRESS".equals(status) || "CLOSED".equals(status)) {
+                    dto.setStatus(status);
+                }
+            }
+            boolean ok = conversationService.update(dto);
+            if (!ok) return Response.status(Status.BAD_REQUEST).build();
+            return Response.ok(conversationService.findById(id)).build();
+        } catch (RentexpresException e) {
+            return RentexpresExceptionMapper.toResponse(e);
+        }
+    }
+
+    @PUT
     @Path("/{id}/assign")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
