@@ -14,7 +14,7 @@ rentexpress-rest-api/
 │   ├── inject/            # RestApiBinder (HK2), ChatSocketInitFilter
 │   ├── param/             # Convertidores y ExceptionMappers de parámetros
 │   ├── security/          # CORS, JWT, @Secured, RateLimitFilter (por rol)
-│   ├── service/           # WeatherService, GroqService, OwnershipService
+│   ├── service/           # WeatherService, GroqService (OwnershipService en middleware)
 │   ├── util/              # Redis, JWT, fechas
 │   ├── ws/                # ChatSocket, ChatSocketServiceHolder
 │   ├── api.user/          # UserResource

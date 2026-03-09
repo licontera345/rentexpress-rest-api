@@ -3,7 +3,7 @@ package com.pinguela.rentexpress.rest.api.security;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import com.pinguela.rentexpress.rest.api.service.OwnershipService;
+import com.pinguela.rentexpres.service.OwnershipService;
 import com.pinguela.rentexpress.rest.api.dto.ErrorResponseDTO;
 
 import jakarta.annotation.Priority;

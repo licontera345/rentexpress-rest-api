@@ -15,7 +15,7 @@ import com.pinguela.rentexpres.service.ImageService;
 import com.pinguela.rentexpress.rest.api.dto.ErrorResponseDTO;
 import com.pinguela.rentexpress.rest.api.dto.ImageCreateRequest;
 import com.pinguela.rentexpress.rest.api.security.Secured;
-import com.pinguela.rentexpress.rest.api.service.OwnershipService;
+import com.pinguela.rentexpres.service.OwnershipService;
 import com.pinguela.rentexpress.rest.api.util.ErrorResponseHelper;
 
 import io.swagger.v3.oas.annotations.Operation;

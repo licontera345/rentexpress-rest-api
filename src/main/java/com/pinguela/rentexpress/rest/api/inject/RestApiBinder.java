@@ -3,13 +3,13 @@ package com.pinguela.rentexpress.rest.api.inject;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 
 import com.pinguela.rentexpress.rest.api.service.GroqService;
-import com.pinguela.rentexpress.rest.api.service.OwnershipService;
 import com.pinguela.rentexpress.rest.api.service.WeatherService;
 import com.pinguela.rentexpress.rest.api.adapter.GroqApiAdapter;
 import com.pinguela.rentexpress.rest.api.adapter.WeatherApiAdapter;
 import com.pinguela.rentexpress.rest.api.adapter.impl.GroqApiAdapterImpl;
 import com.pinguela.rentexpress.rest.api.adapter.impl.WeatherApiAdapterImpl;
-import com.pinguela.rentexpress.rest.api.service.impl.OwnershipServiceImpl;
+import com.pinguela.rentexpres.service.OwnershipService;
+import com.pinguela.rentexpres.service.impl.OwnershipServiceImpl;
 import com.pinguela.rentexpress.rest.api.security.RateLimitStore;
 import com.pinguela.rentexpress.rest.api.security.InMemoryRateLimitStore;
 import com.pinguela.rentexpress.rest.api.security.RateLimitFilter;
@@ -71,7 +71,7 @@ public final class RestApiBinder extends AbstractBinder {
         bind(WeatherService.class).to(WeatherService.class);
         bind(OwnershipServiceImpl.class).to(OwnershipService.class);
 
-        // Rate limit: store en memoria por defecto; para varias instancias usar Redis y registrar RedisRateLimitStore
+        // Rate limit:
         bind(InMemoryRateLimitStore.class).to(RateLimitStore.class);
         bind(RateLimitFilter.class);
 
