@@ -13,8 +13,6 @@ import com.pinguela.rentexpres.model.ConversationDTO;
 import com.pinguela.rentexpres.model.MessageDTO;
 import com.pinguela.rentexpres.service.ConversationService;
 import com.pinguela.rentexpres.service.MessageService;
-import com.pinguela.rentexpres.service.impl.ConversationServiceImpl;
-import com.pinguela.rentexpres.service.impl.MessageServiceImpl;
 import com.pinguela.rentexpress.rest.api.util.JwtUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -39,8 +37,13 @@ public class ChatSocket {
     private static final Map<String, Set<Session>> rooms = new ConcurrentHashMap<>();
     private static final Gson gson = new Gson();
 
-    private final ConversationService conversationService = new ConversationServiceImpl();
-    private final MessageService messageService = new MessageServiceImpl();
+    private ConversationService getConversationService() {
+        return ChatSocketServiceHolder.getConversationService();
+    }
+
+    private MessageService getMessageService() {
+        return ChatSocketServiceHolder.getMessageService();
+    }
 
     /** Guarda en la sesión: "senderType" (USER|EMPLOYEE), "senderId" (Integer as string). */
     private static final String SENDER_TYPE = "senderType";
@@ -49,6 +52,10 @@ public class ChatSocket {
     @OnOpen
     public void onOpen(Session session, @PathParam("conversationId") String conversationIdParam) {
         try {
+            if (ChatSocketServiceHolder.getConversationService() == null || ChatSocketServiceHolder.getMessageService() == null) {
+                closeWithError(session, "Servicios no inicializados; realice antes una petición REST.");
+                return;
+            }
             Integer conversationId = parseConversationId(conversationIdParam);
             if (conversationId == null) {
                 closeWithError(session, "conversationId inválido");
@@ -70,7 +77,7 @@ public class ChatSocket {
                 closeWithError(session, "token inválido");
                 return;
             }
-            ConversationDTO conv = conversationService.findById(conversationId);
+            ConversationDTO conv = getConversationService().findById(conversationId);
             if (conv == null) {
                 closeWithError(session, "conversación no encontrada");
                 return;
@@ -109,6 +116,23 @@ public class ChatSocket {
         }
         Integer conversationId = parseConversationId(conversationIdParam);
         if (conversationId == null) return;
+
+        // Evento "typing": no se persiste, se reenvía al resto de la sala
+        JsonObject parsed = parseJsonObject(messageJson);
+        if (parsed != null && parsed.has("type") && "typing".equals(getString(parsed, "type"))) {
+            boolean typing = parsed.has("typing") && parsed.get("typing").isJsonPrimitive() && parsed.get("typing").getAsBoolean();
+            String payload = buildTypingPayload(conversationIdParam, senderType, senderIdStr, typing);
+            Set<Session> roomSessions = rooms.get(conversationIdParam);
+            if (roomSessions != null) {
+                for (Session s : roomSessions) {
+                    if (s.isOpen() && !s.equals(session)) {
+                        s.getAsyncRemote().sendText(payload);
+                    }
+                }
+            }
+            return;
+        }
+
         String body = extractBody(messageJson);
         if (body == null || body.trim().isEmpty()) return;
         body = body.trim();
@@ -122,9 +146,9 @@ public class ChatSocket {
             dto.setSenderType(senderType);
             dto.setSenderId(Integer.parseInt(senderIdStr));
             dto.setBody(body);
-            messageService.create(dto);
-            conversationService.incrementUnreadForRecipient(conversationId, senderType);
-            MessageDTO created = messageService.findById(dto.getMessageId());
+            getMessageService().create(dto);
+            getConversationService().incrementUnreadForRecipient(conversationId, senderType);
+            MessageDTO created = getMessageService().findById(dto.getMessageId());
             String payload = created != null ? toJson(created) : messageJson;
             Set<Session> roomSessions = rooms.get(conversationIdParam);
             if (roomSessions != null) {
@@ -191,6 +215,34 @@ public class ChatSocket {
         } catch (Exception e) {
             return messageJson;
         }
+    }
+
+    private static JsonObject parseJsonObject(String messageJson) {
+        if (messageJson == null) return null;
+        try {
+            return gson.fromJson(messageJson, JsonObject.class);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private static String getString(JsonObject o, String key) {
+        if (o == null || !o.has(key)) return null;
+        try {
+            return o.get(key).getAsString();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private static String buildTypingPayload(String conversationIdParam, String senderType, String senderIdStr, boolean typing) {
+        JsonObject o = new JsonObject();
+        o.addProperty("type", "typing");
+        o.addProperty("typing", typing);
+        o.addProperty("conversationId", conversationIdParam);
+        o.addProperty("senderType", senderType);
+        o.addProperty("senderId", senderIdStr);
+        return gson.toJson(o);
     }
 
     private static String toJson(MessageDTO m) {

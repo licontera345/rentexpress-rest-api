@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import com.pinguela.rentexpress.rest.api.dto.UserAuth;
+import com.pinguela.rentexpress.rest.api.dto.ErrorResponseDTO;
 import com.pinguela.rentexpress.rest.api.util.JwtUtil;
 import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.EmployeeDTO;
@@ -14,17 +15,20 @@ import com.pinguela.rentexpres.model.UserDTO;
 import com.pinguela.rentexpres.service.EmployeeService;
 import com.pinguela.rentexpres.service.RoleService;
 import com.pinguela.rentexpres.service.UserService;
-import com.pinguela.rentexpres.service.impl.EmployeeServiceImpl;
-import com.pinguela.rentexpres.service.impl.RoleServiceImpl;
-import com.pinguela.rentexpres.service.impl.UserServiceImpl;
 
 import jakarta.annotation.Priority;
 import jakarta.ws.rs.Priorities;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;
+
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
+
+import jakarta.inject.Inject;
 
 @Secured
 @Provider
@@ -37,11 +41,11 @@ public class JwtFilter implements ContainerRequestFilter {
     private final EmployeeService employeeService;
     private final RoleService roleService;
 
-    public JwtFilter() {
-        super();
-        this.userService = new UserServiceImpl();
-        this.employeeService = new EmployeeServiceImpl();
-        this.roleService = new RoleServiceImpl();
+    @Inject
+    public JwtFilter(UserService userService, EmployeeService employeeService, RoleService roleService) {
+        this.userService = userService;
+        this.employeeService = employeeService;
+        this.roleService = roleService;
     }
 
     @Override
@@ -123,7 +127,8 @@ public class JwtFilter implements ContainerRequestFilter {
     }
 
     private void abort(ContainerRequestContext requestContext, String msg) {
-        requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("{\"msg\" :\"" + msg + "\" }")
-                .build());
+        requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
+                .entity(new ErrorResponseDTO("UNAUTHORIZED", msg != null ? msg : "Authentication required"))
+                .type(MediaType.APPLICATION_JSON).build());
     }
 }

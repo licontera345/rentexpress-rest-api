@@ -13,8 +13,11 @@ import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.container.ResourceInfo;
 import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;
+
+import com.pinguela.rentexpress.rest.api.dto.ErrorResponseDTO;
 
 /**
  * Filtro que valida las anotaciones @RolesAllowed en los endpoints. Se ejecuta
@@ -61,12 +64,14 @@ public class RolesAllowedFilter implements ContainerRequestFilter {
 	}
 
 	private void abortUnauthorized(ContainerRequestContext requestContext, String message) {
-		requestContext.abortWith(
-				Response.status(Response.Status.UNAUTHORIZED).entity("{\"error\": \"" + message + "\"}").build());
+		requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
+				.entity(new ErrorResponseDTO("UNAUTHORIZED", message != null ? message : "Authentication required"))
+				.type(MediaType.APPLICATION_JSON).build());
 	}
 
 	private void abortForbidden(ContainerRequestContext requestContext, String message) {
-		requestContext.abortWith(
-				Response.status(Response.Status.FORBIDDEN).entity("{\"error\": \"" + message + "\"}").build());
+		requestContext.abortWith(Response.status(Response.Status.FORBIDDEN)
+				.entity(new ErrorResponseDTO("FORBIDDEN", message != null ? message : "Access denied"))
+				.type(MediaType.APPLICATION_JSON).build());
 	}
 }

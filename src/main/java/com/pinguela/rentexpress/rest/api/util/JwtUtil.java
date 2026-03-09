@@ -1,14 +1,13 @@
 package com.pinguela.rentexpress.rest.api.util;
 
 import java.util.Date;
+import java.security.MessageDigest;
+import java.nio.charset.StandardCharsets;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
 public class JwtUtil {
-
-    private static final String SECRET_KEY = "oi48594hrgwe452934nforitertlerqo8q344";
-    private static final long RESET_TOKEN_EXPIRY_MS = 3600 * 1000L; // 1 hora
 
     private JwtUtil() {
         throw new IllegalStateException("Utility class");
@@ -27,15 +26,16 @@ public class JwtUtil {
     }
 
     /**
-     * Genera un JWT para recuperación de contraseña (válido 1 hora).
+     * Genera un JWT para recuperación de contraseña (expiración configurable).
      * Subject: "RESET:userId"
      */
     public static String generatePasswordResetToken(Integer userId) {
+        long expiryMs = JwtConfig.getResetExpirationSeconds() * 1000L;
         return Jwts.builder()
                 .subject("RESET:" + userId)
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + RESET_TOKEN_EXPIRY_MS))
-                .signWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()))
+                .expiration(new Date(System.currentTimeMillis() + expiryMs))
+                .signWith(Keys.hmacShaKeyFor(JwtConfig.getSecret().getBytes(java.nio.charset.StandardCharsets.UTF_8)))
                 .compact();
     }
 
@@ -48,7 +48,7 @@ public class JwtUtil {
         }
         try {
             String subject = Jwts.parser()
-                    .verifyWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()))
+                    .verifyWith(Keys.hmacShaKeyFor(JwtConfig.getSecret().getBytes(java.nio.charset.StandardCharsets.UTF_8)))
                     .build()
                     .parseSignedClaims(token.trim())
                     .getPayload()
@@ -62,9 +62,27 @@ public class JwtUtil {
         return null;
     }
 
+    /**
+     * Devuelve el hash SHA-256 en hexadecimal del token (para guardar en BD y comprobar uso único).
+     */
+    public static String sha256Hex(String token) {
+        if (token == null) return null;
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hash = md.digest(token.getBytes(StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder(64);
+            for (byte b : hash) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (Exception e) {
+            throw new RuntimeException("SHA-256 not available", e);
+        }
+    }
+
     public static String validateToken(String token) {
         return Jwts.parser()
-                .verifyWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()))
+                .verifyWith(Keys.hmacShaKeyFor(JwtConfig.getSecret().getBytes(java.nio.charset.StandardCharsets.UTF_8)))
                 .build()
                 .parseSignedClaims(token)
                 .getPayload()
@@ -72,11 +90,43 @@ public class JwtUtil {
     }
 
     private static String generateTokenWithSubject(String subject) {
+        long expiryMs = JwtConfig.getExpirationSeconds() * 1000L;
         return Jwts.builder()
                 .subject(subject)
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 3600 * 1000))
-                .signWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()))
+                .expiration(new Date(System.currentTimeMillis() + expiryMs))
+                .signWith(Keys.hmacShaKeyFor(JwtConfig.getSecret().getBytes(java.nio.charset.StandardCharsets.UTF_8)))
                 .compact();
+    }
+
+    /** Token temporal para completar 2FA (corta expiración, p. ej. 5 min). Subject: "2FA:" + userId */
+    public static String generateTemp2FAToken(Integer userId) {
+        if (userId == null) return null;
+        long expiryMs = 5 * 60 * 1000L; // 5 minutos
+        return Jwts.builder()
+                .subject("2FA:" + userId)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + expiryMs))
+                .signWith(Keys.hmacShaKeyFor(JwtConfig.getSecret().getBytes(java.nio.charset.StandardCharsets.UTF_8)))
+                .compact();
+    }
+
+    /** Valida token temporal 2FA y devuelve el userId, o null si no es válido. */
+    public static Integer validateTemp2FAToken(String token) {
+        if (token == null || token.trim().isEmpty()) return null;
+        try {
+            String subject = Jwts.parser()
+                    .verifyWith(Keys.hmacShaKeyFor(JwtConfig.getSecret().getBytes(java.nio.charset.StandardCharsets.UTF_8)))
+                    .build()
+                    .parseSignedClaims(token.trim())
+                    .getPayload()
+                    .getSubject();
+            if (subject != null && subject.startsWith("2FA:")) {
+                return Integer.parseInt(subject.substring(4));
+            }
+        } catch (Exception ignored) {
+            // token inválido o expirado
+        }
+        return null;
     }
 }

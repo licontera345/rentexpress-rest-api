@@ -9,6 +9,10 @@ public class WeatherDTO {
     private int humidity;
     private String description;
     private String icon;
+    /** Si false, el servicio externo no está disponible (graceful degradation). */
+    private boolean available = true;
+    /** Mensaje amigable cuando available es false. */
+    private String message;
 
     public WeatherDTO() {}
 
@@ -43,4 +47,9 @@ public class WeatherDTO {
 
     public String getIcon() { return icon; }
     public void setIcon(String icon) { this.icon = icon; }
+
+    public boolean isAvailable() { return available; }
+    public void setAvailable(boolean available) { this.available = available; }
+    public String getMessage() { return message; }
+    public void setMessage(String message) { this.message = message; }
 }

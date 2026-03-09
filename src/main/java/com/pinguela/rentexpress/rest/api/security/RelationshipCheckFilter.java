@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 import com.pinguela.rentexpress.rest.api.service.OwnershipService;
-import com.pinguela.rentexpress.rest.api.service.impl.OwnershipServiceImpl;
+import com.pinguela.rentexpress.rest.api.dto.ErrorResponseDTO;
 
 import jakarta.annotation.Priority;
 import jakarta.ws.rs.Priorities;
@@ -12,8 +12,11 @@ import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.container.ResourceInfo;
 import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;
+
+import jakarta.inject.Inject;
 
 @Provider
 @RelationshipCheck(pathParamName = "", relatedEntity = "")
@@ -27,9 +30,9 @@ public class RelationshipCheckFilter implements ContainerRequestFilter {
     @Context
     private ResourceInfo resourceInfo;
 
-    public RelationshipCheckFilter() {
-        super();
-        this.ownershipService = new OwnershipServiceImpl();
+    @Inject
+    public RelationshipCheckFilter(OwnershipService ownershipService) {
+        this.ownershipService = ownershipService;
     }
 
     @Override
@@ -57,7 +60,9 @@ public class RelationshipCheckFilter implements ContainerRequestFilter {
 
         String resourceId = requestContext.getUriInfo().getPathParameters().getFirst(pathParamName);
         if (resourceId == null) {
-            requestContext.abortWith(Response.status(Response.Status.BAD_REQUEST).build());
+            requestContext.abortWith(Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ErrorResponseDTO("BAD_REQUEST", "Missing path parameter: " + pathParamName))
+                    .type(MediaType.APPLICATION_JSON).build());
             return;
         }
 
@@ -70,15 +75,15 @@ public class RelationshipCheckFilter implements ContainerRequestFilter {
 
         if (!isOwned) {
             requestContext.abortWith(Response.status(Response.Status.FORBIDDEN)
-                    .entity("Access denied. Resource (" + resourceId + ") not owned by client (" + authenticatedOwnerId
-                            + ").")
-                    .build());
+                    .entity(new ErrorResponseDTO("FORBIDDEN",
+                            "Access denied. Resource (" + resourceId + ") not owned by client (" + authenticatedOwnerId + ")."))
+                    .type(MediaType.APPLICATION_JSON).build());
         }
     }
 
     private void abortUnauthorized(ContainerRequestContext requestContext) {
         requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
-                .entity("Authentication required to perform ownership checks.")
-                .build());
+                .entity(new ErrorResponseDTO("UNAUTHORIZED", "Authentication required to perform ownership checks."))
+                .type(MediaType.APPLICATION_JSON).build());
     }
 }

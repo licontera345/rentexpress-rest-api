@@ -13,24 +13,24 @@ import io.swagger.v3.oas.annotations.servers.Server;
 import jakarta.ws.rs.ApplicationPath;
 
 @OpenAPIDefinition(info = @Info(
-		title = "Rest API", 
-		version = "1.0", 
-		description = "demo API", 
+		title = "RentExpress API",
+		version = "1.0",
+		description = "API REST de RentExpress: reservas, vehículos, usuarios, recomendaciones IA y clima. Documentación técnica completa en Swagger.",
 		contact = @Contact(
-				name = "API Support", 
-				email = "support@restapi.local", 
-				url = "https://restapi.local"), 
+				name = "RentExpress",
+				email = "support@rentexpress.local",
+				url = "https://rentexpress.local"),
 		license = @License(
-				name = "MIT", 
-				url = "https://localhost:8081/rentexpress-rest-api/swagger-ui/index.html")), 
+				name = "Proyecto interno",
+				url = "https://rentexpress.local")),
 servers = {
-		@Server(url = "http://localhost:8081/rentexpress-rest-api", description = "Servidor Local"),
-		
-		@Server(url = "https://94.130.104.92:8443/rentexpress-rest-api", description = "Servidor Producción") })
+		@Server(url = "http://localhost:8081/rentexpress-rest-api", description = "Servidor local"),
+		@Server(url = "/rentexpress-rest-api", description = "Servidor actual (relativo al host de despliegue)") })
 @ApplicationPath("/api")
 public class RestApiApplication extends ResourceConfig {
 	public RestApiApplication() {
 		packages("com.pinguela.rentexpress.rest.api");
+		register(new com.pinguela.rentexpress.rest.api.inject.RestApiBinder());
 		register(org.glassfish.jersey.jsonb.JsonBindingFeature.class);
 		register(DateTimeJsonbProvider.class);
 		register(JavaTimeParamConverterProvider.class);

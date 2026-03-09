@@ -4,6 +4,7 @@ import java.util.List;
 
 public class RecommendationResponseDTO {
 
+    private boolean available = true;
     private List<Integer> recommendedVehicleIds;
     private String explanation;
 
@@ -13,6 +14,9 @@ public class RecommendationResponseDTO {
         this.recommendedVehicleIds = recommendedVehicleIds;
         this.explanation = explanation;
     }
+
+    public boolean isAvailable() { return available; }
+    public void setAvailable(boolean available) { this.available = available; }
 
     public List<Integer> getRecommendedVehicleIds() { return recommendedVehicleIds; }
     public void setRecommendedVehicleIds(List<Integer> recommendedVehicleIds) {
