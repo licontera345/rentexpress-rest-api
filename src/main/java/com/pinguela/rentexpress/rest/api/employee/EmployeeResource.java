@@ -73,7 +73,7 @@ public class EmployeeResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving the employee")
         }
     )
-    public Response findById(@PathParam("id") Integer id) {
+    public Response findById(@PathParam("id") Integer id) throws RentexpresException {
         if (id == null) {
             return ErrorResponseHelper.badRequest("BAD_REQUEST", "Employee ID is required");
         }
@@ -103,7 +103,7 @@ public class EmployeeResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while creating the employee")
         }
     )
-    public Response create(EmployeeDTO employee) {
+    public Response create(EmployeeDTO employee) throws RentexpresException {
         if (employee == null) {
             return ErrorResponseHelper.badRequest("BAD_REQUEST", "Employee data is required");
         }
@@ -137,7 +137,7 @@ public class EmployeeResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while updating the employee")
         }
     )
-    public Response update(@PathParam("id") Integer id, EmployeeDTO employee) {
+    public Response update(@PathParam("id") Integer id, EmployeeDTO employee) throws RentexpresException {
         if (id == null || employee == null) {
             return ErrorResponseHelper.badRequest("BAD_REQUEST", "Employee ID and data are required");
         }
@@ -171,7 +171,7 @@ public class EmployeeResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while deleting the employee")
         }
     )
-    public Response delete(@PathParam("id") Integer id) {
+    public Response delete(@PathParam("id") Integer id) throws RentexpresException {
         if (id == null) {
             return ErrorResponseHelper.badRequest("BAD_REQUEST", "Employee ID is required");
         }
@@ -303,7 +303,7 @@ public class EmployeeResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while authenticating the employee")
         }
     )
-    public Response authenticate(Map<String, String> credentials) {
+    public Response authenticate(Map<String, String> credentials) throws RentexpresException {
         if (credentials == null || !credentials.containsKey("username") || !credentials.containsKey("password")) {
             return ErrorResponseHelper.badRequest("BAD_REQUEST", "Username and password are required");
         }
@@ -336,7 +336,7 @@ public class EmployeeResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while activating the employee")
         }
     )
-    public Response activate(@PathParam("id") Integer id) {
+    public Response activate(@PathParam("id") Integer id) throws RentexpresException {
         if (id == null) {
             return ErrorResponseHelper.badRequest("BAD_REQUEST", "Employee ID is required");
         }

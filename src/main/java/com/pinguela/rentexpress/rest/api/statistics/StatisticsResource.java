@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import com.pinguela.rentexpress.rest.api.security.Secured;
 import com.pinguela.rentexpress.rest.api.util.ErrorResponseHelper;
+import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.DashboardStatsDTO;
 import com.pinguela.rentexpres.model.HeadquartersStatsDTO;
 import com.pinguela.rentexpres.model.ReservationStatsDTO;
@@ -64,7 +65,7 @@ public class StatisticsResource {
 	)
 	public Response getDashboardStats(
 			@QueryParam("from") LocalDateTime from,
-			@QueryParam("to") LocalDateTime to) {
+			@QueryParam("to") LocalDateTime to) throws RentexpresException {
 		DashboardStatsDTO stats = statisticsService.getDashboardStats(from, to);
 		return Response.ok(stats).build();
 	}
@@ -88,7 +89,7 @@ public class StatisticsResource {
 	)
 	public Response getTotalRevenue(
 			@QueryParam("from") LocalDateTime from,
-			@QueryParam("to") LocalDateTime to) {
+			@QueryParam("to") LocalDateTime to) throws RentexpresException {
 		BigDecimal revenue = statisticsService.getTotalRevenue(from, to);
 		return Response.ok(revenue).build();
 	}
@@ -111,7 +112,7 @@ public class StatisticsResource {
 			@ApiResponse(responseCode = "500", description = "Unexpected error while retrieving monthly revenue")
 		}
 	)
-	public Response getRevenueByMonth(@QueryParam("year") Integer year) {
+	public Response getRevenueByMonth(@QueryParam("year") Integer year) throws RentexpresException {
 		if (year == null) {
 			return ErrorResponseHelper.badRequest("BAD_REQUEST", "year is required");
 		}
@@ -145,7 +146,7 @@ public class StatisticsResource {
 			@ApiResponse(responseCode = "500", description = "Unexpected error while retrieving reservation statistics")
 		}
 	)
-	public Response getReservationStats() {
+	public Response getReservationStats() throws RentexpresException {
 		List<ReservationStatsDTO> list = statisticsService.getReservationStats();
 		if (list == null || list.isEmpty()) {
 			return Response.status(Status.NO_CONTENT).build();
@@ -170,7 +171,7 @@ public class StatisticsResource {
 			@ApiResponse(responseCode = "500", description = "Unexpected error while retrieving fleet statistics")
 		}
 	)
-	public Response getVehicleFleetStats() {
+	public Response getVehicleFleetStats() throws RentexpresException {
 		List<VehicleFleetStatsDTO> list = statisticsService.getVehicleFleetStats();
 		if (list == null || list.isEmpty()) {
 			return Response.status(Status.NO_CONTENT).build();
@@ -195,7 +196,7 @@ public class StatisticsResource {
 			@ApiResponse(responseCode = "500", description = "Unexpected error while retrieving headquarters statistics")
 		}
 	)
-	public Response getHeadquartersStats() {
+	public Response getHeadquartersStats() throws RentexpresException {
 		List<HeadquartersStatsDTO> list = statisticsService.getHeadquartersStats();
 		if (list == null || list.isEmpty()) {
 			return Response.status(Status.NO_CONTENT).build();

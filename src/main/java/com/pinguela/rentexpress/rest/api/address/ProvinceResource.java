@@ -59,7 +59,7 @@ public class ProvinceResource extends BaseCrudResource<ProvinceDTO, ProvinceServ
             @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving provinces")
         }
     )
-    public Response findAll() {
+    public Response findAll() throws RentexpresException {
         List<ProvinceDTO> provinces = provinceService.findAll();
         if (provinces == null || provinces.isEmpty()) {
             return Response.status(Status.NO_CONTENT).build();

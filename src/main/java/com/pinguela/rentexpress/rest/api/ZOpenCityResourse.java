@@ -225,7 +225,7 @@ public class ZOpenCityResourse {
             return Response.status(Status.BAD_REQUEST).entity("City ID and data are required").build();
         }
         try {
-            boolean deleted = cityService.delete(city);
+            boolean deleted = cityService.delete(city.getId());
             if (!deleted) {
                 return Response.status(Status.NOT_FOUND).entity("City not found").build();
             }

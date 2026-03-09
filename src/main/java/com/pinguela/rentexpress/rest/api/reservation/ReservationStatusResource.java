@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import com.pinguela.rentexpress.rest.api.security.Secured;
 import com.pinguela.rentexpress.rest.api.util.ErrorResponseHelper;
+import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.ReservationStatusDTO;
 import com.pinguela.rentexpres.service.ReservationStatusService;
 
@@ -57,7 +58,7 @@ public class ReservationStatusResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving reservation statuses")
         }
     )
-    public Response findAll(@QueryParam("isoCode") String isoCode) {
+    public Response findAll(@QueryParam("isoCode") String isoCode) throws RentexpresException {
         if (isoCode == null || isoCode.isEmpty()) {
             return ErrorResponseHelper.badRequest("BAD_REQUEST", "isoCode is required");
         }
@@ -86,7 +87,7 @@ public class ReservationStatusResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving the reservation status")
         }
     )
-    public Response findById(@PathParam("id") Integer id, @QueryParam("isoCode") String isoCode) {
+    public Response findById(@PathParam("id") Integer id, @QueryParam("isoCode") String isoCode) throws RentexpresException {
         if (id == null || isoCode == null || isoCode.isEmpty()) {
             return ErrorResponseHelper.badRequest("BAD_REQUEST", "Reservation status ID and isoCode are required");
         }

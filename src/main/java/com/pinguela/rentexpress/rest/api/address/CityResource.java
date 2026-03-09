@@ -50,7 +50,7 @@ public class CityResource extends BaseCrudResource<CityDTO, CityService> {
 			@ApiResponse(responseCode = "200", description = "Cities retrieved successfully", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = CityDTO[].class))),
 			@ApiResponse(responseCode = "204", description = "No cities found"),
 			@ApiResponse(responseCode = "500", description = "Unexpected error while retrieving cities") })
-	public Response findAll() {
+	public Response findAll() throws RentexpresException {
 		List<CityDTO> cities = cityService.findAll();
 		if (cities == null || cities.isEmpty()) {
 			return Response.status(Status.NO_CONTENT).build();
@@ -80,7 +80,7 @@ public class CityResource extends BaseCrudResource<CityDTO, CityService> {
 			@ApiResponse(responseCode = "204", description = "No cities found for the provided province"),
 			@ApiResponse(responseCode = "400", description = "Invalid province identifier supplied"),
 			@ApiResponse(responseCode = "500", description = "Unexpected error while retrieving cities") })
-	public Response findByProvince(@PathParam("provinceId") Integer provinceId) {
+	public Response findByProvince(@PathParam("provinceId") Integer provinceId) throws RentexpresException {
 		if (provinceId == null) {
 			return ErrorResponseHelper.badRequest("BAD_REQUEST", "Province ID is required");
 		}

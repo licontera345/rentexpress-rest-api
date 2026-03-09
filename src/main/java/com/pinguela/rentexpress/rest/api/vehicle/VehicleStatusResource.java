@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import com.pinguela.rentexpress.rest.api.util.ErrorResponseHelper;
+import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.VehicleStatusDTO;
 import com.pinguela.rentexpres.service.VehicleStatusService;
 
@@ -53,7 +54,7 @@ public class VehicleStatusResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving vehicle statuses")
         }
     )
-    public Response findAll(@QueryParam("isoCode") String isoCode) {
+    public Response findAll(@QueryParam("isoCode") String isoCode) throws RentexpresException {
         if (isoCode == null || isoCode.isEmpty()) {
             return ErrorResponseHelper.badRequest("BAD_REQUEST", "isoCode is required");
         }
@@ -82,7 +83,7 @@ public class VehicleStatusResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving the vehicle status")
         }
     )
-    public Response findById(@PathParam("id") Integer id, @QueryParam("isoCode") String isoCode) {
+    public Response findById(@PathParam("id") Integer id, @QueryParam("isoCode") String isoCode) throws RentexpresException {
         if (id == null || isoCode == null || isoCode.isEmpty()) {
             return ErrorResponseHelper.badRequest("BAD_REQUEST", "Vehicle status ID and isoCode are required");
         }

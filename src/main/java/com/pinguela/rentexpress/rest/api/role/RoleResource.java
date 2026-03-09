@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import com.pinguela.rentexpress.rest.api.security.Secured;
 import com.pinguela.rentexpress.rest.api.util.ErrorResponseHelper;
+import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.RoleDTO;
 import com.pinguela.rentexpres.service.RoleService;
 
@@ -55,7 +56,7 @@ public class RoleResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving roles")
         }
     )
-    public Response findAll() {
+    public Response findAll() throws RentexpresException {
         List<RoleDTO> roles = roleService.findAll();
         if (roles == null || roles.isEmpty()) {
             return Response.status(Status.NO_CONTENT).build();
@@ -81,7 +82,7 @@ public class RoleResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving the role")
         }
     )
-    public Response findById(@PathParam("id") Integer id) {
+    public Response findById(@PathParam("id") Integer id) throws RentexpresException {
         if (id == null) {
             return ErrorResponseHelper.badRequest("BAD_REQUEST", "Role ID is required");
         }

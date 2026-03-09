@@ -8,6 +8,7 @@ import java.util.Base64;
 import java.util.logging.Logger;
 
 import com.pinguela.rentexpress.rest.api.security.Secured;
+import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.RentalCriteria;
 import com.pinguela.rentexpres.model.RentalDTO;
 import com.pinguela.rentexpres.model.ReservationDTO;
@@ -79,7 +80,7 @@ public class RentalResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while retrieving the rental")
         }
     )
-    public Response findById(@PathParam("id") Integer id, @Context Request request) {
+    public Response findById(@PathParam("id") Integer id, @Context Request request) throws RentexpresException {
         if (id == null) {
             return ErrorResponseHelper.badRequest("BAD_REQUEST", "Rental ID is required");
         }
@@ -133,7 +134,7 @@ public class RentalResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while creating the rental")
         }
     )
-    public Response create(RentalDTO rental) {
+    public Response create(RentalDTO rental) throws RentexpresException {
         if (rental == null) {
             return ErrorResponseHelper.badRequest("BAD_REQUEST", "Rental data is required");
         }
@@ -171,7 +172,7 @@ public class RentalResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while updating the rental")
         }
     )
-    public Response update(@PathParam("id") Integer id, RentalDTO rental) {
+    public Response update(@PathParam("id") Integer id, RentalDTO rental) throws RentexpresException {
         if (id == null || rental == null) {
             return ErrorResponseHelper.badRequest("BAD_REQUEST", "Rental ID and data are required");
         }
@@ -207,7 +208,7 @@ public class RentalResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while deleting the rental")
         }
     )
-    public Response delete(@PathParam("id") Integer id) {
+    public Response delete(@PathParam("id") Integer id) throws RentexpresException {
         if (id == null) {
             return ErrorResponseHelper.badRequest("BAD_REQUEST", "Rental ID is required");
         }
@@ -258,7 +259,7 @@ public class RentalResource {
         @QueryParam("totalCost") java.math.BigDecimal totalCost,
         @QueryParam("pageNumber") Integer pageNumber,
         @QueryParam("pageSize") Integer pageSize
-    ) {
+    ) throws RentexpresException {
         RentalCriteria criteria = new RentalCriteria();
         criteria.setRentalId(rentalId);
         criteria.setRentalStatusId(rentalStatusId);
@@ -353,7 +354,7 @@ public class RentalResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while checking rental existence")
         }
     )
-    public Response existsByReservation(@PathParam("reservationId") Integer reservationId) {
+    public Response existsByReservation(@PathParam("reservationId") Integer reservationId) throws RentexpresException {
         if (reservationId == null) {
             return ErrorResponseHelper.badRequest("BAD_REQUEST", "Reservation ID is required");
         }
@@ -374,7 +375,7 @@ public class RentalResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while creating the rental")
         }
     )
-    public Response createFromReservation(ReservationDTO reservation) {
+    public Response createFromReservation(ReservationDTO reservation) throws RentexpresException {
         if (reservation == null || reservation.getReservationId() == null) {
             return ErrorResponseHelper.badRequest("BAD_REQUEST", "Reservation data is required");
         }
@@ -401,7 +402,7 @@ public class RentalResource {
             @ApiResponse(responseCode = "500", description = "Error completing rental")
         }
     )
-    public Response completeRental(@PathParam("id") Integer id, RentalDTO rentalData) {
+    public Response completeRental(@PathParam("id") Integer id, RentalDTO rentalData) throws RentexpresException {
         if (id == null) {
             return ErrorResponseHelper.badRequest("BAD_REQUEST", "Rental ID is required");
         }
@@ -430,7 +431,7 @@ public class RentalResource {
             @ApiResponse(responseCode = "500", description = "Unexpected error while converting reservations")
         }
     )
-    public Response autoConvertReservations() {
+    public Response autoConvertReservations() throws RentexpresException {
         int converted = rentalService.autoConvertReservations();
         RedisCache.deleteByPrefix("rentals:");
         return Response.ok(converted).build();

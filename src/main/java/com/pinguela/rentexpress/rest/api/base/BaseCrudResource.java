@@ -3,6 +3,7 @@ package com.pinguela.rentexpress.rest.api.base;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.service.CrudService;
 import com.pinguela.rentexpress.rest.api.util.ErrorResponseHelper;
 import com.pinguela.rentexpress.rest.api.util.RedisCache;
@@ -22,7 +23,7 @@ public abstract class BaseCrudResource<D, S extends CrudService<D, Integer>> {
     /**
      * Respuesta estándar para findById: 400 si id nulo, 404 si no encontrado, 200 con el DTO.
      */
-    protected Response doFindById(Integer id, S service) {
+    protected Response doFindById(Integer id, S service) throws RentexpresException {
         if (id == null) {
             return ErrorResponseHelper.badRequest("BAD_REQUEST", "ID is required");
         }
@@ -37,7 +38,7 @@ public abstract class BaseCrudResource<D, S extends CrudService<D, Integer>> {
      * Respuesta estándar para create: 400 si dto nulo o no creado, 201 con el DTO creado.
      * Invalida caché con el prefijo indicado.
      */
-    protected Response doCreate(D dto, S service, Function<D, Integer> idGetter, String cachePrefix) {
+    protected Response doCreate(D dto, S service, Function<D, Integer> idGetter, String cachePrefix) throws RentexpresException {
         if (dto == null) {
             return ErrorResponseHelper.badRequest("BAD_REQUEST", "Data is required");
         }
@@ -57,7 +58,7 @@ public abstract class BaseCrudResource<D, S extends CrudService<D, Integer>> {
      * Respuesta estándar para update: 400 si id/dto nulos, aplica id al DTO, 404 si no actualizado, 200 con el DTO.
      * Invalida caché con el prefijo indicado.
      */
-    protected Response doUpdate(Integer id, D dto, S service, BiConsumer<D, Integer> idSetter, String cachePrefix) {
+    protected Response doUpdate(Integer id, D dto, S service, BiConsumer<D, Integer> idSetter, String cachePrefix) throws RentexpresException {
         if (id == null || dto == null) {
             return ErrorResponseHelper.badRequest("BAD_REQUEST", "ID and data are required");
         }
@@ -77,7 +78,7 @@ public abstract class BaseCrudResource<D, S extends CrudService<D, Integer>> {
      * Respuesta estándar para delete: 400 si id nulo, 404 si no eliminado, 200 con mensaje.
      * Invalida caché con el prefijo indicado.
      */
-    protected Response doDelete(Integer id, S service, String cachePrefix) {
+    protected Response doDelete(Integer id, S service, String cachePrefix) throws RentexpresException {
         if (id == null) {
             return ErrorResponseHelper.badRequest("BAD_REQUEST", "ID is required");
         }

@@ -18,6 +18,7 @@ import com.pinguela.rentexpres.model.Results;
 import com.pinguela.rentexpres.model.UserCriteria;
 import com.pinguela.rentexpres.model.UserDTO;
 import com.pinguela.rentexpres.model.PasswordResetTokenDTO;
+import com.pinguela.rentexpres.service.UserService;
 import com.pinguela.rentexpress.rest.api.util.RedisCache;
 import com.pinguela.rentexpres.util.MailContent;
 import com.pinguela.rentexpres.service.MailService;

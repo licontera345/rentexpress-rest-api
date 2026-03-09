@@ -161,7 +161,7 @@ public class ZOpenAddressResourse {
             return Response.status(Status.BAD_REQUEST).entity("Address ID and data are required").build();
         }
         try {
-            boolean deleted = addressService.delete(address);
+            boolean deleted = addressService.delete(address.getId());
             if (!deleted) {
                 return Response.status(Status.NOT_FOUND).entity("Address not found").build();
             }

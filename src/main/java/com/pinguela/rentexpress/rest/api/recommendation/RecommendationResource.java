@@ -55,7 +55,7 @@ public class RecommendationResource {
             @ApiResponse(responseCode = "500", description = "Could not generate recommendations")
         }
     )
-    public Response getRecommendations(RecommendationRequestDTO request) {
+    public Response getRecommendations(RecommendationRequestDTO request) throws GroqApiException {
         try {
             if (request == null) {
                 return Response.status(Status.BAD_REQUEST)
