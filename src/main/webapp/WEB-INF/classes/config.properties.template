@@ -16,13 +16,13 @@ mail.smtp.server.port=587
 
 # Cloudinary
 cloudinary.cloud.name=dy9jjex3v
-cloudinary.api.key
-cloudinary.api.secret
+cloudinary.api.key=645817398827778
+cloudinary.api.secret=f0-L8hdbzX0hSEAkgJwrg6aqRlQ
 
 # Limite por archivo en bytes (2 MB). Usado por /open/config/image-upload
 base.image.max.bytes=2097152
 
-# Rangos para filtros del catálogo (año, km, precio). Usado por /open/config/filter-ranges
+# Rangos para filtros del cat�logo (a�o, km, precio). Usado por /open/config/filter-ranges
 filter.year.min=1990
 filter.km.max=200000
 filter.price.max=500
@@ -36,22 +36,22 @@ groq.api.key
 groq.api.url=https://api.groq.com/openai/v1/chat/completions
 groq.model=llama-3.3-70b-versatile
 
-# JWT (REST API). Obligatorio en producción. Mínimo 32 caracteres para jwt.secret
-jwt.secret=
+# JWT (REST API). Obligatorio en producci�n. M�nimo 32 caracteres para jwt.secret
+jwt.secret=mysecretkeymysecretkeymysecretkey123
 jwt.expiration.seconds=3600
 jwt.reset.expiration.seconds=3600
 
-# Frontend base URL (enlaces en emails: recuperar contraseña). Obligatorio en producción.
-frontend.url=
+# Frontend base URL (enlaces en emails: recuperar contrase�a). Obligatorio en producci�n.
+frontend.url=http://94.130.104.92:8081
 
 # Google OAuth client ID (login con Google). Obligatorio si se usa Google Sign-In.
-google.clientId=
+google.clientId=983385335826-4gcf6skskeh4votp94gbdeo5se6us97g.apps.googleusercontent.com
 
 # Rate limiting (peticiones por minuto por IP o usuario). Desactivar con rate.limit.enabled=false
 rate.limit.enabled=true
 rate.limit.requests.per.minute=120
 # rate.limit.store=memory (default). Futuro: redis con rate.limit.redis.url
-# Opcionales: límites por rol (si no se definen, se usa rate.limit.requests.per.minute para todos)
+# Opcionales: l�mites por rol (si no se definen, se usa rate.limit.requests.per.minute para todos)
 # rate.limit.requests.per.minute.admin=300
 # rate.limit.requests.per.minute.employee=200
 # rate.limit.requests.per.minute.client=120
@@ -61,4 +61,3 @@ rate.limit.requests.per.minute=120
 # weather.api.read.timeout.seconds=15
 # groq.api.connect.timeout.seconds=10
 # groq.api.read.timeout.seconds=15
-
