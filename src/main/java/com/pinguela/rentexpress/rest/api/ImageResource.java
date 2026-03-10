@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-import com.pinguela.rentexpress.rest.api.RentexpresExceptionMapper;
+import com.pinguela.rentexpress.rest.api.exception.RentexpresExceptionMapper;
 import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.ImageDTO;
 import com.pinguela.rentexpres.model.ImageOwnerDTO;
@@ -43,7 +43,7 @@ import jakarta.inject.Inject;
 @Path("/images")
 @Tag(name = "Images", description = "Operations for managing vehicle, user, and employee images")
 public class ImageResource {
-
+ 
     private static final Logger logger = Logger.getLogger(ImageResource.class.getName());
     private static final Pattern CLOUDINARY_UPLOAD = Pattern.compile("(/image/upload)(/v\\d+/|/)([^/]+)$");
 

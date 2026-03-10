@@ -1,4 +1,4 @@
-package com.pinguela.rentexpress.rest.api;
+package com.pinguela.rentexpress.rest.api.exception;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

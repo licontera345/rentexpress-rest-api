@@ -18,11 +18,11 @@ import jakarta.ws.rs.ext.Provider;
 
 import jakarta.inject.Inject;
 
-@Provider
+@Provider 
 @RelationshipCheck(pathParamName = "", relatedEntity = "")
 @Priority(Priorities.AUTHORIZATION)
 public class RelationshipCheckFilter implements ContainerRequestFilter {
-
+ 
     private static final Logger logger = Logger.getLogger(RelationshipCheckFilter.class.getName());
 
     private final OwnershipService ownershipService;

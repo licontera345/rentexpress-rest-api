@@ -61,7 +61,7 @@ import com.pinguela.rentexpres.service.impl.VehicleStatusServiceImpl;
  * Registra interfaces de servicio (middleware y API) con sus implementaciones.
  */
 public final class RestApiBinder extends AbstractBinder {
-
+ 
     @Override
     protected void configure() {
         // API REST (servicios propios)

@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import com.pinguela.rentexpress.rest.api.RentexpresExceptionMapper;
+import com.pinguela.rentexpress.rest.api.exception.RentexpresExceptionMapper;
 import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.EmployeeCriteria;
 import com.pinguela.rentexpres.model.EmployeeDTO;

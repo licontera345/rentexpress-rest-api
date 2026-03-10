@@ -2,7 +2,7 @@ package com.pinguela.rentexpress.rest.api;
 
 import java.util.logging.Logger;
 
-import com.pinguela.rentexpress.rest.api.RentexpresExceptionMapper;
+import com.pinguela.rentexpress.rest.api.exception.RentexpresExceptionMapper;
 import com.pinguela.rentexpres.exception.RentexpresException;
 import com.pinguela.rentexpres.model.CloudinarySignatureDTO;
 import com.pinguela.rentexpres.service.CloudinaryService;
