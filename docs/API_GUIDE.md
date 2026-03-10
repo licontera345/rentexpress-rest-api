@@ -17,23 +17,31 @@ rentexpress-rest-api/
 │   ├── service/           # WeatherService, GroqService (OwnershipService en middleware)
 │   ├── util/              # Redis, JWT, fechas
 │   ├── ws/                # ChatSocket, ChatSocketServiceHolder
-│   ├── api.user/          # UserResource
-│   ├── api.auth/          # AccesoResource
-│   ├── api.rental/        # RentalResource, RentalStatusResource
-│   ├── api.vehicle/       # VehicleResource (ETag en GET), VehicleCategoryResource, VehicleStatusResource
-│   ├── api.reservation/   # ReservationResource, ReservationStatusResource
-│   ├── api.config/        # WeatherResource
-│   ├── api.chat/          # ConversationResource
-│   ├── api.address/       # AddressResource, CityResource, ProvinceResource
-│   ├── api.headquarters/  # HeadquartersResource
-│   ├── api.employee/      # EmployeeResource
-│   ├── api.role/          # RoleResource
-│   ├── api.statistics/    # StatisticsResource
-│   ├── api.media/         # ImageResource, CloudinaryResource
-│   ├── api.recommendation/# RecommendationResource
+│   ├── AccesoResource.java
+│   ├── AddressResource.java
+│   ├── CityResource.java
+│   ├── CloudinaryResource.java
+│   ├── ConversationResource.java
+│   ├── EmployeeResource.java
+│   ├── FileResource.java
 │   ├── GenericExceptionMapper.java
+│   ├── HeadquartersResource.java
+│   ├── ImageResource.java
+│   ├── ProvinceResource.java
+│   ├── RecommendationResource.java
 │   ├── RentexpresExceptionMapper.java
-│   └── RestApiApplication.java
+│   ├── ReservationResource.java
+│   ├── ReservationStatusResource.java
+│   ├── RestApiApplication.java
+│   ├── RentalResource.java
+│   ├── RentalStatusResource.java
+│   ├── RoleResource.java
+│   ├── StatisticsResource.java
+│   ├── UserResource.java
+│   ├── VehicleResource.java
+│   ├── VehicleCategoryResource.java
+│   ├── VehicleStatusResource.java
+│   └── WeatherResource.java
 ├── docs/
 │   ├── API_GUIDE.md       # Esta guía
 │   ├── PACKAGE_STRUCTURE.md # Estructura por dominios y DI

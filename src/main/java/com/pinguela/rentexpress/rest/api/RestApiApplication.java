@@ -2,8 +2,8 @@ package com.pinguela.rentexpress.rest.api;
 
 import org.glassfish.jersey.server.ResourceConfig;
 
+import com.pinguela.rentexpress.rest.api.param.DateTimeJsonbProvider;
 import com.pinguela.rentexpress.rest.api.param.JavaTimeParamConverterProvider;
-import com.pinguela.rentexpress.rest.api.util.DateTimeJsonbProvider;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;
@@ -29,12 +29,22 @@ servers = {
 @ApplicationPath("/api")
 public class RestApiApplication extends ResourceConfig {
 	public RestApiApplication() {
-		packages("com.pinguela.rentexpress.rest.api");
+		// 1) Inyección HK2 (servicios, rate limit, etc.)
 		register(new com.pinguela.rentexpress.rest.api.inject.RestApiBinder());
+
+		// 2) Filtros de seguridad / limitación y CORS
+		register(com.pinguela.rentexpress.rest.api.security.RateLimitFilter.class);
+		register(com.pinguela.rentexpress.rest.api.security.CorsFilter.class);
+
+		// 3) Soporte JSON-B y conversions de tipos (fecha/hora)
 		register(org.glassfish.jersey.jsonb.JsonBindingFeature.class);
 		register(DateTimeJsonbProvider.class);
 		register(JavaTimeParamConverterProvider.class);
+
+		// 4) Swagger / OpenAPI
 		register(io.swagger.v3.jaxrs2.integration.resources.OpenApiResource.class);
-		register(com.pinguela.rentexpress.rest.api.security.CorsFilter.class);
+
+		// 5) Escaneo de recursos y providers de la API
+		packages("com.pinguela.rentexpress.rest.api");
 	}
 }
